@@ -1,0 +1,33 @@
+server:
+    port: 9000
+
+spring:
+    application:
+        name: CORE
+
+    rabbitmq:
+        host: 47.94.104.34
+        username: xiaolin
+        password: 123456xxl
+        virtual-host: /media
+        connection-timeout: 15000
+
+    data:
+        redis:
+            client-type: lettuce
+            database: 0
+            host: 47.94.104.34
+            port: 6379
+            lettuce:
+                pool:
+                    enabled: true
+                    max-active: 8
+                    max-idle: 8
+
+    # 腾讯云服务器，兼容MySQL 5.7版本
+    datasource:
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456xxlBUPT
+        url: jdbc:mysql://bj-cynosdbmysql-grp-0t58ywes.sql.tencentcdb.com:24183/dev_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
+

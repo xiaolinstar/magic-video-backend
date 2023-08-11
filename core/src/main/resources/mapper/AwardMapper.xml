@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xiaolin.core.domain.mapper.AwardMapper">
+
+    <resultMap id="BaseResultMap" type="cn.xiaolin.core.domain.entity.Award">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="icon" column="icon" jdbcType="VARCHAR"/>
+            <result property="year" column="year" jdbcType="INTEGER"/>
+            <result property="country" column="country" jdbcType="VARCHAR"/>
+            <result property="bestDirectorId" column="best_director_id" jdbcType="BIGINT"/>
+            <result property="bestDirectorNominationId" column="best_director_nomination_id" jdbcType="BIGINT"/>
+            <result property="bestMaleActorId" column="best_male_actor_id" jdbcType="BIGINT"/>
+            <result property="bestFemaleActorId" column="best_female_actor_id" jdbcType="BIGINT"/>
+            <result property="bestMaleActorNominationId" column="best_male_actor_nomination_id" jdbcType="BIGINT"/>
+            <result property="bestFemaleActorNominationId" column="best_female_actor_nomination_id" jdbcType="BIGINT"/>
+            <result property="bestScripterId" column="best_scripter_id" jdbcType="BIGINT"/>
+            <result property="bestScripterNominationId" column="best_scripter_nomination_id" jdbcType="BIGINT"/>
+            <result property="bestNewActorId" column="best_new_actor_id" jdbcType="BIGINT"/>
+            <result property="deleted" column="deleted" jdbcType="TINYINT"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createdByUserId" column="created_by_user_id" jdbcType="BIGINT"/>
+            <result property="updatedByUserId" column="updated_by_user_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,icon,
+        year,country,best_director_id,
+        best_director_nomination_id,best_male_actor_id,best_female_actor_id,
+        best_male_actor_nomination_id,best_female_actor_nomination_id,best_scripter_id,
+        best_scripter_nomination_id,best_new_actor_id,deleted,
+        revision,create_time,update_time,
+        created_by_user_id,updated_by_user_id
+    </sql>
+</mapper>

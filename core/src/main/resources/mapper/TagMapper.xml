@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xiaolin.core.domain.mapper.TagMapper">
+
+    <resultMap id="BaseResultMap" type="cn.xiaolin.core.domain.entity.Tag">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="deleted" column="deleted" jdbcType="TINYINT"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createdByUserId" column="created_by_user_id" jdbcType="BIGINT"/>
+            <result property="updatedByUserId" column="updated_by_user_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,deleted,
+        revision,create_time,update_time,
+        created_by_user_id,updated_by_user_id
+    </sql>
+</mapper>

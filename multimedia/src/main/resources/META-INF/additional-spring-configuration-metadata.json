@@ -1,0 +1,19 @@
+{
+  "properties": [
+    {
+      "name": "file.image.dir",
+      "type": "java.lang.String",
+      "description": "Description for file.image.dir."
+    },
+    {
+      "name": "file.video.dir",
+      "type": "java.lang.String",
+      "description": "Description for file.video.dir."
+    },
+    {
+      "name": "file.root.dir",
+      "type": "java.lang.String",
+      "description": "Description for file.root.dir."
+    }
+  ]
+}
