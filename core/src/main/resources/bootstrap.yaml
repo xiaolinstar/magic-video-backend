@@ -14,5 +14,11 @@ spring:
         namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
         group: DEFAULT_GROUP
 
-
+      # Nacos服务发现
+      discovery:
+        cluster-name: BEIJING
+        # 设置为非临时实例
+        ephemeral: true
+        # 设置命名空间
+        namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
 

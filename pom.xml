@@ -48,6 +48,10 @@
             <properties>
                 <profile.active>dev</profile.active>
             </properties>
+            <!-- activeByDefault=true，表示打包时，默认使用这个环境 -->
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
         </profile>
 
         <!-- 生产环境 -->
@@ -56,10 +60,6 @@
             <properties>
                 <profile.active>prod</profile.active>
             </properties>
-            <!-- activeByDefault=true，表示打包时，默认使用这个环境 -->
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
         </profile>
 
         <!-- 测试环境 -->

@@ -17,6 +17,7 @@ spring:
         connection-timeout: 15000
 
     data:
+        # Redis连接，阿里云服务器
         redis:
             client-type: lettuce
             database: 0
@@ -45,7 +46,6 @@ spring:
                 ephemeral: true
                 # 设置命名空间
                 namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
-
 
 
 
