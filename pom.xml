@@ -35,8 +35,8 @@
         <module>common</module>
         <module>multimedia</module>
         <module>core</module>
-        <module>gateway</module>
         <module>auth</module>
+        <module>gateway</module>
         <!--        <module>search</module>-->
         <!--        <module>user</module>-->
     </modules>
