@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+option java_multiple_files = false;
+
+option java_package = "cn.xiaolin.api.grpc";
+
+option java_outer_classname = "UserPermProto";
+
+import "google/protobuf/wrappers.proto";
+
+message PermsResponse {
+  repeated string name = 1;
+}
+message RolesResponse {
+  repeated string name = 1;
+}
+
+// 用户权限gRPC接口
+service UserPermService {
+  rpc getPermByUserId(google.protobuf.Int64Value) returns (PermsResponse) {}
+
+  rpc getRoleByUserId(google.protobuf.Int64Value) returns (RolesResponse) {}
+}

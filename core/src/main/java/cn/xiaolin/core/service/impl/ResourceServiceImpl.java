@@ -7,9 +7,13 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.xiaolin.core.domain.entity.Resource;
 import cn.xiaolin.core.domain.mapper.ResourceMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -24,10 +28,16 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
     implements ResourceService {
 
     private final TransactionTemplate transactionTemplate;
-
+    @Value("${core.video.prefix-url}")
+    private String m3u8Prefix;
     @Override
     public Optional<Resource> findItemById(Long id) {
-        return Optional.ofNullable(this.getById(id));
+        Resource resource = this.getById(id);
+        if (Objects.isNull(resource)) {
+            return Optional.empty();
+        }
+        resource.setM3u8(URI.create(m3u8Prefix).resolve(resource.getM3u8()).toString());
+        return Optional.of(resource);
     }
 
     @Override
@@ -50,6 +60,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
                 .set(Objects.nonNull(dto.getRawFilePath()), Resource::getMp4, dto.getRawFilePath())
                 .set(Objects.nonNull(dto.getM3u8()), Resource::getM3u8, dto.getM3u8())
                 .set(Objects.nonNull(dto.getMd5()), Resource::getMd5, dto.getMd5())
+                .set(Objects.nonNull(dto.getAvatar()), Resource::getAvatar, dto.getAvatar())
+                .set(Objects.nonNull(dto.getTitle()), Resource::getTitle, dto.getTitle())
+                .set(Objects.nonNull(dto.getDescription()), Resource::getDescription, dto.getDescription())
                 .eq(Resource::getId, dto.getId());
         return transactionTemplate.execute(status -> {
             boolean updated = update(updateWrapper);
@@ -66,6 +79,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
                 .m3u8(dto.getM3u8())
                 .mpd(dto.getMpd())
                 .md5(dto.getMd5())
+                .avatar(dto.getAvatar())
+                .title(dto.getTitle())
+                .description(dto.getDescription())
                 .build();
         boolean saved = false;
         try {
@@ -75,7 +91,18 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
         }
         return saved ? Optional.ofNullable(resource) : Optional.empty();
     }
+
+    @Override
+    public List<Resource> listResource() {
+        List<Resource> resources = this.list();
+        Optional.ofNullable(resources)
+                .orElse(new ArrayList<>())
+                .forEach(resource ->
+                        resource.setM3u8(URI.create(m3u8Prefix).resolve(resource.getM3u8()).toString()));
+        return resources;
+    }
 }
+
 
 
 

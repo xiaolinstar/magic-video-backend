@@ -44,10 +44,12 @@
 			<version>0.7.0</version>
 		</dependency>
 
+		<!--Nacos服务发现-->
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
+			<groupId>com.alibaba.cloud</groupId>
+			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+			<version>${nacos.discovery.version}</version>
+		</dependency>
 
     </dependencies>
 

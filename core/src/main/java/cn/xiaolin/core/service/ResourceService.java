@@ -4,6 +4,7 @@ import cn.xiaolin.core.domain.dto.ResourceReqDto;
 import cn.xiaolin.core.domain.entity.Resource;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,4 +20,6 @@ public interface ResourceService extends IService<Resource> {
     Optional<Resource> updateAndReturn(ResourceReqDto dto);
 
     Optional<Resource> saveAndReturn(ResourceReqDto dto);
+
+    List<Resource> listResource();
 }

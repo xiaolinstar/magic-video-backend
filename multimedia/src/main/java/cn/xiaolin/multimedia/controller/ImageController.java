@@ -5,11 +5,9 @@ import cn.xiaolin.multimedia.service.ImageService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

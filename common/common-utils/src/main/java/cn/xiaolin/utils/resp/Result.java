@@ -13,7 +13,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class Result<T> {
 
@@ -30,8 +29,17 @@ public class Result<T> {
         this.data = data;
     }
 
+    public Result() {
+        this.code = ResponseCode.SUCCESS.getCode();
+        this.msg = ResponseCode.SUCCESS.getMsg();
+    }
+
     public static <T> Result<T> ok(T data) {
         return new Result<>(data);
+    }
+
+    public static <T> Result<T> ok() {
+        return new Result<>();
     }
 
     public static <T> Result<T> error() {

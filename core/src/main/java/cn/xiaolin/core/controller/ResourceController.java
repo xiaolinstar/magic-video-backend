@@ -8,8 +8,10 @@ import cn.xiaolin.core.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -52,4 +54,12 @@ public class ResourceController {
         Optional<Resource> item = resourceService.deleteAndReturnById(id);
         return item.map(Result::ok).orElseGet(Result::badRequest);
     }
+
+    @Operation(summary = "获取所有视频资源")
+    @GetMapping("/resource/all")
+    public Result<List<Resource>> listResource() {
+        List<Resource> resources = resourceService.listResource();
+        return Result.ok(resources);
+    }
+
 }

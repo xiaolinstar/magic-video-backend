@@ -58,6 +58,20 @@ public class Resource implements Serializable {
      */
     private String mpd;
 
+    /**
+     * 封面图
+     */
+    private String avatar;
+
+    /**
+     * 标题
+     */
+    private String title;
+    /**
+     * 介绍
+     */
+    private String description;
+
 
     /**
      * 逻辑删除

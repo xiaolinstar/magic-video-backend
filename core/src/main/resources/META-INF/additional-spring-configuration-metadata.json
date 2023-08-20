@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "core.video.prefix-url",
+      "type": "java.lang.String",
+      "description": "阿里云存储视频资源的前缀."
+  }
+] }

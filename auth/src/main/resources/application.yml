@@ -1,0 +1,49 @@
+server:
+  port: 8999
+
+spring:
+  application:
+    name: auth
+
+  # Gateway和Auth共享一个权限管理Redis数据库
+  data:
+    redis:
+      client-type: lettuce
+      database: 1
+      host: 111.229.38.208
+      port: 6379
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 8
+          max-idle: 8
+
+  # 腾讯云服务器，兼容MySQL 5.7版本
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456xxlBUPT
+    url: jdbc:mysql://bj-cynosdbmysql-grp-0t58ywes.sql.tencentcdb.com:24183/dev_auth?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
+
+  # Nacos配置
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+      discovery:
+        cluster-name: BEIJING
+        # 设置为非临时实例
+        ephemeral: true
+        # 设置命名空间
+        namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
+
+sa-token:
+  token-name: satoken
+  active-timeout: 2592000
+  dynamic-active-timeout: on
+  is-concurrent: true
+  is-log: true
+
+grpc:
+  port: 9999
+
+

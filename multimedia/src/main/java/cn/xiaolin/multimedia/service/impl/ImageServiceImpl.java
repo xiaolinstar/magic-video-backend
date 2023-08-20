@@ -33,7 +33,7 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Long imageUpload(MultipartFile file){
         try {
-            String filePath = imageUtil.fileUpload(file);
+            imageUtil.fileUpload(file);
             return null;
         } catch (IOException e) {
             throw new GlobalException(e.getMessage());

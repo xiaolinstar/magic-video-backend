@@ -47,4 +47,18 @@ public class ResourceReqDto {
      * DASH资源
      */
     private String mpd;
+
+    /**
+     * 封面图
+     */
+    private String avatar;
+
+    /**
+     * 标题
+     */
+    private String title;
+    /**
+     * 介绍
+     */
+    private String description;
 }

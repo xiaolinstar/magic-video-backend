@@ -1,6 +1,6 @@
-package cn.xiaolin.core.config;
+package cn.xiaolin.utils.config;
 
-import cn.xiaolin.core.utils.ContextUtil;
+import cn.xiaolin.utils.utility.ContextUtil;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;

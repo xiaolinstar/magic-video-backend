@@ -14,5 +14,6 @@ public class ApiRouterConsts {
 
     public static final String API_MULTIMEDIA_PREFIX = API_VERSION + "/multimedia";
     public static final String API_CORE_PREFIX = API_VERSION + "/core";
+    public static final String API_AUTH_PREFIX = API_VERSION + "/auth";
 
 }

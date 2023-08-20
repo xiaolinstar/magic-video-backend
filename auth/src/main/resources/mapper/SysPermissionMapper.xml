@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xiaolin.auth.domain.mapper.SysPermissionMapper">
+
+    <resultMap id="BaseResultMap" type="cn.xiaolin.auth.domain.entity.SysPermission">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="description" column="description" jdbcType="TINYINT"/>
+            <result property="view" column="view" jdbcType="TINYINT"/>
+            <result property="modify" column="modify" jdbcType="TINYINT"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="deleted" column="deleted" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createdByUserId" column="created_by_user_id" jdbcType="BIGINT"/>
+            <result property="updatedByUserId" column="updated_by_user_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,description, view,
+        modify,revision,deleted,
+        create_time,update_time,created_by_user_id,
+        updated_by_user_id
+    </sql>
+
+    <select id="listPermByRoleId" resultType="cn.xiaolin.auth.domain.entity.SysPermission">
+        select p.id, p.name, p.description, p.view, p.modify
+        from `sys_permission` p join `sys_role_permission` rp on p.id = rp.sys_permission_id
+        where sys_role_id = ${role_id}
+    </select>
+
+    <select id="listPermsByUserId" resultType="cn.xiaolin.auth.domain.entity.SysPermission">
+        select p.id, p.name, p.description, p.view, p.modify
+        from `sys_permission` p join `sys_user_permission` up on p.id = up.sys_permission_id
+        where sys_user_id = ${user_id}
+    </select>
+
+    <select id="listPermsWithRoleByUserId" resultType="cn.xiaolin.auth.domain.entity.SysPermission">
+        select p.id, p.name, p.description, p.view, p.modify
+        from `sys_permission` p join `sys_user_permission` up on p.id = up.sys_permission_id
+        union
+        select p.id, p.name, p.description, p.view, p.modify
+        from sys_permission p
+        where p.id in (
+            select rp.sys_permission_id
+            from `sys_user_role` ur join `sys_role_permission` rp on rp.sys_role_id = ur.sys_role_id
+            where ur.sys_user_id = ${user_id}
+            )
+    </select>
+
+
+</mapper>

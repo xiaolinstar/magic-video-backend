@@ -1,4 +1,4 @@
-package cn.xiaolin.core.utils;
+package cn.xiaolin.utils.utility;
 
 import org.apache.commons.lang3.NotImplementedException;
 

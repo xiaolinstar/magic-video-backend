@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.xiaolin.auth.domain.mapper.SysRoleMapper">
+
+    <resultMap id="BaseResultMap" type="cn.xiaolin.auth.domain.entity.SysRole">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="deleted" column="deleted" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="createdByUserId" column="created_by_user_id" jdbcType="BIGINT"/>
+            <result property="updatedByUserId" column="updated_by_user_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,name,revision,
+        deleted,create_time,update_time,
+        created_by_user_id,updated_by_user_id
+    </sql>
+
+    <select id="listRolesByUserId" resultType="cn.xiaolin.auth.domain.entity.SysRole">
+        select r.id, r.name
+        from dev_auth.sys_role r
+        join dev_auth.sys_user_role ur on r.id = ur.sys_role_id
+        where sys_user_id = ${user_id}
+    </select>
+
+    <select id="listRolesByPermId" resultType="cn.xiaolin.auth.domain.entity.SysRole">
+
+    </select>
+</mapper>
