@@ -16,9 +16,9 @@
     <description>公共子模块</description>
 
     <modules>
-        <module>common-message</module>
-        <module>common-api</module>
         <module>common-utils</module>
+        <module>common-api</module>
+        <module>common-message</module>
     </modules>
 
     <dependencies>

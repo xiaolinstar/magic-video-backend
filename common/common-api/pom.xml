@@ -9,6 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <packaging>jar</packaging>
     <artifactId>common-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>common-api</name>
