@@ -24,12 +24,6 @@
 			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>cn.xiaolin</groupId>
-			<artifactId>common</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-
 		<!-- Sa-Token 权限认证（Reactor响应式集成）, 在线文档：https://sa-token.cc -->
 		<dependency>
 			<groupId>cn.dev33</groupId>
