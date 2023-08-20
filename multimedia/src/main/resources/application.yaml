@@ -47,8 +47,8 @@ spring:
 
   servlet:
     multipart:
-      max-file-size: 600MB
-      max-request-size: 600MB
+      max-file-size: 3GB
+      max-request-size: 3GB
 
 
   # Nacos配置
