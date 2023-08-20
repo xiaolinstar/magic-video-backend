@@ -32,13 +32,13 @@
     <!--子项目的引入的包都要在父项目中注册版本-->
     <modules>
 <!--        <module>rank</module>-->
+        <module>common</module>
+        <module>multimedia</module>
         <module>core</module>
         <module>gateway</module>
-        <module>multimedia</module>
-<!--        <module>search</module>-->
-<!--        <module>user</module>-->
-        <module>common</module>
         <module>auth</module>
+        <!--        <module>search</module>-->
+        <!--        <module>user</module>-->
     </modules>
 
     <profiles>
