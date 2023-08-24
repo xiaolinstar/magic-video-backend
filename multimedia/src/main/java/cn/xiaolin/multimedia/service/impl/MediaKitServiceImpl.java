@@ -13,6 +13,7 @@ import net.bramp.ffmpeg.job.FFmpegJob;
 import net.bramp.ffmpeg.probe.FFmpegProbeResult;
 import net.bramp.ffmpeg.progress.Progress;
 import net.bramp.ffmpeg.progress.ProgressListener;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
@@ -113,5 +114,10 @@ public class MediaKitServiceImpl implements MediaKitService {
             throw new GlobalException(e.getMessage());
         }
 
+    }
+
+    @Override
+    public void media2Dash(File file) {
+        throw new NotImplementedException();
     }
 }

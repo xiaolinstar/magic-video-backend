@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.lognet.springboot.grpc.GRpcService;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author xingxiaolin xlxing@bupt.edu.cn

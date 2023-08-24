@@ -1,0 +1,71 @@
+server:
+  port: 9001
+
+spring:
+  application:
+    name: gateway
+  main:
+    web-application-type: reactive
+
+  # 微服务分布式鉴权专用Redis
+  # Gateway和Auth共享一个权限管理Redis数据库
+  data:
+    redis:
+      client-type: lettuce
+      database: 1
+      host: 111.229.38.208
+      port: 6379
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 8
+          max-idle: 8
+
+  # SpringCloud配置
+  cloud:
+    gateway:
+      default-filters:
+        # http请求的Header中增加 k, v
+        - AddRequestHeader=gateway-env, spring-cloud-gateway
+
+      # 前端个请求uri会拼接一个版本前缀发送到特定的服务
+      routes:
+        - id: auth
+          uri: http://127.0.0.1:8999
+          filters:
+            # 服务版本前缀
+            - PrefixPath=/api/v1
+
+          predicates:
+            - Path=/auth/**
+
+        - id: multimedia
+          uri: http://127.0.0.1:9002
+          filters:
+            - PrefixPath=/api/v1
+          predicates:
+            - Path=/multimedia/**
+
+        - id: core
+          uri: http://127.0.0.1:9000
+          filters:
+            - PrefixPath=/api/v1
+          predicates:
+            - Path=/core/**
+
+    # Nacos配置
+    nacos:
+      server-addr: 111.229.38.208:8848
+      discovery:
+        cluster-name: BEIJING
+        # 设置为非临时实例
+        ephemeral: true
+        # 设置命名空间
+        namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
+
+

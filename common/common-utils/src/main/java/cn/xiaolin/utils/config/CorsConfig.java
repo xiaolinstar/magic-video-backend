@@ -1,5 +1,6 @@
 package cn.xiaolin.utils.config;
 
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -12,14 +13,15 @@ import org.springframework.web.filter.CorsFilter;
  * @create 2023/8/19
  */
 @Configuration
+@EnableConfigurationProperties(CorsProperties.class)
 public class CorsConfig {
 
     @Bean
     public CorsFilter corsFilter() {
         //1. 添加 CORS配置信息
         CorsConfiguration config = new CorsConfiguration();
-        //放行哪些原始域
-        config.addAllowedOrigin("http://localhost:5173/");
+        //放行哪些原始域，Vue前端项目
+        config.addAllowedOrigin("http://47.94.104.34:5173");
         //是否发送 Cookie
         config.setAllowCredentials(true);
         //放行哪些请求方式
@@ -31,7 +33,7 @@ public class CorsConfig {
         //2. 添加映射路径
         UrlBasedCorsConfigurationSource corsConfigurationSource
                 = new UrlBasedCorsConfigurationSource();
-        corsConfigurationSource.registerCorsConfiguration("/**",config);
+        corsConfigurationSource.registerCorsConfiguration("/**", config);
         //3. 返回新的CorsFilter
         return new CorsFilter(corsConfigurationSource);
     }

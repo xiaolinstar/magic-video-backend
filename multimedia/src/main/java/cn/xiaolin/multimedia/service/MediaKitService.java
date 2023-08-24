@@ -15,4 +15,6 @@ public interface MediaKitService {
      */
     void media2Hls(File file);
 
+    void media2Dash(File file);
+
 }

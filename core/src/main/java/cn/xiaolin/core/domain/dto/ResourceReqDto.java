@@ -19,8 +19,6 @@ import lombok.NoArgsConstructor;
 @Builder
 @Data
 public class ResourceReqDto {
-    @JsonSerialize(using = ToStringSerializer.class)
-    @JsonDeserialize(using = NumberDeserializers.LongDeserializer.class)
     private Long id;
 
     /**

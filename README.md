@@ -1,33 +1,26 @@
 # 基于SpringCloud的视频点播微服务后端项目
 
-The following was discovered as part of building this project:
+## 快速开始
 
-* Spring Cloud Gateway requires Spring WebFlux, your choice of Spring Web has been replaced accordingly.
+### 必须配置
+- MySQL数据库
+- Redis内存数据库
+  - 数据缓存
+  - 微服务集中权限管理缓存
 
-# Getting Started
+### 可选配置
+- Nacos注册中心
+- Nacos配置中心
 
-### Reference Documentation
+## 微服务介绍
 
-For further reference, please consider the following sections:
+### 权限中心auth
+权限中心采用SaToken集成统一微服务认证和授权，分布式Session解决跨服务访问。目前近支持简单的基于角色的权限控制。主要有三个实体构成：用户、角色、权限。
+对外提供gRPC服务接口，可以供网关获取权限信息。
 
-* [Official Apache Maven documentation](https://maven.apache.org/guides/index.html)
-* [Spring Boot Maven Plugin Reference Guide](https://docs.spring.io/spring-boot/docs/3.1.2/maven-plugin/reference/html/)
-* [Create an OCI image](https://docs.spring.io/spring-boot/docs/3.1.2/maven-plugin/reference/html/#build-image)
-* [Spring Data Redis (Access+Driver)](https://docs.spring.io/spring-boot/docs/3.1.2/reference/htmlsingle/#data.nosql.redis)
-* [Config Client Quick Start](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#_client_side_usage)
-* [Config Server](https://docs.spring.io/spring-cloud-config/docs/current/reference/html/#_spring_cloud_config_server)
-* [Validation](https://docs.spring.io/spring-boot/docs/3.1.2/reference/htmlsingle/#io.validation)
-* [Gateway](https://docs.spring.io/spring-cloud-gateway/docs/current/reference/html/)
-* [Spring Boot DevTools](https://docs.spring.io/spring-boot/docs/3.1.2/reference/htmlsingle/#using.devtools)
-* [Spring Reactive Web](https://docs.spring.io/spring-boot/docs/3.1.2/reference/htmlsingle/#web.reactive)
+### 网关gateway
+所有的服务请求都必须经过网关路由到特定的微服务。网关的主要职责：
+- 负载均衡和路由分发
+- 集中式认证和授权
 
-### Guides
-
-The following guides illustrate how to use some features concretely:
-
-* [Messaging with Redis](https://spring.io/guides/gs/messaging-redis/)
-* [Centralized Configuration](https://spring.io/guides/gs/centralized-configuration/)
-* [Validation](https://spring.io/guides/gs/validating-form-input/)
-* [Using Spring Cloud Gateway](https://github.com/spring-cloud-samples/spring-cloud-gateway-sample)
-* [Building a Reactive RESTful Web Service](https://spring.io/guides/gs/reactive-rest-service/)
-
+### 核心服务core

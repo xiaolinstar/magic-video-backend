@@ -1,5 +1,6 @@
 package cn.xiaolin.multimedia.controller;
 
+import cn.xiaolin.utils.constant.ApiRouterConsts;
 import cn.xiaolin.utils.resp.Result;
 import cn.xiaolin.multimedia.service.ImageService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1")
+@RequestMapping(ApiRouterConsts.API_MULTIMEDIA_PREFIX)
 public class ImageController {
     private final ImageService imageService;
 

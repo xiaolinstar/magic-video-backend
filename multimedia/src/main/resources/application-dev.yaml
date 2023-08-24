@@ -1,16 +1,36 @@
+# 设置启用的环境
+
 server:
-  port: 8999
+  port: 9002
+
+
+file:
+  root:
+    dir: ${user.home}/magic-video-document
+
+  image:
+    dir: image/
+
+  video:
+    dir: video/
+
 
 spring:
   application:
-    name: auth
+    name: multimedia
 
-  # Gateway和Auth共享一个权限管理Redis数据库
+  rabbitmq:
+    host: 47.94.104.34
+    username: xiaolin
+    password: 123456xxl
+    virtual-host: /media
+    connection-timeout: 15000
+
   data:
     redis:
       client-type: lettuce
-      database: 1
-      host: 111.229.38.208
+      database: 0
+      host: 47.94.104.34
       port: 6379
       lettuce:
         pool:
@@ -23,7 +43,13 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456xxlBUPT
-    url: jdbc:mysql://bj-cynosdbmysql-grp-0t58ywes.sql.tencentcdb.com:24183/dev_auth?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
+    url: jdbc:mysql://bj-cynosdbmysql-grp-0t58ywes.sql.tencentcdb.com:24183/dev_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
+
+  servlet:
+    multipart:
+      max-file-size: 200MB
+      max-request-size: 200MB
+
 
   # Nacos配置
   cloud:
@@ -35,15 +61,4 @@ spring:
         ephemeral: true
         # 设置命名空间
         namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
-
-sa-token:
-  token-name: satoken
-  active-timeout: 2592000
-  dynamic-active-timeout: on
-  is-concurrent: true
-  is-log: true
-
-grpc:
-  port: 9999
-
 

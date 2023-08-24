@@ -1,0 +1,9 @@
+server:
+  port: 8999
+
+spring:
+  application:
+    name: auth
+
+grpc:
+  port: 9999
