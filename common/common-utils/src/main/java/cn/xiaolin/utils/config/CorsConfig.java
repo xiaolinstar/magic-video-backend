@@ -21,7 +21,7 @@ public class CorsConfig {
         //1. 添加 CORS配置信息
         CorsConfiguration config = new CorsConfiguration();
         //放行哪些原始域，Vue前端项目
-        config.addAllowedOrigin("http://47.94.104.34:5173");
+        config.addAllowedOrigin("http://47.94.104.34:80");
         //是否发送 Cookie
         config.setAllowCredentials(true);
         //放行哪些请求方式
