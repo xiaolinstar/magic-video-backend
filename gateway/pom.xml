@@ -42,6 +42,12 @@
 			<artifactId>commons-pool2</artifactId>
 		</dependency>
 
+		<!--Ribbon做负载均衡时添加的loadbalancer依赖-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-loadbalancer</artifactId>
+		</dependency>
+
 		<!--Nacos配置中心-->
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
