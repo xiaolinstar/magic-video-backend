@@ -2,7 +2,6 @@ package cn.xiaolin.multimedia.service.impl;
 
 import cn.xiaolin.utils.exception.GlobalException;
 import cn.xiaolin.multimedia.service.AliOssService;
-import com.alibaba.cloud.spring.boot.oss.env.OssProperties;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.PutObjectRequest;
@@ -26,7 +25,6 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AliOssServiceImpl implements AliOssService {
     private final OSS ossClient;
-    private final OssProperties ossProperties;
     @Value("${file.video.bucket-name}")
     private String bucketName;
 
