@@ -14,6 +14,26 @@
       "name": "file.root.dir",
       "type": "java.lang.String",
       "description": "Description for file.root.dir."
+    },
+    {
+      "name": "app.core-size",
+      "type": "java.lang.Integer",
+      "description": "Description for app.core-size."
+    },
+    {
+      "name": "app.max-pool-size",
+      "type": "java.lang.Integer",
+      "description": "Description for app.max-pool-size."
+    },
+    {
+      "name": "app.queue-capacity",
+      "type": "java.lang.Integer",
+      "description": "Description for app.queue-capacity."
+    },
+    {
+      "name": "app.thread-prefix",
+      "type": "java.lang.String",
+      "description": "Description for app.thread-prefix."
     }
   ]
 }

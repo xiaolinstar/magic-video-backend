@@ -1,5 +1,7 @@
 package cn.xiaolin.multimedia.config;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
@@ -12,11 +14,11 @@ import java.util.concurrent.ThreadPoolExecutor;
  * @create 2023/7/23
  */
 @Configuration
+@EnableConfigurationProperties(AppConfigProperties.class)
+@RequiredArgsConstructor
 public class ThreadPoolConfig {
-    private static final int CORE_SIZE = 2;
-    private static final int MAX_POOL_SIZE = 3;
 
-    private static final int QUEUE_CAPACITY = 10;
+    private final AppConfigProperties appConfigProperties;
 
     /**
      * 视频转码线程池
@@ -25,11 +27,11 @@ public class ThreadPoolConfig {
     @Bean
     public ThreadPoolTaskExecutor mediaExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
-        executor.setCorePoolSize(CORE_SIZE);
-        executor.setMaxPoolSize(MAX_POOL_SIZE);
-        executor.setQueueCapacity(QUEUE_CAPACITY);
+        executor.setCorePoolSize(appConfigProperties.getCoreSize());
+        executor.setMaxPoolSize(appConfigProperties.getMaxPoolSize());
+        executor.setQueueCapacity(appConfigProperties.getQueueCapacity());
         executor.setRejectedExecutionHandler(new ThreadPoolExecutor.AbortPolicy());
-        executor.setThreadNamePrefix("MediaThread-");
+        executor.setThreadNamePrefix(appConfigProperties.getThreadPrefix());
         executor.initialize();
         return executor;
     }

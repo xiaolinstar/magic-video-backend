@@ -1,5 +1,6 @@
 package cn.xiaolin.multimedia.config;
 
+import com.alibaba.cloud.spring.boot.oss.env.OssProperties;
 import com.aliyun.oss.ClientBuilderConfiguration;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
@@ -16,14 +17,18 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class AliyunConfig {
+
     @Bean
     public OSS ossClient() throws ClientException {
         // Endpoint地域节点
-        String endpoint = "oss-cn-beijing.aliyuncs.com";
         EnvironmentVariableCredentialsProvider credentialsProvider = CredentialsProviderFactory.newEnvironmentVariableCredentialsProvider();
         ClientBuilderConfiguration conf = new ClientBuilderConfiguration();
         conf.setSupportCname(false);
-        return new OSSClientBuilder().build(endpoint, credentialsProvider, conf);
+        return new OSSClientBuilder().build(ossProperties().getEndpoint(), credentialsProvider, conf);
     }
 
+    @Bean
+    public OssProperties ossProperties() {
+        return new OssProperties();
+    }
 }

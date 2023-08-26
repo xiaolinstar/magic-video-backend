@@ -13,15 +13,14 @@ import org.springframework.web.filter.CorsFilter;
  * @create 2023/8/19
  */
 @Configuration
-@EnableConfigurationProperties(CorsProperties.class)
 public class CorsConfig {
 
     @Bean
     public CorsFilter corsFilter() {
         //1. 添加 CORS配置信息
         CorsConfiguration config = new CorsConfiguration();
-        //放行哪些原始域，Vue前端项目
-        config.addAllowedOrigin("http://47.94.104.34:80");
+        //允许所有Origin的所有方法跨域请求
+        config.addAllowedOriginPattern("*");
         //是否发送 Cookie
         config.setAllowCredentials(true);
         //放行哪些请求方式

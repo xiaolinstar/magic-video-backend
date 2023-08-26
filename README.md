@@ -1,6 +1,14 @@
 # 基于SpringCloud的视频点播微服务后端项目
 
 ## 快速开始
+- Web服务端口号
+  - auth: 8999
+  - core: 9000
+  - gateway: 9001
+  - multimedia: 9002
+- gRPC服务端口号
+  - auth: 9999
+
 
 ### 必须配置
 - MySQL数据库

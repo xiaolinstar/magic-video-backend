@@ -2,6 +2,7 @@ package cn.xiaolin.multimedia.service.impl;
 
 import cn.xiaolin.utils.exception.GlobalException;
 import cn.xiaolin.multimedia.service.AliOssService;
+import com.alibaba.cloud.spring.boot.oss.env.OssProperties;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.PutObjectRequest;
@@ -24,7 +25,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class AliOssServiceImpl implements AliOssService {
     private final OSS ossClient;
-    private static final String BUCKET_NAME = "vod-videos-xiaolin";
+    private final OssProperties ossProperties;
 
     @Override
     public String uploadFile2Oss(String bucketName, String inputFilePath) {
@@ -103,7 +104,7 @@ public class AliOssServiceImpl implements AliOssService {
             Arrays.stream(files)
                     .filter(file -> !file.isDirectory())
                     .forEach(file -> {
-                        PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, file.getPath(), file);
+                        PutObjectRequest request = new PutObjectRequest(ossProperties.getEndpoint(), file.getPath(), file);
                         ossClient.putObject(request);
                     });
             return "MySuccess";
@@ -128,7 +129,7 @@ public class AliOssServiceImpl implements AliOssService {
                     .filter(file -> !file.isDirectory())
                     .forEach(file -> {
                         String targetFilePath = Paths.get(ossFileDirectory, file.getName()).toString();
-                        PutObjectRequest request = new PutObjectRequest(BUCKET_NAME, targetFilePath, file);
+                        PutObjectRequest request = new PutObjectRequest(ossProperties.getEndpoint(), targetFilePath, file);
                         ossClient.putObject(request);
                     });
             return "MySuccess";
