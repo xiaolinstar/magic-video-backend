@@ -8,13 +8,40 @@
   - multimedia: 9002
 - gRPC服务端口号
   - auth: 9999
+- MySQL
+  - 腾讯云TD-SQL兼容MYSQL5.7
+    - 用户名: root
+    - 密码: 123456xxlBUPT
+- Redis
+  - 数据缓存: 47.94.104.34 (database 0)
+  - 微服务认证授权: 111.229.38.208 (database 1)
+- RabbitMQ
+  - host: 47.94.104.34
+  - username: xiaolin
+  - password: 123456xxl
+  - virtual-host: /media
+  - connection-timeout: 15000
 
 
-### 必须配置
-- MySQL数据库
-- Redis内存数据库
-  - 数据缓存
-  - 微服务集中权限管理缓存
+### 服务依赖
+Auth:
+  - Redis鉴权使用
+  - MySQL
+  - gRPC生产者
+Core:
+  - MySQL
+  - Redis
+  - RabbitMQ消费
+Gateway:
+  - Redis鉴权使用
+  - gRPC消费者
+Multimedia:
+  - FFMpeg
+  - FFProbe
+  - 阿里云OSS
+  - RabbitMQ生产
+  - Redis: （TODO）判断视频是否已经存在于服务器
+
 
 ### 可选配置
 - Nacos注册中心
