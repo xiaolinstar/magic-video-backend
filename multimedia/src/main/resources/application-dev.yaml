@@ -13,6 +13,8 @@ file:
 
   video:
     dir: video/
+    bucket-name: vod-videos-xiaolin
+
 
 app:
   core-size: 3
@@ -64,4 +66,6 @@ spring:
 alibaba:
   cloud:
     oss:
-      endpoint: vod-videos-xiaolin
+      endpoint: oss-cn-beijing.aliyuncs.com
+
+

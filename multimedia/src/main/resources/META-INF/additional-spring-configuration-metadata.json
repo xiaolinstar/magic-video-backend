@@ -34,6 +34,11 @@
       "name": "app.thread-prefix",
       "type": "java.lang.String",
       "description": "Description for app.thread-prefix."
+    },
+    {
+      "name": "file.video.bucket-name",
+      "type": "java.lang.String",
+      "description": "Description for file.video.bucket-name."
     }
   ]
 }

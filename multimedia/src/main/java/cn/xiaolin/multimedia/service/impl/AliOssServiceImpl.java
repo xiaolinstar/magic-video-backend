@@ -8,6 +8,7 @@ import com.aliyun.oss.OSSException;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -26,6 +27,8 @@ import java.util.Objects;
 public class AliOssServiceImpl implements AliOssService {
     private final OSS ossClient;
     private final OssProperties ossProperties;
+    @Value("${file.video.bucket-name}")
+    private String bucketName;
 
     @Override
     public String uploadFile2Oss(String bucketName, String inputFilePath) {
@@ -104,7 +107,7 @@ public class AliOssServiceImpl implements AliOssService {
             Arrays.stream(files)
                     .filter(file -> !file.isDirectory())
                     .forEach(file -> {
-                        PutObjectRequest request = new PutObjectRequest(ossProperties.getEndpoint(), file.getPath(), file);
+                        PutObjectRequest request = new PutObjectRequest(bucketName, file.getPath(), file);
                         ossClient.putObject(request);
                     });
             return "MySuccess";
@@ -129,7 +132,7 @@ public class AliOssServiceImpl implements AliOssService {
                     .filter(file -> !file.isDirectory())
                     .forEach(file -> {
                         String targetFilePath = Paths.get(ossFileDirectory, file.getName()).toString();
-                        PutObjectRequest request = new PutObjectRequest(ossProperties.getEndpoint(), targetFilePath, file);
+                        PutObjectRequest request = new PutObjectRequest(bucketName, targetFilePath, file);
                         ossClient.putObject(request);
                     });
             return "MySuccess";
