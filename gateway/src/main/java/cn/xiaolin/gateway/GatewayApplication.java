@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author xlxing
  */
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = {"cn.xiaolin.api"})
 public class GatewayApplication {
 
 	public static void main(String[] args) {

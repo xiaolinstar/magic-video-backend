@@ -17,6 +17,36 @@ spring:
         namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
         group: DEFAULT_GROUP
 
+  # SpringCloudGateway配置
+    gateway:
+      default-filters:
+        # http请求的Header中增加 k, v
+        - AddRequestHeader=gateway-env, spring-cloud-gateway
+
+      # 前端个请求uri会拼接一个版本前缀发送到特定的服务
+      routes:
+        - id: auth
+          uri: lb://auth
+          filters:
+            # 服务版本前缀
+            - PrefixPath=/api/v1
+          predicates:
+            - Path=/auth/**
+
+        - id: multimedia
+          uri: lb://multimedia
+          filters:
+            - PrefixPath=/api/v1
+          predicates:
+            - Path=/multimedia/**
+
+        - id: core
+          uri: lb://core
+          filters:
+            - PrefixPath=/api/v1
+          predicates:
+            - Path=/core/**
+
   # Gateway不使用Servlet而是WebFlux
   main:
     web-application-type: reactive
@@ -34,3 +64,7 @@ spring:
           enabled: true
           max-active: 8
           max-idle: 8
+
+grpc:
+  port: 9999
+  in-process-server-name: 47.94.104.34
