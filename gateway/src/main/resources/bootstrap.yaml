@@ -24,7 +24,8 @@ spring:
         ephemeral: true
         # 设置命名空间
         namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
-
+        # 注册的IP地址
+        ip: 111.229.38.208
   # SpringCloudGateway配置
     gateway:
       default-filters:
