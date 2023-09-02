@@ -7,20 +7,6 @@ spring:
   main:
     web-application-type: reactive
 
-  # 微服务分布式鉴权专用Redis
-  # Gateway和Auth共享一个权限管理Redis数据库
-  data:
-    redis:
-      client-type: lettuce
-      database: 1
-      host: 111.229.38.208
-      port: 6379
-      lettuce:
-        pool:
-          enabled: true
-          max-active: 8
-          max-idle: 8
-
 
 
 logging:

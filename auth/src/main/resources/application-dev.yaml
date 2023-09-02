@@ -5,34 +5,10 @@ spring:
   application:
     name: auth
 
-  # Gateway和Auth共享一个权限管理Redis数据库
-  data:
-    redis:
-      client-type: lettuce
-      database: 1
-      host: 111.229.38.208
-      port: 6379
-      lettuce:
-        pool:
-          enabled: true
-          max-active: 8
-          max-idle: 8
-
-  # 腾讯云服务器，兼容MySQL 5.7版本
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456xxlBUPT
-    url: jdbc:mysql://bj-cynosdbmysql-grp-0t58ywes.sql.tencentcdb.com:24183/dev_auth?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
-
-
 sa-token:
   token-name: satoken
   active-timeout: 2592000
   dynamic-active-timeout: on
   is-concurrent: true
   is-log: true
-
-grpc:
-  port: 9999
 
