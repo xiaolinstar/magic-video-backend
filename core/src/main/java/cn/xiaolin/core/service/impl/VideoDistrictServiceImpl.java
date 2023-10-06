@@ -23,8 +23,6 @@ import java.util.Optional;
 public class VideoDistrictServiceImpl extends ServiceImpl<VideoDistrictMapper, VideoDistrict>
     implements VideoDistrictService {
 
-    private final TransactionTemplate transactionTemplate;
-
     @Override
     public Optional<VideoDistrict> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -32,11 +30,9 @@ public class VideoDistrictServiceImpl extends ServiceImpl<VideoDistrictMapper, V
 
     @Override
     public Optional<VideoDistrict> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<VideoDistrict> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<VideoDistrict> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -48,10 +44,8 @@ public class VideoDistrictServiceImpl extends ServiceImpl<VideoDistrictMapper, V
         updateWrapper.set(Objects.nonNull(dto.getDistrictId()), VideoDistrict::getDistrictId, dto.getDistrictId())
                 .set(Objects.nonNull(dto.getVideoId()), VideoDistrict::getVideoId, dto.getVideoId())
                 .eq(VideoDistrict::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

@@ -27,6 +27,9 @@
         <nacos.config.version>2022.0.0.0</nacos.config.version>
         <nacos.discovery.version>2022.0.0.0</nacos.discovery.version>
         <cloud.bootstrap.version>4.0.0</cloud.bootstrap.version>
+        <spring.cache.version>3.1.2</spring.cache.version>
+        <dubbo.version>3.2.6</dubbo.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <!--子项目的引入的包都要在父项目中注册版本-->
@@ -145,6 +148,20 @@
                 <groupId>com.alibaba.cloud</groupId>
                 <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
                 <version>${nacos.discovery.version}</version>
+            </dependency>
+
+            <!--SpringCache-->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-cache</artifactId>
+                <version>${spring.cache.version}</version>
+            </dependency>
+
+            <!-- Dubbo -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo.version}</version>
             </dependency>
 
         </dependencies>

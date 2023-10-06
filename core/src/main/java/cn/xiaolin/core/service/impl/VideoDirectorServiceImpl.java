@@ -24,7 +24,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VideoDirectorServiceImpl extends ServiceImpl<VideoDirectorMapper, VideoDirector>
     implements VideoDirectorService {
-    private final TransactionTemplate transactionTemplate;
 
     @Override
     public Optional<VideoDirector> findItemById(Long id) {
@@ -33,11 +32,9 @@ public class VideoDirectorServiceImpl extends ServiceImpl<VideoDirectorMapper, V
 
     @Override
     public Optional<VideoDirector> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<VideoDirector> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<VideoDirector> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -49,10 +46,8 @@ public class VideoDirectorServiceImpl extends ServiceImpl<VideoDirectorMapper, V
         updateWrapper.set(Objects.nonNull(dto.getDirectorId()), VideoDirector::getDirectorId, dto.getDirectorId())
                 .set(Objects.nonNull(dto.getVideoId()), VideoDirector::getVideoId, dto.getVideoId())
                 .eq(VideoDirector::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

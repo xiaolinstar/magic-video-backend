@@ -23,8 +23,6 @@ import java.util.Optional;
 public class VideoScripterServiceImpl extends ServiceImpl<VideoScripterMapper, VideoScripter>
     implements VideoScripterService {
 
-    private final TransactionTemplate transactionTemplate;
-
     @Override
     public Optional<VideoScripter> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -32,11 +30,9 @@ public class VideoScripterServiceImpl extends ServiceImpl<VideoScripterMapper, V
 
     @Override
     public Optional<VideoScripter> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<VideoScripter> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<VideoScripter> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -48,10 +44,8 @@ public class VideoScripterServiceImpl extends ServiceImpl<VideoScripterMapper, V
         updateWrapper.set(Objects.nonNull(dto.getScripterId()), VideoScripter::getScripterId, dto.getScripterId())
                 .set(Objects.nonNull(dto.getVideoId()), VideoScripter::getVideoId, dto.getVideoId())
                 .eq(VideoScripter::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

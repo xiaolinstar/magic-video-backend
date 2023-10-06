@@ -28,8 +28,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
     private final SysUserMapper sysUserMapper;
 
-    private final TransactionTemplate transactionTemplate;
-
     private final PasswordEncoder passwordEncoder;
 
 
@@ -40,11 +38,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
     @Override
     public Optional<SysUser> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<SysUser> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<SysUser> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -59,10 +55,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
                 .set(Objects.nonNull(dto.getPassword()), SysUser::getPassword, passwordEncoder.encode(dto.getPassword()))
                 .set(Objects.nonNull(dto.getUsername()), SysUser::getUsername, dto.getUsername())
                 .eq(SysUser::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

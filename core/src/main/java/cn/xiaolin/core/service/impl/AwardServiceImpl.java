@@ -23,8 +23,6 @@ import java.util.Optional;
 public class AwardServiceImpl extends ServiceImpl<AwardMapper, Award>
     implements AwardService {
 
-    private final TransactionTemplate transactionTemplate;
-
     /**
      * 根据id查询奖项信息
      *
@@ -44,11 +42,9 @@ public class AwardServiceImpl extends ServiceImpl<AwardMapper, Award>
      */
     @Override
     public Optional<Award> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<Award> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<Award> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     /**
@@ -79,11 +75,8 @@ public class AwardServiceImpl extends ServiceImpl<AwardMapper, Award>
                 .set(Objects.nonNull(dto.getBestScripterNominationId()), Award::getBestScripterNominationId, dto.getBestScripterNominationId())
                 .set(Objects.nonNull(dto.getBestNewActorId()), Award::getBestNewActorId, dto.getBestNewActorId())
                 .eq(Award::getId, dto.getId());
-
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     /**

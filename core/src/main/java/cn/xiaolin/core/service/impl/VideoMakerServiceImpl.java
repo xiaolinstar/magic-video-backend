@@ -22,7 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VideoMakerServiceImpl extends ServiceImpl<VideoMakerMapper, VideoMaker>
     implements VideoMakerService {
-    private final TransactionTemplate transactionTemplate;
 
     @Override
     public Optional<VideoMaker> findItemById(Long id) {
@@ -31,11 +30,9 @@ public class VideoMakerServiceImpl extends ServiceImpl<VideoMakerMapper, VideoMa
 
     @Override
     public Optional<VideoMaker> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<VideoMaker> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<VideoMaker> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -55,10 +52,8 @@ public class VideoMakerServiceImpl extends ServiceImpl<VideoMakerMapper, VideoMa
                 .set(Objects.nonNull(dto.getIsScripter()), VideoMaker::getIsScripter, dto.getIsScripter())
                 .set(Objects.nonNull(dto.getPhotoPath()), VideoMaker::getPhotoPath, dto.getPhotoPath())
                 .eq(VideoMaker::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

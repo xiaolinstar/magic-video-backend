@@ -23,7 +23,6 @@ import java.util.Optional;
 public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
     implements CategoryService{
 
-    private final TransactionTemplate transactionTemplate;
     @Override
     public Optional<Category> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -31,11 +30,9 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
 
     @Override
     public Optional<Category> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<Category> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<Category> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -47,10 +44,8 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category>
         LambdaUpdateWrapper<Category> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(Objects.nonNull(dto.getName()), Category::getName, dto.getName())
                 .eq(Category::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

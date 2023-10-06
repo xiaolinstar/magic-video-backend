@@ -25,7 +25,6 @@ import java.util.Set;
 public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, SysPermission>
     implements SysPermissionService{
 
-    private final TransactionTemplate transactionTemplate;
     private final SysPermissionMapper sysPermissionMapper;
 
     @Override
@@ -35,11 +34,9 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
 
     @Override
     public Optional<SysPermission> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<SysPermission> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<SysPermission> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -55,11 +52,8 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
                 .set(Objects.nonNull(dto.getView()), SysPermission::getView, dto.getView())
                 .set(Objects.nonNull(dto.getModify()), SysPermission::getModify, dto.getModify())
                 .eq(SysPermission::getId, dto.getId());
-
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

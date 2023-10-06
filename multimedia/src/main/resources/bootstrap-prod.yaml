@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: multimedia
+
+  # Nacos配置
+  cloud:
+    nacos:
+      server-addr: 111.229.38.208:8848
+      # 服务发现
+      discovery:
+        cluster-name: BEIJING
+        # 设置为非临时实例
+        ephemeral: true
+        group: DEFAULT_GROUP
+
+      # 服务配置
+      config:
+        file-extension: yaml # 文件后缀名
+        group: DEFAULT_GROUP
+
+
+

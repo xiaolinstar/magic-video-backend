@@ -24,8 +24,6 @@ import java.util.Optional;
 public class VideoCategoryServiceImpl extends ServiceImpl<VideoCategoryMapper, VideoCategory>
     implements VideoCategoryService {
 
-    private final TransactionTemplate transactionTemplate;
-
     @Override
     public Optional<VideoCategory> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -33,11 +31,9 @@ public class VideoCategoryServiceImpl extends ServiceImpl<VideoCategoryMapper, V
 
     @Override
     public Optional<VideoCategory> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<VideoCategory> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<VideoCategory> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -49,10 +45,8 @@ public class VideoCategoryServiceImpl extends ServiceImpl<VideoCategoryMapper, V
         updateWrapper.set(Objects.nonNull(dto.getCategoryId()), VideoCategory::getCategoryId, dto.getCategoryId())
                 .set(Objects.nonNull(dto.getVideoId()), VideoCategory::getVideoId, dto.getVideoId())
                 .eq(Objects.nonNull(dto.getId()), VideoCategory::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

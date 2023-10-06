@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @OpenAPIDefinition(
         info = @Info(
                 title = "权限中台接口API文档",
-                description = "提供对权限资源的基本操作，对外提供Restful和gRPC接口",
+                description = "提供对权限资源的基本操作，对外提供Restful和RPC接口",
                 version = "0.9"
         )
 )

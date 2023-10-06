@@ -23,11 +23,4 @@ public class CoreApplication {
 		SpringApplication.run(CoreApplication.class, args);
 	}
 
-	@Value("${pattern.dateformat}")
-	private String dateformat;
-
-	@GetMapping("/now")
-	public String currentDateTime() {
-		return LocalDateTime.now().format(DateTimeFormatter.ofPattern(dateformat));
-	}
 }

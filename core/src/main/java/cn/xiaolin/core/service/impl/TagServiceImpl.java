@@ -23,7 +23,6 @@ import java.util.Optional;
 public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
     implements TagService {
 
-    private final TransactionTemplate transactionTemplate;
     @Override
     public Optional<Tag> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -31,11 +30,9 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
 
     @Override
     public Optional<Tag> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<Tag> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<Tag> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -46,10 +43,8 @@ public class TagServiceImpl extends ServiceImpl<TagMapper, Tag>
         LambdaUpdateWrapper<Tag> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(Objects.nonNull(dto.getName()), Tag::getName, dto.getName())
                 .eq(Tag::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()): Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()): Optional.empty();
     }
 
     @Override

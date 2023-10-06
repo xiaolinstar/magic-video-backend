@@ -22,8 +22,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole>
     implements SysUserRoleService{
-    private final TransactionTemplate transactionTemplate;
-
     @Override
     public Optional<SysUserRole> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -31,11 +29,9 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
 
     @Override
     public Optional<SysUserRole> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<SysUserRole> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<SysUserRole> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -47,10 +43,8 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
         updateWrapper.set(Objects.nonNull(dto.getSysRoleId()), SysUserRole::getSysRoleId, dto.getSysUserId())
                 .set(Objects.nonNull(dto.getSysUserId()), SysUserRole::getSysUserId, dto.getSysUserId())
                 .eq(SysUserRole::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

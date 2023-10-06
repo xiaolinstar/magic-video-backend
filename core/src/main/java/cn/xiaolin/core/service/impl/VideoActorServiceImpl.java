@@ -23,8 +23,6 @@ import java.util.Optional;
 public class VideoActorServiceImpl extends ServiceImpl<VideoActorMapper, VideoActor>
     implements VideoActorService{
 
-    private final TransactionTemplate transactionTemplate;
-
     @Override
     public Optional<VideoActor> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -32,11 +30,9 @@ public class VideoActorServiceImpl extends ServiceImpl<VideoActorMapper, VideoAc
 
     @Override
     public Optional<VideoActor> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<VideoActor> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<VideoActor> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -48,10 +44,8 @@ public class VideoActorServiceImpl extends ServiceImpl<VideoActorMapper, VideoAc
         updateWrapper.set(Objects.nonNull(dto.getActorId()), VideoActor::getActorId, dto.getActorId())
                 .set(Objects.nonNull(dto.getVideoId()), VideoActor::getVideoId, dto.getVideoId())
                 .eq(Objects.nonNull(dto.getId()), VideoActor::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

@@ -1,4 +1,6 @@
-USE dev_video;
+# USE dev_video;
+CREATE DATABASE IF NOT EXISTS `prod_video`;
+USE prod_video;
 
 # 视频表
 DROP TABLE IF EXISTS video;

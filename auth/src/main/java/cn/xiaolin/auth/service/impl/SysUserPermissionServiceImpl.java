@@ -23,7 +23,6 @@ import java.util.Optional;
 public class SysUserPermissionServiceImpl extends ServiceImpl<SysUserPermissionMapper, SysUserPermission>
     implements SysUserPermissionService{
 
-    private final TransactionTemplate transactionTemplate;
     @Override
     public Optional<SysUserPermission> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -31,11 +30,9 @@ public class SysUserPermissionServiceImpl extends ServiceImpl<SysUserPermissionM
 
     @Override
     public Optional<SysUserPermission> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<SysUserPermission> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<SysUserPermission> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -47,10 +44,8 @@ public class SysUserPermissionServiceImpl extends ServiceImpl<SysUserPermissionM
         updateWrapper.set(Objects.nonNull(dto.getSysPermissionId()), SysUserPermission::getSysPermissionId, dto.getSysPermissionId())
                 .set(Objects.nonNull(dto.getSysUserId()), SysUserPermission::getSysUserId, dto.getSysUserId())
                 .eq(SysUserPermission::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

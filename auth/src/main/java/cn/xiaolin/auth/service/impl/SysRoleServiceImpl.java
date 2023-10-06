@@ -24,7 +24,6 @@ import java.util.Optional;
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
     implements SysRoleService{
 
-    private final TransactionTemplate transactionTemplate;
     private final SysRoleMapper sysRoleMapper;
 
 
@@ -35,11 +34,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
 
     @Override
     public Optional<SysRole> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<SysRole> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<SysRole> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -51,11 +48,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>
         LambdaUpdateWrapper<SysRole> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(Objects.nonNull(dto.getName()), SysRole::getName, dto.getName())
                 .eq(SysRole::getId, dto.getId());
-
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

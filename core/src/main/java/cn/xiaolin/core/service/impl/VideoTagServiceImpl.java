@@ -24,8 +24,6 @@ import java.util.Optional;
 public class VideoTagServiceImpl extends ServiceImpl<VideoTagMapper, VideoTag>
     implements VideoTagService {
 
-    private final TransactionTemplate transactionTemplate;
-
     @Override
     public Optional<VideoTag> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -33,11 +31,9 @@ public class VideoTagServiceImpl extends ServiceImpl<VideoTagMapper, VideoTag>
 
     @Override
     public Optional<VideoTag> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<VideoTag> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<VideoTag> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -49,10 +45,8 @@ public class VideoTagServiceImpl extends ServiceImpl<VideoTagMapper, VideoTag>
         updateWrapper.set(Objects.nonNull(dto.getTagId()), VideoTag::getTagId, dto.getId())
                 .set(Objects.nonNull(dto.getVideoId()), VideoTag::getVideoId, dto.getVideoId())
                 .eq(Objects.nonNull(dto.getId()), VideoTag::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

@@ -27,7 +27,6 @@ import java.util.Optional;
 public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
     implements ResourceService {
 
-    private final TransactionTemplate transactionTemplate;
     @Value("${core.video.prefix-url}")
     private String m3u8Prefix;
     @Override
@@ -42,11 +41,9 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
 
     @Override
     public Optional<Resource> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<Resource> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<Resource> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -64,10 +61,8 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
                 .set(Objects.nonNull(dto.getTitle()), Resource::getTitle, dto.getTitle())
                 .set(Objects.nonNull(dto.getDescription()), Resource::getDescription, dto.getDescription())
                 .eq(Resource::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override

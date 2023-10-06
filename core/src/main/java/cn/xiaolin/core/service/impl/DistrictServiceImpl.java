@@ -23,8 +23,6 @@ import java.util.Optional;
 public class DistrictServiceImpl extends ServiceImpl<DistrictMapper, District>
     implements DistrictService{
 
-    private final TransactionTemplate transactionTemplate;
-
     @Override
     public Optional<District> findItemById(Long id) {
         return Optional.ofNullable(getById(id));
@@ -32,11 +30,9 @@ public class DistrictServiceImpl extends ServiceImpl<DistrictMapper, District>
 
     @Override
     public Optional<District> deleteAndReturnById(Long id) {
-        return transactionTemplate.execute(status -> {
-            Optional<District> result = findItemById(id);
-            removeById(id);
-            return result;
-        });
+        Optional<District> result = findItemById(id);
+        removeById(id);
+        return result;
     }
 
     @Override
@@ -48,10 +44,8 @@ public class DistrictServiceImpl extends ServiceImpl<DistrictMapper, District>
         updateWrapper.set(Objects.nonNull(dto.getName()), District::getName, dto.getName())
                 .set(Objects.nonNull(dto.getCapital()), District::getCapital, dto.getCapital())
                 .eq(District::getId, dto.getId());
-        return transactionTemplate.execute(status -> {
-            boolean updated = update(updateWrapper);
-            return updated ? findItemById(dto.getId()) : Optional.empty();
-        });
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(dto.getId()) : Optional.empty();
     }
 
     @Override
