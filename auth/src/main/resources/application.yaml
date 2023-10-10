@@ -2,7 +2,3 @@
 server:
   port: 8999
 
-
-logging:
-  level:
-    sql: error

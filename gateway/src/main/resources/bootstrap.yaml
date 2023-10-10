@@ -1,0 +1,7 @@
+spring:
+  # Gateway不使用Servlet而是WebFlux
+  main:
+    web-application-type: reactive
+  # 默认启动开发环境的配置
+  profiles:
+    active: dev
