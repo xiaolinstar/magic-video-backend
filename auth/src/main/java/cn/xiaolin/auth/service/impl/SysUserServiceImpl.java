@@ -10,7 +10,6 @@ import cn.xiaolin.auth.domain.mapper.SysUserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.Objects;
@@ -142,7 +141,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
     /**
      * 查询具有权限permId的所有用户
-     *
+     * 假设用户a不直接拥有权限b，但是包含role角色，role角色拥有权限b，那么此时a拥有权限b
      * @param permId 权限id
      * @return 系统用户列表
      */

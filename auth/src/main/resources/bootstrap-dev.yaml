@@ -25,3 +25,12 @@ spring:
         namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
         group: DEFAULT_GROUP
 
+dubbo:
+  # 将Dubbo注册到Nacos中，这样可供消费者直接使用
+  registry:
+    address: nacos://111.229.38.208:8848?namespace=e35500e1-2441-4001-b60f-3f7d55b16cb5
+  scan:
+    base-packages: cn.xiaolin.auth.dubbo
+  application:
+    name: dubbo-auth
+

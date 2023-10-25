@@ -21,3 +21,9 @@ spring:
         file-extension: yaml # 文件后缀名
         group: DEFAULT_GROUP
 
+dubbo:
+  # 将Dubbo注册到Nacos中，这样可供消费者直接使用
+  registry:
+    address: nacos://111.229.38.208:8848
+  scan:
+    base-packages: cn.xiaolin.auth.dubbo

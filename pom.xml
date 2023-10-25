@@ -12,11 +12,12 @@
     <packaging>pom</packaging>
     <groupId>cn.xiaolin</groupId>
     <artifactId>magic-video-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>${revision}</version>
     <name>magic-video</name>
     <description>基于SpringCloud2022开发的视频点播服务</description>
 
     <properties>
+        <revision>0.0.1-SNAPSHOT</revision>
         <java.version>17</java.version>
         <spring-cloud.version>2022.0.3</spring-cloud.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
