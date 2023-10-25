@@ -27,3 +27,5 @@ dubbo:
     address: nacos://111.229.38.208:8848
   scan:
     base-packages: cn.xiaolin.auth.dubbo
+  application:
+    name: dubbo-auth
