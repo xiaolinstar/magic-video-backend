@@ -12,12 +12,11 @@
     <packaging>pom</packaging>
     <groupId>cn.xiaolin</groupId>
     <artifactId>magic-video-parent</artifactId>
-    <version>${revision}</version>
+    <version>0.0.1-SNAPSHOT</version>
     <name>magic-video</name>
     <description>基于SpringCloud2022开发的视频点播服务</description>
 
     <properties>
-        <revision>0.0.1-SNAPSHOT</revision>
         <java.version>17</java.version>
         <spring-cloud.version>2022.0.3</spring-cloud.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
@@ -29,7 +28,7 @@
         <nacos.discovery.version>2022.0.0.0</nacos.discovery.version>
         <cloud.bootstrap.version>4.0.0</cloud.bootstrap.version>
         <spring.cache.version>3.1.2</spring.cache.version>
-        <dubbo.version>3.2.6</dubbo.version>
+        <dubbo.version>3.2.0</dubbo.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -162,6 +161,12 @@
             <dependency>
                 <groupId>org.apache.dubbo</groupId>
                 <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-registry-nacos</artifactId>
                 <version>${dubbo.version}</version>
             </dependency>
 
