@@ -28,3 +28,4 @@ dubbo:
     address: nacos://111.229.38.208:8848
   application:
     qos-enable: false
+    name: dubbo-gateway
