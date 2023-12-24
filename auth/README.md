@@ -1,13 +1,62 @@
 # 认证授权微服务
+认证授权功能基于Sa-Token实现
 
-### 认证
+## 环境依赖
+注册中心Nacos：www.xingxiaolin.cn
+权限相关MySQL数据库：
+SaToken：分布式Session的Redis数据库
 
-For further reference, please consider the following sections:
+## 认证
+包括用户注册、登陆、登出等功能。
+功能清单
+- AuthController：认证
+  - 注册：register
+  - 登陆：login
+  - 登出：logout
+- SysPermController：权限
+  - 查询权限
+  - 更新权限
+  - 增加权限
+  - 删除权限
+- SysRoleController：角色
+  - 查询角色
+  - 更新角色
+  - 新增角色
+  - 删除角色
+- SysRolePermController：角色权限关联
+  - 查询角色权限
+  - 更新角色权限
+  - 新增角色权限
+  - 删除角色权限
+- SysUserController：用户
+  - 查询用户
+  - 更新用户
+  - 新增用户
+  - 删除用户
+- SysUserPermController：用户权限关联关系
+  - 查询用户权限
+  - 更新用户权限
+  - 新增用户权限
+  - 删除用户权限
+- SysUserRoleController：用户角色关联关系
+  - 查询用户角色
+  - 更新用户角色
+  - 新增用户角色
+  - 删除用户角色
 
+---
+TODO 增加一些个性化接口
 
-### 授权
+- 踢人下线 kick-out
+- 根据用户id，查询用户的所有角色名
+- 根据用户id，查询用户的所有权限
+- 根据用户id，查询用户的所有权限（包括角色间接用户的权限）
+- 根据用户名，查询用户的所有角色名
+- 根据用户名，查询用户的所有权限
+- 根据用户名，查询用户的所有权限（包括角色间接用户的权限）
+- 用户注册，验证用户名必须唯一
+- 
 
-这里是授权的一些说明
+## 授权
+使用基于角色等权限管理方式，(用户-角色-权限)，同时支持(用户-权限)
 
-### TODO
-- gRPC的没有官方的SpringBootStarter，并且gRPC无法实现负载均衡，因为直接请求的是实例而不是服务

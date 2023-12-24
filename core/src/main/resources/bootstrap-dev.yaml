@@ -9,7 +9,7 @@ spring:
   cloud:
     nacos:
       # Nacos服务地址
-      server-addr: 111.229.38.208:8848
+      server-addr: www.xingxiaolin.cn:8848
       config:
         file-extension: yaml # 文件后缀名
         namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5

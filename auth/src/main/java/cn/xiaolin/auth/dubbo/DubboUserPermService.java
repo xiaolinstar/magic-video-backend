@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import java.util.List;
+import java.util.Set;
 
 /**
  * 用户权限Dubbo RPC服务提供者
@@ -36,4 +37,13 @@ public class DubboUserPermService implements cn.xiaolin.api.dubbo.service.UserPe
                 .map(SysRole::getName)
                 .toList();
     }
+
+    public List<String> getPermWithRolesByUserId(Long userId) {
+        Set<SysPermission> permissions = sysPermissionService.listPermsWithRoleByUserId(userId);
+        return permissions.stream()
+                .map(SysPermission::getName)
+                .toList();
+    }
+
+
 }

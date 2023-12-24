@@ -65,7 +65,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
                 .username(dto.getUsername())
                 .email(dto.getEmail())
                 .admission(dto.getAdmission())
-                .password(dto.getPassword())
+                .password(passwordEncoder.encode(dto.getPassword()))
                 .build();
         boolean saved = false;
         try {
@@ -78,7 +78,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
     /**
      * 用户注册
-     *
+     * 用户名必须唯一且满足一定的规则
      * @param username 用户名
      * @param password 密码
      * @return 用户注册信息

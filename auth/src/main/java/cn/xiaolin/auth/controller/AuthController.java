@@ -8,6 +8,7 @@ import cn.xiaolin.utils.resp.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -47,5 +48,11 @@ public class AuthController {
     public Result<Void> logout() {
         sysUserService.logout();
         return Result.ok();
+    }
+
+    @Operation(summary = "踢人下线")
+    @PostMapping("/kick-out")
+    public Result<Void> kickOut(Long id) {
+        throw new NotImplementedException();
     }
 }

@@ -59,9 +59,24 @@ public interface SysPermissionService extends IService<SysPermission> {
     List<SysPermission> listPermsByUserId(Long userId);
 
     /**
+     * 根据username查询用户权限
+     * @param username 用户名
+     * @return 权限列表
+     */
+    List<SysPermission> listPermsByUsername(String username);
+
+
+    /**
      * 查询用户userId的所有权限，包含角色拥有的权限
      * @param userId 用户id
      * @return 全部权限
      */
     Set<SysPermission> listPermsWithRoleByUserId(Long userId);
+
+    /**
+     * 根据username查询用户权限，包括通过角色间接拥有的权限
+     * @param username 用户名
+     * @return 权限列表
+     */
+    Set<SysPermission> listPermsWithRoleByUsername(String username);
 }

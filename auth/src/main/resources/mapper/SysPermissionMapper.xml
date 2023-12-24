@@ -40,14 +40,44 @@
     <select id="listPermsWithRoleByUserId" resultType="cn.xiaolin.auth.domain.entity.SysPermission">
         select p.id, p.name, p.description, p.view, p.modify
         from `sys_permission` p join `sys_user_permission` up on p.id = up.sys_permission_id
+        where sys_user_id = ${user_id}
         union
         select p.id, p.name, p.description, p.view, p.modify
         from sys_permission p
         where p.id in (
             select rp.sys_permission_id
-            from `sys_user_role` ur join `sys_role_permission` rp on rp.sys_role_id = ur.sys_role_id
+            from `sys_role_permission` rp join `sys_user_role` ur on rp.sys_role_id = ur.sys_role_id
             where ur.sys_user_id = ${user_id}
             )
+    </select>
+
+    <select id="listPermsByUsername" resultType="cn.xiaolin.auth.domain.entity.SysPermission">
+        select p.id, p.name, p.description, p.view, p.modify
+        from `sys_permission` p join `sys_user_permission` up on p.id = up.sys_permission_id
+        where sys_user_id in (
+                select id
+                from sys_user
+                where username = ${username}
+            );
+    </select>
+    <select id="listPermsWithRoleByUsername" resultType="cn.xiaolin.auth.domain.entity.SysPermission">
+        select p.id, p.name, p.description, p.view, p.modify
+        from `sys_permission` p join `sys_user_permission` up on p.id = up.sys_permission_id
+        where sys_user_id in (
+            select id
+            from sys_user
+            where username = ${username}
+            )
+        union
+        select p.id, p.name, p.description, p.view, p.modify
+        from sys_permission p
+        where p.id in (
+            select rp.sys_permission_id
+            from `sys_user_role` ur
+                inner join `sys_role_permission` rp on rp.sys_role_id = ur.sys_role_id
+                inner join `sys_user` u on u.id = ur.sys_user_id
+            where u.username = ${username}
+        )
     </select>
 
 

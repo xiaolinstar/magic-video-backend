@@ -7,6 +7,7 @@ import cn.xiaolin.auth.domain.entity.SysPermission;
 import cn.xiaolin.auth.service.SysPermissionService;
 import cn.xiaolin.auth.domain.mapper.SysPermissionMapper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -97,6 +98,17 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
     }
 
     /**
+     * 根据username查询用户权限
+     *
+     * @param username 用户名
+     * @return 权限列表
+     */
+    @Override
+    public List<SysPermission> listPermsByUsername(String username) {
+        return sysPermissionMapper.listPermsByUsername(username);
+    }
+
+    /**
      * 查询用户userId的所有权限，包含角色拥有的权限
      *
      * @param userId 用户id
@@ -105,6 +117,17 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
     @Override
     public Set<SysPermission> listPermsWithRoleByUserId(Long userId) {
         return sysPermissionMapper.listPermsWithRoleByUserId(userId);
+    }
+
+    /**
+     * 根据username查询用户权限，包括通过角色间接拥有的权限
+     *
+     * @param username 用户名
+     * @return 权限列表
+     */
+    @Override
+    public Set<SysPermission> listPermsWithRoleByUsername(String username) {
+        return sysPermissionMapper.listPermsWithRoleByUsername(username);
     }
 }
 

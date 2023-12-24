@@ -19,7 +19,7 @@ public class SaTokenConfig {
     public SaReactorFilter getSaReactorFilter() {
         return new SaReactorFilter()
                 .addInclude("/**")
-                .addExclude("/auth/login", "/auth/register", "/auth/logout")
+                .addExclude("/auth/login", "/auth/register", "/auth/logout", "/swagger-ui.html")
                 .setAuth(obj -> {
                     // 登陆校验：校验除登陆路由外的所有路由
                     SaRouter.match("/**",  r -> StpUtil.checkLogin());

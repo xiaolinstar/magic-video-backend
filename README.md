@@ -1,5 +1,29 @@
 # 基于SpringCloud的视频点播微服务后端项目
 
+## 快速启动
+安装项目
+```shell
+git clone https://github.com/xlxingRun/magic-video-backend.git
+```
+
+编译项目(本地打包并跳过测试)
+```shell
+mvn clean package -Dmaven.test.skip=true
+```
+
+每一个jar包位于子项目的/target/xxx.jar，构建Docker镜像
+```shell
+docker build -t xxl1997/magic-video:backend-auth auth/.
+docker build -t xxl1997/magic-video:backend-core core/.
+
+```
+
+启动顺序
+1. auth: www.xiaolin.fun
+2. gateway: www.xiaolin.fun
+3. core: www.xingxiaolin.cn
+4. multimedia: www.xingxiaolin.cn
+
 ## 服务治理
 注册中心 负载均衡 容错 配置中心 限流
 
@@ -19,18 +43,17 @@ RPC 服务治理 ESB
   - auth: 9999
 - MySQL
   - 腾讯云TD-SQL兼容MYSQL5.7
-    - 用户名: root
-    - 密码: 123456xxlBUPT
 - Redis
-  - 数据缓存: 47.94.104.34 (database 0)
-  - 微服务认证授权: 111.229.38.208 (database 1)
+  - 数据缓存: www.xiaolin.fun
+    - 开发环境 database 0
+    - 生产环境 database 2
+  - 微服务认证授权: www.xingxiaolin.cn
+    - 开发环境 database 0
+    - 生产环境 database 2
 - RabbitMQ
-  - host: 47.94.104.34
-  - username: xiaolin
-  - password: 123456xxl
+  - host: www.xiaolin.fun
   - virtual-host: /media
   - connection-timeout: 15000
-
 
 ### 服务依赖
 Auth:

@@ -5,7 +5,7 @@ spring:
   cloud:
     nacos:
       # Nacos服务地址
-      server-addr: 111.229.38.208:8848
+      server-addr: www.xingxiaolin.cn:8848
       # 配置中心
       config:
         file-extension: yaml # 文件后缀名
@@ -22,8 +22,11 @@ spring:
     web-application-type: reactive
 
 dubbo:
-  registry:
-    address: nacos://111.229.38.208:8848
   application:
-    qos-enable: false
+    qos-enable: false # 生产环境关闭
     name: dubbo-gateway
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://www.xingxiaolin.cn:8848

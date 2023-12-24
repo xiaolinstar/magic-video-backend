@@ -20,8 +20,16 @@ public interface SysPermissionMapper extends BaseMapper<SysPermission> {
     List<SysPermission> listPermByRoleId(@Param("role_id") Long roleId);
 
     List<SysPermission> listPermsByUserId(@Param("user_id") Long userId);
+    List<SysPermission> listPermsByUsername(@Param("username") String username);
+
+
 
     Set<SysPermission> listPermsWithRoleByUserId(@Param("user_id") Long userId);
+
+    Set<SysPermission> listPermsWithRoleByUsername(@Param("username") String username);
+
+
+
 }
 
 
