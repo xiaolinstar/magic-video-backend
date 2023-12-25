@@ -19,9 +19,10 @@ spring:
 
 dubbo:
   # 将Dubbo注册到Nacos中，这样可供消费者直接使用
-  registry:
-    address: nacos://www.xingxiaolin.cn:8848
-  scan:
-    base-packages: cn.xiaolin.auth.dubbo
   application:
     name: dubbo-auth
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://www.xingxiaolin.cn:8848

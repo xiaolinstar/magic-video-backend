@@ -13,23 +13,9 @@
     <artifactId>common-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>common-api</name>
-    <description>gRPC接口定义</description>
+    <description>RPC接口定义</description>
 
     <dependencies>
-
-        <!-- grpc-starter -->
-        <dependency>
-            <groupId>io.github.lognet</groupId>
-            <artifactId>grpc-spring-boot-starter</artifactId>
-            <version>5.1.3</version>
-        </dependency>
-
-        <!-- grpc-netty -->
-        <dependency>
-            <groupId>io.grpc</groupId>
-            <artifactId>grpc-netty</artifactId>
-            <version>1.57.1</version>
-        </dependency>
 
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -61,26 +47,6 @@
         </extensions>
 
         <plugins>
-            <plugin>
-                <groupId>org.xolstice.maven.plugins</groupId>
-                <artifactId>protobuf-maven-plugin</artifactId>
-                <version>0.6.1</version>
-                <configuration>
-                    <protocArtifact>com.google.protobuf:protoc:3.22.3:exe:${os.detected.classifier}</protocArtifact>
-                    <pluginId>grpc-java</pluginId>
-                    <pluginArtifact>io.grpc:protoc-gen-grpc-java:1.57.1:exe:${os.detected.classifier}</pluginArtifact>
-                    <outputDirectory>${basedir}/src/main/java</outputDirectory>
-                    <clearOutputDirectory>false</clearOutputDirectory>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>compile</goal>
-                            <goal>compile-custom</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>

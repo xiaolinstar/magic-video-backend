@@ -1,7 +1,7 @@
 # 微服务网关服务
 SpringCloudGateway实现微服务流量转发
 ## 配置
-- SaToken相关配置：Redis数据库，auth提供权限服务（gRPC调用）
+- SaToken相关配置：Redis数据库，auth提供权限服务（RPC调用）
 - 权限控制资源路由配置
 - 在application.yaml中配置路由转发规则
   - Nacos：路由到服务名

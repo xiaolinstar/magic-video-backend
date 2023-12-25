@@ -29,5 +29,5 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: nacos://www.xingxiaolin.cn:8848?namespace=e35500e1-2441-4001-b60f-3f7d55b16cb5
-
+    address: nacos://www.xingxiaolin.cn:8848?namespace=228df068-54b7-405e-9e32-72c759d79ed9
+    group: DEV_DUBBO_GROUP

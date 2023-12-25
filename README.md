@@ -8,14 +8,17 @@ git clone https://github.com/xlxingRun/magic-video-backend.git
 
 编译项目(本地打包并跳过测试)
 ```shell
-mvn clean package -Dmaven.test.skip=true
+mvn clean install -Dmaven.test.skip=true
 ```
+### 开发环境
+本地依次启动auth multimedia core gateway四个微服务
 
+### 生产环境
 每一个jar包位于子项目的/target/xxx.jar，构建Docker镜像
+使用buildx构架多平台版本镜像
 ```shell
-docker build -t xxl1997/magic-video:backend-auth auth/.
-docker build -t xxl1997/magic-video:backend-core core/.
-
+docker buildx build --platform linux/amd64,linux/arm64 -t xxl1997/magic-video:backend-auth auth/.
+docker buildx build --platform linux/amd64,linux/arm64 -t xxl1997/magic-video:backend-core core/.
 ```
 
 启动顺序
