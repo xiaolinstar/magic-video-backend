@@ -1,6 +1,6 @@
-# USE dev_video;
-CREATE DATABASE IF NOT EXISTS `prod_video`;
-USE prod_video;
+# USE dev_magic_video;
+CREATE DATABASE IF NOT EXISTS `dev_magic_video`;
+USE dev_magic_video;
 
 # 视频表
 DROP TABLE IF EXISTS video;
@@ -8,7 +8,7 @@ CREATE TABLE video
 (
     `id`                 BIGINT       NOT NULL COMMENT '主键id',
     `name`               VARCHAR(90)  NOT NULL DEFAULT '未命名' COMMENT '中文名称',
-    `icon`               VARCHAR(255) NOT NULL COMMENT '封面',
+    `icon`               VARCHAR(255) NOT NULL COMMENT '封面，使用base64存储',
     `rating`             DECIMAL(3, 2)         DEFAULT 0.0 COMMENT '评分',
     `year`               INT          NOT NULL COMMENT '年份',
     `release_date`       DATETIME COMMENT '发布日期',
@@ -270,3 +270,4 @@ CREATE TABLE resource
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT = '视频资源';
 
+INSERT INTO `resource` VALUES (1693269599677710338,'关于我和鬼变成家人的那件事-开头剪辑',NULL,NULL,'video/396bbfb6-0e84-4fcd-a2b3-eea5e797b58a/720p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/prettygirl.tiff','许光汉健身房激情撩汉','这是一个描述，但是我不知道写些什么',0,0,'2023-08-20 22:34:45','2023-08-20 22:34:45',0,0),(1693270668365398018,'关于我和鬼变成家人的那件事',NULL,NULL,'video/813a2632-df0e-42cf-a8b3-129af4fdc9ea/main.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/fiezao.tiff','许光汉为爱当0，炎亚纶本色出演','这是一个描述，但是我不知道写些什么',0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),(1695811501761363970,'性爱自修室3开头剪辑.mp4',NULL,NULL,'video/0ce3704b-b1ed-4c7d-a63c-960bab5267f5/1080p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/xiaohei.tiff','性爱自修室3丝滑片头欣赏','这是一个视频默认描述',0,0,'2023-08-27 22:54:42','2023-08-27 22:54:42',0,0),(1695813115452719105,'华尔街之狼-乔丹的启蒙老师.mp4',NULL,NULL,'video/c1b2d0ff-561c-468f-883b-d053ce083339/1080p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/teacher.tiff','华尔街之狼','乔丹初入华尔街的的精神导师',0,0,'2023-08-27 23:14:55','2023-08-27 23:14:55',0,0),(1705467938741551105,'性爱自修室4-片头',NULL,NULL,'video/46ab56bb-f49e-4f0d-901c-700da442d5e4/1080p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/give-me-yours.tiff','我发了，你呢','梅芙给Otis发胸照，Otis不知道如何回复',0,0,'2023-09-23 14:31:41','2023-09-23 14:31:41',0,0);

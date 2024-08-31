@@ -1,7 +1,5 @@
-# CREATE DATABASE IF NOT EXISTS `dev_auth`;
-# USE `dev_auth`;
-CREATE DATABASE IF NOT EXISTS `prod_auth`;
-USE `prod_auth`;
+CREATE DATABASE IF NOT EXISTS `dev_auth`;
+USE `dev_auth`;
 
 # 视频表
 DROP TABLE IF EXISTS `sys_user`;

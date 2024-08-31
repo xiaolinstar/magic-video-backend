@@ -1,0 +1,200 @@
+# 开发环境命名空间
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: dev
+
+# 1. 部署权限微服务
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-svc
+  namespace: dev
+spec:
+  selector:
+    app: auth-deploy
+  type: NodePort
+  ports:
+    - port: 8999
+      targetPort: 8999
+      nodePort: 31119
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-deploy
+  labels:
+    app: auth-deploy
+  namespace: dev
+spec:
+  # 微服务数量
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-pod
+  template:
+    metadata:
+      labels:
+        app: auth-pod
+    spec:
+      containers:
+        - name: my-auth
+          image: xxl1997/magic-video:auth-0.0.1-SNAPSHOT
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8999
+          env: # 启动容器的环境变量
+            - name: ENVIRONMENT
+              value: dev
+            - name: JAR_VERSION
+              value: 0.0.1-SNAPSHOT
+            - name: SERVER_NAME
+              value: auth-pod
+
+
+## 2. 部署核心微服务
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: core-svc
+  namespace: dev
+spec:
+  selector:
+    app: core-deploy
+  type: NodePort
+  ports:
+    - port: 9000
+      targetPort: 9000
+      nodePort: 31120
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-deploy
+  labels:
+    app: core-deploy
+  namespace: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: core-pod
+  template:
+    metadata:
+      labels:
+        app: core-pod
+    spec:
+      containers:
+        - name: my-core
+          imagePullPolicy: Always
+          image: xxl1997/magic-video:core-0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 9000
+          env:
+            - name: ENVIRONMENT
+              value: dev
+            - name: JAR_VERSION
+              value: 0.0.1-SNAPSHOT
+            - name: SERVER_NAME
+              value: core-pod
+
+## 3. 部署微服务网关
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-svc
+  namespace: dev
+spec:
+  selector:
+    app: gateway-deploy
+  type: NodePort
+  ports:
+    - port: 9001
+      targetPort: 9001
+      nodePort: 31121
+
+---
+# 无状态部署gateway微服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-deploy
+  labels:
+    app: gateway-deploy
+  namespace: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gateway-pod
+  template:
+    metadata:
+      labels:
+        app: gateway-pod
+    spec:
+      containers:
+        - name: my-gateway
+          imagePullPolicy: Always
+          image: xxl1997/magic-video:gateway-0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 9001
+          env:
+            - name: ENVIRONMENT
+              value: dev
+            - name: JAR_VERSION
+              value: 0.0.1-SNAPSHOT
+            - name: SERVER_NAME
+              value: gateway-pod
+
+## 4. 部署多媒体微服务
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multimedia-svc
+  namespace: dev
+spec:
+  selector:
+    app: multimedia-deploy
+  type: NodePort
+  ports:
+    - port: 9002
+      targetPort: 9002
+      nodePort: 31122
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multimedia-deploy
+  labels:
+    app: multimedia-deploy
+  namespace: dev
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: multimedia-pod
+  template:
+    metadata:
+      labels:
+        app: multimedia-pod
+    spec:
+      containers:
+        - name: my-multimedia
+          imagePullPolicy: Always
+          image: xxl1997/magic-video:multimedia-0.0.1-SNAPSHOT
+          ports:
+            - containerPort: 9002
+          env:
+            - name: ENVIRONMENT
+              value: dev
+            - name: JAR_VERSION
+              value: 0.0.1-SNAPSHOT
+            - name: SERVER_NAME
+              value: multimedia-pod

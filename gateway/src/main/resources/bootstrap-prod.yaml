@@ -30,3 +30,4 @@ dubbo:
     port: -1
   registry:
     address: nacos://www.xingxiaolin.cn:8848
+    group: PROD_DUBBO_GROUP

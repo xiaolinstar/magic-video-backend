@@ -5,7 +5,7 @@ spring:
   # Nacos配置
   cloud:
     nacos:
-      server-addr: magic-dev-nacos:8848
+      server-addr: localhost:8848
 
       # 服务发现
       discovery:
@@ -16,6 +16,7 @@ spring:
       # 配置中心
       config:
         # 关闭配置中心，有bug，无法连通
+        enabled: false
         file-extension: yaml # 文件后缀名
         group: DEFAULT_GROUP
 
@@ -24,7 +25,7 @@ spring:
     redis:
       client-type: lettuce
       database: 0
-      host: magic-dev-redis
+      host: localhost
       port: 6379
       lettuce:
         pool:
@@ -37,8 +38,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-    url: jdbc:mysql://magic-dev-mysql:3306/dev_auth?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
-
+    url: jdbc:mysql://localhost:3306/dev_auth?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 # Sa-Token
 sa-token:
   token-name: sa-token
@@ -55,6 +55,6 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: nacos://magic-dev-nacos:8848
+    address: nacos://localhost:8848
     group: DEV_DUBBO_GROUP
 

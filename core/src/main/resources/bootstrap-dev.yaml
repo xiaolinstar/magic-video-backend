@@ -1,7 +1,3 @@
-core:
-  video:
-    prefix-url: https://vod-videos-xiaolin.oss-cn-beijing.aliyuncs.com/
-
 spring:
   application:
     name: core
@@ -9,16 +5,16 @@ spring:
   cloud:
     nacos:
       # Nacos服务地址
-      server-addr: www.xingxiaolin.cn:8848
+      server-addr: localhost:8848
       config:
         file-extension: yaml # 文件后缀名
-        namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
+#        namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
         group: DEFAULT_GROUP
 
       # Nacos服务发现
       discovery:
-        cluster-name: BEIJING
+        cluster-name: NANJING
         # 设置为非临时实例
         ephemeral: true
         # 设置命名空间
-        namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
+#        namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5

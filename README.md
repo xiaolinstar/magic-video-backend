@@ -1,21 +1,128 @@
 # 基于SpringCloud的视频点播微服务后端项目
+> 个人搭建企业级微服务项目，DevOps实践，运维监控实践
 
-## 快速启动
+本项目是一个使用Java技术栈实现的视频点播网站后端项目，全面涉及到了整个Java技术栈的主流技术，包括但不限于SpringBoot MySQL Redis MybatisPlus Nacos Dubbo。
+
+此外，本项目还尝试建立了企业级的持续集成/持续部署，开发者只需关注业务代码，代码发布与上线已经流水线化。
+
+## 1. 快速安装
 安装项目
 ```shell
 git clone https://github.com/xlxingRun/magic-video-backend.git
 ```
 
-编译项目(本地打包并跳过测试)
-```shell
-mvn clean install -Dmaven.test.skip=true
-```
-### 开发环境
-本地依次启动auth multimedia core gateway四个微服务
+进入该目录
 
-### 生产环境
+```
+cd magic-video-backend
+```
+
+编译项目(本地打包并跳过测试)
+
+```shell
+mvn clean package
+```
+本项目中包含多个微服务，编译后生成的`jar`包，在每个微服务目录的`target`中。
+
+Todo：搭建Maven私有仓库Nexus
+
+Todo：搭建私有代码托管仓库GitLab
+
+Todo：将视频存储在本地，替代阿里云oss 
+
+## 2. 服务介绍
+
+### 权限微服务Auth
+
+比较主流的权限管理框架主要有[SpringSecurity](https://spring.io/projects/spring-security/)、[SaToken](https://sa-token.cc/)、[Casbin](https://casbin.org/zh/)，本项目使用了文档对新手更友好的SaToken。本项目是一个微服务项目，微服务下实现认证授权的方案由：
+
+1. 基于Redis中间件实现分布式Session
+2. 无状态JsonWebToken（需要解决登出问题）
+
+> 环境依赖
+
+- 注册中心：Nacos
+- 配置中心：Nacos
+- 权限数据库：MySQL
+- SaToken分布式Session中间件：Redis
+- RPC服务提供者：Dubbo
+
+
+
+开发环境development
+
+```
+
+```
+
+测试环境test
+
+```
+
+```
+
+预发环境staging
+
+```
+
+```
+
+生产环境production
+
+```
+
+```
+
+### 网关微服务Gateway
+
+微服务网管是后端流量的入口，访问后端资源不应该直接访问具体的服务，而是由Gateway进行路由和调度。同时配合Nacos注册中心，可以进行有效的负载均衡，将流量路由到**服务**，而不是**实例**。
+
+认证授权也统一在网关处理，网关后面的微服务与权限服务解耦合。
+
+> 环境依赖
+
+- 注册中心：Nacos
+- 配置中心：Nacos
+- SaToken分布式Session中间件：Redis
+- RPC服务提供者：Dubbo
+
+
+
+### 核心微服务Core
+
+主要包括视频点播相关的视频、资源、导演、编剧等信息，提供基本的增删改查操作，主要业务逻辑在Core中实现。
+
+> 环境依赖
+
+- 注册中心：Nacos
+- 配置中心：Nacos
+- 核心数据库：MySQL
+- 分布式缓存：Redis
+- 消息队列：RabbitMQ
+
+### 多媒体微服务Multimedia
+
+## 3. 快速启动
+
+### 3.1 本地开发环境
+#### 1. 启动docker-compose
+本地开发环境依赖中间件：mysql redis rabbitmq等，使用docker-compose编排启动
+#### 2. 启动四个微服务项目
+建议直接在Idea中按下列顺序启动：
+1. auth, localhost:8999
+2. gateway, localhost:9001
+3. core, localhost:9000
+4. multimedia, localhost:9002
+#### 3. Todo
+- [x] 启用nacos配置中心，并在启动时导入默认应用配置
+- [x] 微服务容器化
+- [x] 将视频存储在本地，替代阿里云oss
+
+
+### 3.2 生产环境（未完成）
 每一个jar包位于子项目的/target/xxx.jar，构建Docker镜像
 使用buildx构架多平台版本镜像
+
 ```shell
 docker buildx build --platform linux/amd64,linux/arm64 -t xxl1997/magic-video:backend-auth auth/.
 docker buildx build --platform linux/amd64,linux/arm64 -t xxl1997/magic-video:backend-core core/.
@@ -27,7 +134,6 @@ docker buildx build --platform linux/amd64,linux/arm64 -t xxl1997/magic-video:ba
 3. core: www.xingxiaolin.cn
 4. multimedia: www.xingxiaolin.cn
 
-## 服务治理
 注册中心 负载均衡 容错 配置中心 限流
 
 RPC 服务治理 ESB
@@ -36,7 +142,6 @@ RPC 服务治理 ESB
 - gRPC
 - Thrift IDL
 
-## 快速开始
 - Web服务端口号
   - auth: 8999
   - core: 9000
@@ -77,12 +182,20 @@ Multimedia:
   - RabbitMQ生产
   - Redis: （TODO）判断视频是否已经存在于服务器
 
+### 开发环境Docker-compose快速启动
+容器名称：
+- 注册中心、配置中心nacos: magic-dev-nacos
+- 业务数据库mysql: magic-dev-mysql
+- 消息队列rabbitmq: magic-dev-rabbitmq
+- 鉴权缓存redis: magic-dev-auth-redis
+- 
+
 
 ### 可选配置
 - Nacos注册中心
 - Nacos配置中心
 
-## 微服务介绍
+## 4. 微服务介绍
 
 ### 权限中心auth
 权限中心采用SaToken集成统一微服务认证和授权，分布式Session解决跨服务访问。目前近支持简单的基于角色的权限控制。主要有三个实体构成：用户、角色、权限。
@@ -95,4 +208,5 @@ Multimedia:
 
 ### 核心服务core
 
+## 5.持续集成/持续部署
 

@@ -1,4 +1,4 @@
 # 默认启动开发环境的配置
 spring:
   profiles:
-    active: dev
+    active: local

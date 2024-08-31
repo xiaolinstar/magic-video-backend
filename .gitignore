@@ -29,3 +29,9 @@ build/
 
 test/
 logs
+
+nacos-data
+multimedia/Dockerfile-backup
+static/nacos/
+static/mysql-backup/
+auth/src/main/resources/static/sql/
