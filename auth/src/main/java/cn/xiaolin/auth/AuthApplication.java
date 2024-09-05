@@ -6,7 +6,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @author xlxing
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @SpringBootApplication(scanBasePackages = {"cn.xiaolin.auth", "cn.xiaolin.utils"})
 @MapperScan(basePackages = {"cn.xiaolin.auth.domain.mapper"})

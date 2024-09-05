@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Set;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 大文件上传策略
  * @create 2023/7/8
  */

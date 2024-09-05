@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 定义用于传输系统用户角色关联信息的数据传输对象
  * @create 2023/8/12
  */
 @NoArgsConstructor

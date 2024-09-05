@@ -5,7 +5,7 @@ import org.springframework.context.SmartLifecycle;
 import org.springframework.stereotype.Service;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 程序关闭时清除已经开启的流
  * @create 2023/8/13
  */

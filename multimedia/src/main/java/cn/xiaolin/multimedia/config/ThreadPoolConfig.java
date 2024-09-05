@@ -9,7 +9,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 线程池配置
  * @create 2023/7/23
  */

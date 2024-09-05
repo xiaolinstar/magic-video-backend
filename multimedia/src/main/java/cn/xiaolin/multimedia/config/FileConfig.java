@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import java.nio.file.FileSystemException;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 文件传输相关配置
  * @create 2023/7/29
  */

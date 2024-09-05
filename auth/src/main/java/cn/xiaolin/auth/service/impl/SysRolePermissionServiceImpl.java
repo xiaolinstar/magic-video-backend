@@ -14,10 +14,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
-* @author xlxing
-* @description 针对表【sys_role_permission(系统角色权限关联表)】的数据库操作Service实现
-* @createDate 2023-08-10 22:24:12
-*/
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 系统角色权限服务实现类
+ * @create 2023/08/10
+ */
 @Service
 @RequiredArgsConstructor
 public class SysRolePermissionServiceImpl extends ServiceImpl<SysRolePermissionMapper, SysRolePermission>

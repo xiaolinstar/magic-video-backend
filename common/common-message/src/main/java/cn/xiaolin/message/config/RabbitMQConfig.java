@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Configuration;
 
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 消息队列配置
  * @create 2023/7/23
  */

@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 视频地区关联关系表
- * @author xlxing
- * @TableName video_district
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @TableName(value ="video_district")
 @Data

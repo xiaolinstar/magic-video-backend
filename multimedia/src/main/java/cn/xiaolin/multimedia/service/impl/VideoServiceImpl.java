@@ -18,8 +18,8 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 视频服务实现类
  * @create 2023/7/23
  */
 @Service

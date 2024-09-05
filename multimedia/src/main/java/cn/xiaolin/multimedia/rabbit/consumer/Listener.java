@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Map;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description Rabbit监听器
  * @create 2023/7/29
  */

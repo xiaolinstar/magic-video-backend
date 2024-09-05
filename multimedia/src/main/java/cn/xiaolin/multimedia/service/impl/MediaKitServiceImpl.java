@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 视频处理套件
  * @create 2023/7/23
  */

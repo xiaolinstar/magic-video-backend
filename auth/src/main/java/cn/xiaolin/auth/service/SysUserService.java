@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 /**
-* @author xlxing
-* @description 针对表【sys_user(系统用户)】的数据库操作Service
-* @createDate 2023-08-10 22:24:12
-*/
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 系统用户服务接口
+ * @create 2023/08/10
+ */
 public interface SysUserService extends IService<SysUser> {
 
     Optional<SysUser> findItemById(Long id);

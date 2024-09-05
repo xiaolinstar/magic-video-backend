@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 视频详情控制器
  * @create 2023/7/30
  */
 @Tag(name = "视频详情", description = "视频详情增删改查基本操作")

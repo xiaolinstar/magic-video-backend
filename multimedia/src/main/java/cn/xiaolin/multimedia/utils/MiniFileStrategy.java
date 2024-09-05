@@ -7,7 +7,7 @@ import java.io.IOException;
 
 /**
  * 文件上传到服务器，返回文件路径
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 常规文件或小文件上传策略
  * @create 2023/7/9
  */

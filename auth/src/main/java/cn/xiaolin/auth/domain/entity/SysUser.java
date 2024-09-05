@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 系统用户
- * @author xlxing
- * @TableName sys_user
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @TableName(value ="sys_user")
 @Data

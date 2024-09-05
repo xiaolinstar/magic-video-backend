@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 系统用户角色关联表
- * @author xlxing
- * @TableName sys_user_role
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @TableName(value ="sys_user_role")
 @Data

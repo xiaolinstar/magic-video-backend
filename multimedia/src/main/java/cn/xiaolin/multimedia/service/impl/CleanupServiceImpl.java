@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 程序退出时，关闭资源
  * @create 2023/7/23
  */

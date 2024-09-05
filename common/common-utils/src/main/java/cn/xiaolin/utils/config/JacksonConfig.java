@@ -26,7 +26,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.TimeZone;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description Jackson相关配置
  * @create 2023/7/23
  */

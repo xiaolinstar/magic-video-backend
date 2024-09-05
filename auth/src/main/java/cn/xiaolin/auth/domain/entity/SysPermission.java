@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 系统权限
- * @author xlxing
- * @TableName sys_permission
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @TableName(value ="sys_permission")
 @Data

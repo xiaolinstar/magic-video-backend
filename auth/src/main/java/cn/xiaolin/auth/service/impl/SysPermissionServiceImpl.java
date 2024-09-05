@@ -17,10 +17,10 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
-* @author xlxing
-* @description 针对表【sys_permission(系统权限)】的数据库操作Service实现
-* @createDate 2023-08-10 22:24:12
-*/
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 系统权限服务实现类
+ * @create 2023/08/10
+ */
 @Service
 @RequiredArgsConstructor
 public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, SysPermission>

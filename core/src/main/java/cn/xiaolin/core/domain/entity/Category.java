@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 视频分类
- * @author xlxing
- * @TableName category
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @TableName(value ="category")
 @Data

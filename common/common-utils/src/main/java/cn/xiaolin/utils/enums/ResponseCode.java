@@ -3,7 +3,7 @@ package cn.xiaolin.utils.enums;
 import lombok.Getter;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 统一回复枚举类，定义状态码和消息
  * @create 2023/7/23
  */

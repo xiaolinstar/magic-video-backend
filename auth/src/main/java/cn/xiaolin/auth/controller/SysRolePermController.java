@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 角色权限关联关系控制层
  * @create 2023/8/12
  */
 @Tag(name = "角色权限关联关系")

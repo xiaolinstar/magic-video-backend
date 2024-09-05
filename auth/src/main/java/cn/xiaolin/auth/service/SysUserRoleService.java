@@ -7,10 +7,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import java.util.Optional;
 
 /**
-* @author xlxing
-* @description 针对表【sys_user_role(系统用户角色关联表)】的数据库操作Service
-* @createDate 2023-08-10 22:24:12
-*/
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 系统用户角色服务接口
+ * @create 2023/08/10
+ */
 public interface SysUserRoleService extends IService<SysUserRole> {
     Optional<SysUserRole> findItemById(Long id);
 

@@ -8,8 +8,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.Objects;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 性别枚举类
  * @create 2023/8/6
  */
 @Getter

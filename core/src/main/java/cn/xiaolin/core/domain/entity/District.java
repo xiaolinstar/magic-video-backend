@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 国家和地区
- * @author xlxing
- * @TableName district
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @TableName(value ="district")
 @Data

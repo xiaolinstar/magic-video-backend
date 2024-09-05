@@ -8,10 +8,10 @@ import java.util.Optional;
 
 /**
  * 表的增删改查，如果执行成功，返回数据消息
-* @author xlxing
-* @description 针对表【award(奖项)】的数据库操作Service
-* @createDate 2023-07-30 17:10:49
-*/
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 针对表【award(奖项)】的数据库操作Service
+ * @create 2023-07-30 17:10:49
+ */
 public interface AwardService extends IService<Award> {
 
     /**

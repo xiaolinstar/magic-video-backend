@@ -1,7 +1,7 @@
 package cn.xiaolin.message.constant;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 消息队列常量
  * @create 2023/8/6
  */

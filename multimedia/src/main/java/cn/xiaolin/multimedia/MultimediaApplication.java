@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * @author xlxing
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @SpringBootApplication(scanBasePackages = {"cn.xiaolin.message", "cn.xiaolin.multimedia", "cn.xiaolin.utils"})
 @RestController

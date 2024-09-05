@@ -9,11 +9,9 @@ import java.util.List;
 import java.util.Set;
 
 /**
-* @author xlxing
-* @description 针对表[sys_permission(系统权限)] 的数据库操作Mapper
-* @createDate 2023-08-10 22:24:12
-* @Entity generator.domain.SysPermission
-*/
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @create 2023/08/10
+ */
 @Mapper
 public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 

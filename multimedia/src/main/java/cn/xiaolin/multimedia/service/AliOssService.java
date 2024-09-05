@@ -4,7 +4,7 @@ import java.io.File;
 import java.nio.file.Path;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 文件上传到阿里云OSS
  * @create 2023/7/23
  */

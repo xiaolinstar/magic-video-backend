@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description
+ * @Description Dubbo获取用户权限客户端
  * @create 2023/9/9
  */
 @Service

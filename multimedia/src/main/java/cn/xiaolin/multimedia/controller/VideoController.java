@@ -17,7 +17,7 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 上传视频控制器
  * @create 2023/7/23
  */

@@ -7,8 +7,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description 跨域配置
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 跨域配置，前端反向代理可以不启用该功能
  * @create 2023/8/19
  */
 @Configuration

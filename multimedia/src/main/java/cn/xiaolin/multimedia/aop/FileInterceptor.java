@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 文件上传AOP增强
  * @create 2023/7/29
  */

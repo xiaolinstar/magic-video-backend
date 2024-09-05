@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.cok
+ * @Description 权限控制层
  * @create 2023/8/12
  */
 @Tag(name = "权限", description = "系统权限增删改查")

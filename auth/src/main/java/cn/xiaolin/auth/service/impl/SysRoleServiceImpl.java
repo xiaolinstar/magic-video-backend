@@ -15,10 +15,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
-* @author xlxing
-* @description 针对表【sys_role(系统角色)】的数据库操作Service实现
-* @createDate 2023-08-10 22:24:12
-*/
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 该类实现了SysRoleService接口，提供了根据id查询角色、删除角色、更新角色、保存角色、查询角色列表的功能。
+ * @create 2023/08/10
+ */
 @Service
 @RequiredArgsConstructor
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole>

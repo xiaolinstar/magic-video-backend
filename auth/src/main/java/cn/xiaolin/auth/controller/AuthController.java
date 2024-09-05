@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Optional;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 认证模块控制层
  * @create 2023/8/13
  */
 @Tag(name = "认证")

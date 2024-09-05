@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 视频资源控制器
  * @create 2023/7/30
  */
 @Tag(name = "视频资源")

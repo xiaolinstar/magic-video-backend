@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 
 
 /**
- * @author xlxing
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @SpringBootApplication(scanBasePackages = {"cn.xiaolin.core", "cn.xiaolin.message", "cn.xiaolin.utils"})
 @MapperScan("cn.xiaolin.core.domain.mapper")

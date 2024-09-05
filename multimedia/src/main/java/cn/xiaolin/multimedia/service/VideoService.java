@@ -8,7 +8,7 @@ import java.util.Set;
 
 /**
  * 视频上传到服务器，并保存一些信息
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 视频上传服务
  * @create 2023/7/23
  */

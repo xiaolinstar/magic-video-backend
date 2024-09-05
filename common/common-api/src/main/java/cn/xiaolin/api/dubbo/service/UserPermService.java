@@ -4,8 +4,8 @@ import java.util.List;
 
 /**
  *
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xingxiaolin@foxmail.com
+ * @Description 用户权限服务
  * @create 2023/9/9
  */
 public interface UserPermService {

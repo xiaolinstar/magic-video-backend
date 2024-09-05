@@ -5,8 +5,8 @@ import org.apache.commons.lang3.NotImplementedException;
 import java.util.Optional;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 上下文工具类
  * @create 2023/7/30
  */
 public class ContextUtil {

@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 import java.util.Optional;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description RabbitMQ监听消息队列
  * @create 2023/8/5
  */

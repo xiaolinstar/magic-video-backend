@@ -9,10 +9,10 @@ import java.util.Optional;
 import java.util.Set;
 
 /**
-* @author xlxing
-* @description 针对表【sys_permission(系统权限)】的数据库操作Service
-* @createDate 2023-08-10 22:24:12
-*/
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 系统权限服务接口
+ * @create 2023/08/10
+ */
 public interface SysPermissionService extends IService<SysPermission> {
 
     /**

@@ -18,10 +18,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
-* @author xlxing
-* @description 针对表【resource(视频资源)】的数据库操作Service实现
-* @createDate 2023-07-30 17:10:49
-*/
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 针对表【resource(视频资源)】的数据库操作Service实现
+ * @create 2023-07-30 17:10:49
+ */
 @Service
 @RequiredArgsConstructor
 public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>

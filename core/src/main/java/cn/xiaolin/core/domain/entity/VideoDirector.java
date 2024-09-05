@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 视频导演
- * @author xlxing
- * @TableName video_director
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @TableName(value ="video_director")
 @Data

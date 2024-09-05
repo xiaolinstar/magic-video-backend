@@ -14,8 +14,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 奖项
- * @author xlxing
- * @TableName award
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @TableName(value ="award")
 @Data

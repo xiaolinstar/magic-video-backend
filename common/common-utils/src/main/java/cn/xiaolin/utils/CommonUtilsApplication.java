@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
- * @author xlxing
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @SpringBootApplication
 public class CommonUtilsApplication {

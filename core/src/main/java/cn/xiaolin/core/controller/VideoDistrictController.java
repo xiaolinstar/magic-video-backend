@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Optional;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 视频和国家地区关联关系控制器
  * @create 2023/8/6
  */
 @Tag(name = "视频和国家地区的关联关系")

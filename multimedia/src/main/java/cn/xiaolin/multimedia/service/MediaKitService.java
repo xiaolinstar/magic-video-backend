@@ -3,7 +3,7 @@ package cn.xiaolin.multimedia.service;
 import java.io.File;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 媒体工具 服务类
  * @create 2023/7/23
  */

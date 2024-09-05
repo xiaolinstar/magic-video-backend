@@ -1,7 +1,7 @@
 package cn.xiaolin.utils.exception;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 全局异常
  * @create 2023/7/23
  */

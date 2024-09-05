@@ -13,8 +13,7 @@ import lombok.NoArgsConstructor;
 
 /**
  * 标签
- * @author xlxing
- * @TableName tag
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  */
 @TableName(value ="tag")
 @Data

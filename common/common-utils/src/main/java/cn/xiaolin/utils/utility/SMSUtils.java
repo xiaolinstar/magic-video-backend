@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 阿里云短信服务
  * 在使用该服务前，请在服务器环境变量中配置访问密钥
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description 短信发送工具类
  * @create 2023/9/1
  */

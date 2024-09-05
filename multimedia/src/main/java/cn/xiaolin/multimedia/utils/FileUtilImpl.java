@@ -20,7 +20,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description File Kit
  * @create 2023/7/23
  */

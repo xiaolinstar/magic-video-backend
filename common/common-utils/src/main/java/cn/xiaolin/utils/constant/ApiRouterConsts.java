@@ -1,7 +1,7 @@
 package cn.xiaolin.utils.constant;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
+ * @author xingxiaolin xing.xiaolin@foxmail.com
  * @Description API路由常量
  * @create 2023/7/23
  */

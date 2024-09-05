@@ -5,8 +5,8 @@ import io.swagger.v3.oas.annotations.info.Info;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author xingxiaolin xlxing@bupt.edu.cn
- * @Description
+ * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 用于配置Swagger文档的生成，提供基本信息和API描述
  * @create 2023/8/12
  */
 
