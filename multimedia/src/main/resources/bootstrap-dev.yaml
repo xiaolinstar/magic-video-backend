@@ -17,6 +17,42 @@ spring:
       config:
         file-extension: yaml # 文件后缀名
         group: DEFAULT_GROUP
+        enabled: false
+
+  rabbitmq:
+    host: localhost
+    username: xiaolin
+    password: 123456rabbit
+    virtual-host: /dev-media
+    connection-timeout: 15000
+
+  # 本地MySQL容器
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/dev_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
+
+file:
+  root:
+    dir: ${user.home}/magic-video-document
+
+  image:
+    dir: image/
+
+  video:
+    dir: video/
+    bucket-name: vod-videos-xiaolin
 
 
+app:
+  core-size: 3
+  max-pool-size: 4
+  queue-capacity: 8
+  thread-prefix: MediaThread-
+
+alibaba:
+  cloud:
+    oss:
+      endpoint: oss-cn-beijing.aliyuncs.com
 

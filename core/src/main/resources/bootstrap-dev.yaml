@@ -6,15 +6,46 @@ spring:
     nacos:
       # Nacos服务地址
       server-addr: localhost:8848
-      config:
-        file-extension: yaml # 文件后缀名
-#        namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
-        group: DEFAULT_GROUP
-
       # Nacos服务发现
       discovery:
         cluster-name: NANJING
         # 设置为非临时实例
         ephemeral: true
-        # 设置命名空间
-#        namespace: e35500e1-2441-4001-b60f-3f7d55b16cb5
+
+      config:
+        enabled: false
+        file-extension: yaml # 文件后缀名
+        group: DEFAULT_GROUP
+
+  # 本地MySQL容器，scheme名称：dev_magic_video
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/dev_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
+
+  # 消息队列
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: xiaolin
+    password: 123456rabbit
+    virtual-host: /dev-media
+    connection-timeout: 15000
+
+  data:
+    # 数据库缓存，Redis 端口号6389
+    redis:
+      client-type: lettuce
+      database: 0
+      host: localhost
+      port: 6379
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 200
+          max-idle: 8
+
+core:
+  video:
+    prefix-url: https://vod-videos-xiaolin.oss-cn-beijing.aliyuncs.com/

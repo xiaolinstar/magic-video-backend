@@ -1,7 +1,6 @@
 package cn.xiaolin.multimedia.service;
 
 import jakarta.servlet.http.HttpServletResponse;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;

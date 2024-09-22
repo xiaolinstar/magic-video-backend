@@ -5,7 +5,6 @@ import cn.xiaolin.multimedia.domain.dto.SliceFileUploadRequestDto;
 import cn.xiaolin.multimedia.domain.vo.FileSliceUploadVo;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.DigestUtils;

@@ -1,0 +1,81 @@
+# 创建网桥
+networks:
+  magic-dev-network:
+    external: false
+
+services:
+  magic-nacos:
+    image: nacos/nacos-server:v2.4.0
+    container_name: magic-dev-nacos
+    hostname: magic-dev-nacos
+    ports:
+      - "8848:8848"
+      - "9848:9848" # 服务需要通过localhost访问到9848 9849
+      - "9849:9849"
+    networks:
+      - magic-dev-network
+    restart: no
+    environment:
+      MODE: standalone
+      TZ: Asia/Shanghai
+
+  magic-mysql:
+    # 业务数据库
+    image: mysql:8.4
+    container_name: magic-dev-mysql
+    hostname: magic-dev-mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - magic-dev-network
+    environment:
+      LANG: C.UTF-8 # 中文乱码-1
+      # 数据库密码
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
+    volumes:
+      - ./static/mysql/dev:/docker-entrypoint-initdb.d/
+    # 中文乱码-2
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+
+  magic-auth-redis:
+    # 鉴权中间件redis
+    image: redis:7.4-alpine
+    container_name: magic-dev-auth-redis
+    hostname: magic-dev-auth-redis
+    restart: no
+    ports:
+      - "6379:6379"
+    networks:
+      - magic-dev-network
+    environment:
+      TZ: Asia/Shanghai
+
+  magic-redis:
+    # 鉴权中间件redis
+    image: redis:7.4-alpine
+    container_name: magic-dev-redis
+    hostname: magic-dev-redis
+    restart: no
+    ports:
+      - "6389:6379"
+    networks:
+      - magic-dev-network
+    environment:
+      TZ: Asia/Shanghai
+
+  magic-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: magic-dev-rabbitmq
+    hostname: magic-dev-rabbitmq
+    restart: no
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    networks:
+      - magic-dev-network
+    environment:
+      TZ: Asia/Shanghai
+      RABBITMQ_DEFAULT_USER: xiaolin
+      RABBITMQ_DEFAULT_PASS: 123456rabbit
+      RABBITMQ_DEFAULT_VHOST: /dev-media

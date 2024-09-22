@@ -16,7 +16,7 @@ import java.util.Set;
  * @Description 该类实现了Dubbo框架中的一个服务接口，提供了根据用户ID获取权限和角色的功能。
  * @create 2023/9/9
  */
-@DubboService(version = "0.0.1")
+@DubboService
 @RequiredArgsConstructor
 public class DubboUserPermService implements cn.xiaolin.api.dubbo.service.UserPermService {
     private final SysPermissionService sysPermissionService;
