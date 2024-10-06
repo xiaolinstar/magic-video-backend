@@ -22,6 +22,7 @@
 - [ ]  开发环境关闭权限校验，完善代码灵活性
 - [ ]  SpringCloudGateway及其他微服务组件healthcheck
 - [ ]  关闭docker-compose-local中暴露的本地端口，只支持容器内通信
+- [ ]  各组件如Redis、MySQL、RabbitMQ连通性单元测试
  
 ## 快速安装
 

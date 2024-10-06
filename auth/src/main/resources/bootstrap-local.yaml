@@ -32,6 +32,8 @@ spring:
           enabled: true
           max-active: 8
           max-idle: 8
+        # idle连接自动关闭时间
+        shutdown-timeout: 100ms
 
   # 权限数据库local_auth
   datasource:
