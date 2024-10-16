@@ -36,12 +36,13 @@
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.0.0</version>
-			<scope>compile</scope>
-		</dependency>
+<!--		该配置不需要，10-16日关闭，1个月后不影响业务删除-->
+<!--		<dependency>-->
+<!--			<groupId>jakarta.servlet</groupId>-->
+<!--			<artifactId>jakarta.servlet-api</artifactId>-->
+<!--			<version>6.0.0</version>-->
+<!--			<scope>compile</scope>-->
+<!--		</dependency>-->
 
 
 	</dependencies>

@@ -1,3 +1,4 @@
+# 开发环境：使用docker-compose启动依赖中间件，在IDEA中启动微服务
 # 创建网桥
 networks:
   magic-dev-network:
@@ -34,7 +35,8 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
       TZ: Asia/Shanghai
     volumes:
-      - ./static/mysql/dev:/docker-entrypoint-initdb.d/
+      - $MYSQL_DATA:/var/lib/mysql
+      - $MYSQL_INIT:/docker-entrypoint-initdb.d/
     # 中文乱码-2
     command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
 
@@ -79,3 +81,19 @@ services:
       RABBITMQ_DEFAULT_USER: xiaolin
       RABBITMQ_DEFAULT_PASS: 123456rabbit
       RABBITMQ_DEFAULT_VHOST: /dev-media
+
+  magic-minio:
+    image: minio/minio
+    container_name: magic-dev-minio
+    ports:
+      - "59000:9000"
+      - "59001:59001"
+    networks:
+      - magic-dev-network
+    volumes:
+      - $MINIO_DATA:/data
+    environment:
+      TZ: Asia/Shanghai
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: xiaolin123minio
+    command: server /data --console-address ":59001"

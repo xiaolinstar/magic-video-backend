@@ -15,7 +15,7 @@ import java.util.List;
 public class DubboUserPermClient {
 
     @DubboReference
-    public UserPermService userPermService;
+    private UserPermService userPermService;
 
     public List<String> getPermissions(Long userId) {
         return userPermService.getPermByUserId(userId);

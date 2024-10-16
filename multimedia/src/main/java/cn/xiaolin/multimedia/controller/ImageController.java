@@ -23,13 +23,9 @@ public class ImageController {
     private final ImageService imageService;
 
     @PostMapping("/image")
-    public Result<Map<String, Long>> one(MultipartFile file) {
-        throw new NotImplementedException();
-    }
-
-    @GetMapping("/image/{id}")
-    public void getOne(HttpServletResponse response, @PathVariable Long id) {
-         throw new NotImplementedException();
+    public Result<Map<String, String>> one(MultipartFile image) {
+        String imageUrl = imageService.imageUpload(image);
+        return Result.ok(Map.of("url", imageUrl));
     }
 
 }

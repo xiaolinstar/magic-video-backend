@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: hls
+
+  # Nacos配置
+  cloud:
+    nacos:
+      server-addr: localhost:8848
+
+      # 服务发现
+      discovery:
+        cluster-name: NANJING
+        # 设置为非临时实例
+        ephemeral: true
+        group: DEFAULT_GROUP
+
+      # 服务配置
+      config:
+        file-extension: yaml # 文件后缀名
+        group: DEFAULT_GROUP
+        enabled: false
+
+  rabbitmq:
+    host: localhost
+    username: xiaolin
+    password: 123456rabbit
+    virtual-host: /dev-hls
+    connection-timeout: 15000
+
+  # 本地MySQL容器
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/dev_hls?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true

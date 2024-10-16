@@ -17,11 +17,6 @@
 			<artifactId>common-utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>cn.xiaolin</groupId>
-			<artifactId>common-message</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
 
 		<!-- aliyun oss -->
 		<dependency>
@@ -35,6 +30,14 @@
 			<artifactId>aliyun-sdk-oss</artifactId>
 			<version>3.17.1</version>
 		</dependency>
+
+		<!-- 文件存储minio-->
+		<dependency>
+			<groupId>io.minio</groupId>
+			<artifactId>minio</artifactId>
+			<version>8.5.10</version>
+		</dependency>
+
 
 
 		<!--ffmpeg工具包-->

@@ -15,6 +15,8 @@ import net.bramp.ffmpeg.progress.Progress;
 import net.bramp.ffmpeg.progress.ProgressListener;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -35,9 +37,9 @@ public class MediaKitServiceImpl implements MediaKitService {
 
     @Override
     @Async("mediaExecutor")
-    public void media2Hls(File file) {
-        String nameWithoutExt = file.getName().substring(0, file.getName().lastIndexOf("."));
-        String parentPath = file.getParent();
+    public void media2Hls(File video) {
+        String nameWithoutExt = video.getName().substring(0, video.getName().lastIndexOf("."));
+        String parentPath = video.getParent();
         File targetDir = new File(parentPath + '/' + nameWithoutExt);
         if (!targetDir.exists()) {
             boolean succeed = targetDir.mkdirs();
@@ -57,7 +59,7 @@ public class MediaKitServiceImpl implements MediaKitService {
 
         FFmpegBuilder builder = new FFmpegBuilder()
                 .overrideOutputFiles(true)
-                .setInput(file.getPath())
+                .setInput(video.getPath())
                 .addOutput(outputPath1080p)
                 .setFormat("hls")
                 .setAudioCodec(audioCodec)
@@ -91,7 +93,7 @@ public class MediaKitServiceImpl implements MediaKitService {
 
         try {
             FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
-            FFmpegProbeResult in = ffprobe.probe(file.getPath());
+            FFmpegProbeResult in = ffprobe.probe(video.getPath());
             FFmpegJob job = executor.createJob(builder, new ProgressListener() {
                 final double durationNs = in.getFormat().duration * TimeUnit.SECONDS.toNanos(1);
                 @Override

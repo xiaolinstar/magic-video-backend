@@ -12,17 +12,31 @@
 - 本地环境local：容器运行
 - 开发环境dev：宿主机运行
 
+2024-10-16 minio替换阿里云oss
+
+- 本地缓存内容过多，导致启动容器失败，定期清理docker本地缓存
+- .dev.env .local.env设置docker-compose环境变量，cli启动时增加参数`--env_file`
+- 容器名称变更，magic-core magic-auth等
+- hls微服务完善，支持视频编码为dash和hls
+- 中间件数据文件、配置文件本地volume映射，新增volume文件夹统一管理
+- 删除.gitignore文件中的test/目录，允许将单元测试添加到git仓库
+
 ## 待办Todos
 
 - [ ]  搭建Maven私有仓库Nexus
 - [ ]  搭建私有代码托管仓库GitLab
 - [ ]  配置文件与微服务解耦，密钥相关专门存储，包括数据库、Redis、RabbitMQ等
-- [ ]  将视频存储在本地，替代阿里云oss
+- [ ]  将视频存储在本地，替代阿里云oss，进行中
 - [ ]  本地自动构建、自动运行脚本
 - [ ]  开发环境关闭权限校验，完善代码灵活性
 - [ ]  SpringCloudGateway及其他微服务组件healthcheck
-- [ ]  关闭docker-compose-local中暴露的本地端口，只支持容器内通信
+- [x]  关闭docker-compose-local中暴露的本地端口，只支持容器内通信
 - [ ]  各组件如Redis、MySQL、RabbitMQ连通性单元测试
+- [x]  minio使用非9000 9001端口无法启动
+- [ ]  单元测试依赖其他配置，如MySQL、Redis、RabbitMQ等
+- [ ]  部署Prometheus监控Nginx流量
+- [ ]  docker-compose-local中容器名变更
+- [ ]  支持K8s容器编排和管理
  
 ## 快速安装
 

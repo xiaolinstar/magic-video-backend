@@ -1,15 +1,25 @@
 package cn.xiaolin.multimedia.service.impl;
 
-import cn.xiaolin.utils.exception.GlobalException;
-import cn.xiaolin.multimedia.utils.FileUtil;
+import cn.xiaolin.multimedia.config.MinioConfigProperties;
 import cn.xiaolin.multimedia.service.ImageService;
-import jakarta.servlet.http.HttpServletResponse;
+import cn.xiaolin.utils.exception.GlobalException;
+import io.minio.GetPresignedObjectUrlArgs;
+import io.minio.MinioClient;
+import io.minio.ObjectWriteResponse;
+import io.minio.PutObjectArgs;
+import io.minio.errors.*;
+import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -18,24 +28,48 @@ import java.io.IOException;
  */
 @Service
 @RequiredArgsConstructor
+@EnableConfigurationProperties(MinioConfigProperties.class)
 public class ImageServiceImpl implements ImageService {
 
-    private final FileUtil imageUtil;
+    private final MinioClient minioClient;
+    private final MinioConfigProperties minioConfigProperties;
 
+    protected String getBucketName() {
+        return minioConfigProperties.getImage().getBucketName();
+    }
 
     /**
      * 图像上传
      *
-     * @param file 图像
+     * @param image 图像
      * @return 图像资源ID
      */
     @Override
-    public Long imageUpload(MultipartFile file){
-        try {
-            String filePath = imageUtil.fileUpload(file);
-            return null;
-        } catch (IOException e) {
-            throw new GlobalException(e.getMessage());
+    public String imageUpload(MultipartFile image) {
+        if (image.isEmpty()) {
+            throw new GlobalException("图像内容为空");
+        } else if (!Objects.equals(image.getContentType(), "image/jpeg")) {
+            throw new GlobalException("图像格式必须为image/jpeg");
+        }
+
+        try (BufferedInputStream inputStream = new BufferedInputStream(image.getInputStream())) {
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(getBucketName())
+                    .object(image.getOriginalFilename())
+                    .stream(inputStream, image.getSize(), -1)
+                    .contentType("image/jpeg")
+                    .build();
+            minioClient.putObject(putObjectArgs);
+            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                    .bucket(getBucketName())
+                    .method(Method.GET)
+                    .object(image.getOriginalFilename())
+                    .build()
+            );
+        } catch (IOException | ErrorResponseException | InsufficientDataException | InternalException |
+                 InvalidKeyException | InvalidResponseException | NoSuchAlgorithmException | ServerException |
+                 XmlParserException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -46,34 +80,9 @@ public class ImageServiceImpl implements ImageService {
      * @return 图像资源ID
      */
     @Override
-    public Long imageUpload(String imageBase64) {
+    public String imageUpload(String imageBase64) {
         throw new NotImplementedException();
     }
 
-    /**
-     * ServletOutputStream流式加载
-     * 返回值必须为void
-     *
-     * @param response HttpServletResponse
-     * @param filePath 文件路径
-     */
-    @Override
-    public void imageLoad(HttpServletResponse response, String filePath){
-        try {
-            imageUtil.fileLoad(response, filePath);
-        } catch (IOException e) {
-            throw new GlobalException(e.getMessage());
-        }
-    }
 
-    /**
-     * 图像base64编码
-     *
-     * @param filePath 图像资源ID
-     * @return base64字符串图像
-     */
-    @Override
-    public String imageLoad(String filePath) {
-        return imageUtil.fileLoad(filePath);
-    }
 }

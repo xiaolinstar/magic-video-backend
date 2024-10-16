@@ -28,24 +28,23 @@ public class VideoController {
     private final VideoService videoService;
 
     @PostMapping("/video/slice")
-    public Result<FileSliceUploadVo> one(@RequestParam MultipartFile file, @RequestParam Integer chunk,
-                                         @RequestParam Integer chunks, @RequestParam String md5) {
+    public Result<FileSliceUploadVo> one(@RequestParam MultipartFile chunkVideo,
+                                         @RequestParam String md5,
+                                         @RequestParam long chunkId,
+                                         @RequestParam String chunkMd5) {
         SliceFileUploadRequestDto requestDTO = SliceFileUploadRequestDto.builder()
-                .file(file)
-                .chunk(chunk)
-                .chunks(chunks)
                 .md5(md5)
+                .chunkVideo(chunkVideo)
+                .chunkId(chunkId)
+                .chunkMd5(chunkMd5)
                 .build();
-        FileSliceUploadVo result = videoService.sliceVideoUpload(requestDTO);
-        return Result.ok(result);
+        videoService.sliceVideoUpload(requestDTO);
+        return Result.ok();
     }
 
     @PostMapping("/video/merge")
-    public Result<Map<String, Long>> sliceMerge(@RequestParam Integer chunks, @RequestParam String md5, String suffix) {
-        Long resourceId = videoService.sliceVideoMerge(chunks, md5, suffix);
-        Map<String, Long> map = new HashMap<>();
-        map.put("resourceId", resourceId);
-        return Result.ok(map);
+    public Result<Map<String, Long>> sliceMerge(@RequestParam String md5) {
+        throw new NotImplementedException();
     }
 
     @GetMapping("/video/check")
@@ -53,18 +52,10 @@ public class VideoController {
         throw new NotImplementedException();
     }
 
-    @GetMapping("/video/resume")
-    public Result<Set<Integer>> resume(@RequestParam String md5) {
-        Set<Integer> received = videoService.continueUpload(md5);
-        return Result.ok(received);
-    }
 
     @PostMapping("/video")
-    public Result<Map<String, Long>> one(MultipartFile file) {
-        // 上传文件
-        Long resourceId = videoService.videoUpload(file);
-        Map<String, Long> map = new HashMap<>();
-        map.put("id", resourceId);
-        return Result.ok(map);
+    public Result<Map<String, String>> one(MultipartFile video) {
+        String videoUrl = videoService.videoUpload(video);
+        return Result.ok(Map.of("url", videoUrl));
     }
 }

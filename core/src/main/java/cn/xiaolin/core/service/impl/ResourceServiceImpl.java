@@ -9,10 +9,8 @@ import cn.xiaolin.core.domain.mapper.ResourceMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -54,7 +52,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
         LambdaUpdateWrapper<Resource> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(Objects.nonNull(dto.getName()), Resource::getName, dto.getName())
                 .set(Objects.nonNull(dto.getMpd()), Resource::getMpd, dto.getMpd())
-                .set(Objects.nonNull(dto.getRawFilePath()), Resource::getMp4, dto.getRawFilePath())
+                .set(Objects.nonNull(dto.getMp4()), Resource::getMp4, dto.getMp4())
                 .set(Objects.nonNull(dto.getM3u8()), Resource::getM3u8, dto.getM3u8())
                 .set(Objects.nonNull(dto.getMd5()), Resource::getMd5, dto.getMd5())
                 .set(Objects.nonNull(dto.getAvatar()), Resource::getAvatar, dto.getAvatar())
@@ -70,7 +68,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
         Resource resource = Resource.builder()
                 .id(dto.getId())
                 .name(dto.getName())
-                .mp4(dto.getRawFilePath())
+                .mp4(dto.getMp4())
                 .m3u8(dto.getM3u8())
                 .mpd(dto.getMpd())
                 .md5(dto.getMd5())

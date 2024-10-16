@@ -14,13 +14,6 @@ ENV ENVIRONMENT=local
 # Jar包的版本，使用脚本从pom.xml中动态获取
 ENV JAR_VERSION=0.0.1-SNAPSHOT
 
-# 阿里云OSS密钥
-ENV OSS_ACCESS_KEY_ID tofill
-ENV OSS_ACCESS_KEY_SECRET tofill
-# 阿里云短信服务
-ENV SMS_ACCESS_KEY_ID tofill
-ENV SMS_ACCESS_SECRET tofill
-
 # 维护者
 MAINTAINER ${USER}
 

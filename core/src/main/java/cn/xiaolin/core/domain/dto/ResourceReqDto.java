@@ -1,9 +1,5 @@
 package cn.xiaolin.core.domain.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,7 +30,7 @@ public class ResourceReqDto {
     /**
      * MP4资源地址
      */
-    private String rawFilePath;
+    private String mp4;
 
     /**
      * HLS资源

@@ -10,7 +10,7 @@ CREATE TABLE `sys_user`
     `email`              VARCHAR(255) COMMENT '邮箱',
     `phone`              VARCHAR(255) COMMENT '手机号',
     `password`           VARCHAR(255) COMMENT '密码',
-    `admission`          TINYINT(1)          DEFAULT false COMMENT '准入权限',
+    `admission`          TINYINT(1)          DEFAULT true COMMENT '准入权限',
     `revision`           INT        NOT NULL DEFAULT 0 COMMENT '乐观锁',
     `deleted`            TINYINT(1) NOT NULL DEFAULT false COMMENT '逻辑删除',
     `create_time`        DATETIME   NOT NULL COMMENT '创建时间',
@@ -24,8 +24,8 @@ CREATE TABLE `sys_user`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT = '系统用户';
 
-insert into `sys_user` value (1, 'li', 'li@qq.com',
-                              '18811019971', '123456li', true, 0, false,
+insert into `sys_user` value (1, 'xiaolin', 'xing.xiaolin@foxmail.com',
+                              '13905187151', '123456xxl', true, 0, false,
                               '2023-08-13 11:40:03', '2023-08-13 11:40:03', 6, 6);
 insert into `sys_user` value (2, 'tom', 'tom@gmail.com',
                               '18811019972', '123456tom', true, 0, false,

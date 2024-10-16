@@ -41,9 +41,8 @@
         <module>core</module>
         <module>auth</module>
         <module>gateway</module>
-        <!--        <module>rank</module>-->
-        <!--        <module>search</module>-->
-        <!--        <module>user</module>-->
+        <module>hls</module>
+
     </modules>
 
     <profiles>

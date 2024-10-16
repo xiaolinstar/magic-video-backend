@@ -1,21 +1,6 @@
 {
   "properties": [
     {
-      "name": "file.image.dir",
-      "type": "java.lang.String",
-      "description": "Description for file.image.dir."
-    },
-    {
-      "name": "file.video.dir",
-      "type": "java.lang.String",
-      "description": "Description for file.video.dir."
-    },
-    {
-      "name": "file.root.dir",
-      "type": "java.lang.String",
-      "description": "Description for file.root.dir."
-    },
-    {
       "name": "app.core-size",
       "type": "java.lang.Integer",
       "description": "Description for app.core-size."
@@ -36,9 +21,24 @@
       "description": "Description for app.thread-prefix."
     },
     {
-      "name": "file.video.bucket-name",
+      "name": "minio.video.bucket-name",
       "type": "java.lang.String",
-      "description": "Description for file.video.bucket-name."
+      "description": "Description for minio.video.bucket-name."
+    },
+    {
+      "name": "minio.image.bucket-name",
+      "type": "java.lang.String",
+      "description": "Description for minio.image.bucket-name."
+    },
+    {
+      "name": "minio.hls.bucket-name",
+      "type": "java.lang.String",
+      "description": "Description for minio.hls.bucket-name."
+    },
+    {
+      "name": "minio.dash.bucket-name",
+      "type": "java.lang.String",
+      "description": "Description for minio.dash.bucket-name."
     }
   ]
 }

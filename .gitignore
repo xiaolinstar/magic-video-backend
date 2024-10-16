@@ -27,11 +27,14 @@ build/
 ### VS Code ###
 .vscode/
 
-test/
 logs
 
+
+### 业务自定义 ###
 nacos-data
 multimedia/Dockerfile-backup
+
 static/nacos/
 static/mysql-backup/
-auth/src/main/resources/static/sql/
+
+volume/

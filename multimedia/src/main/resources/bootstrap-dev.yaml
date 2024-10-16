@@ -33,17 +33,19 @@ spring:
     password: 123456
     url: jdbc:mysql://localhost:3306/dev_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 
-file:
-  root:
-    dir: ${user.home}/magic-video-document
+minio:
+  endpoint: http://localhost:59000/
+  access-key: RzQywv1gIcgXeSSMMeNz
+  secret-key: 3bD0LUxmD4JhqUCcPMs9QkpCSfTCaG8whZWcSv69
 
   image:
-    dir: image/
-
+    bucket-name: magic-image
   video:
-    dir: video/
-    bucket-name: vod-videos-xiaolin
-
+    bucket-name: magic-video
+  hls:
+    bucket-name: magic-hls
+  dash:
+    bucket-name: magic-dash
 
 app:
   core-size: 3
@@ -51,8 +53,4 @@ app:
   queue-capacity: 8
   thread-prefix: MediaThread-
 
-alibaba:
-  cloud:
-    oss:
-      endpoint: oss-cn-beijing.aliyuncs.com
 

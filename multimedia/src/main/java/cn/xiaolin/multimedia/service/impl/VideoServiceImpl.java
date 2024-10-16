@@ -1,20 +1,28 @@
 package cn.xiaolin.multimedia.service.impl;
 
-import cn.xiaolin.message.msg.MediaUploadMsg;
-import cn.xiaolin.utils.exception.GlobalException;
+import cn.xiaolin.multimedia.config.MinioConfigProperties;
 import cn.xiaolin.multimedia.domain.dto.SliceFileUploadRequestDto;
-import cn.xiaolin.multimedia.domain.vo.FileSliceUploadVo;
-import cn.xiaolin.multimedia.utils.FileUtil;
 import cn.xiaolin.multimedia.service.VideoService;
+import cn.xiaolin.utils.exception.GlobalException;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
+import io.minio.GetPresignedObjectUrlArgs;
+import io.minio.MinioClient;
+import io.minio.PutObjectArgs;
+import io.minio.errors.*;
+import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.StringUtils;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
 
 /**
@@ -24,103 +32,72 @@ import java.util.concurrent.ConcurrentMap;
  */
 @Service
 @RequiredArgsConstructor
+@EnableConfigurationProperties(MinioConfigProperties.class)
 public class VideoServiceImpl implements VideoService {
 
-    private final FileUtil videoUtil;
+    private final MinioClient minioClient;
+    private final MinioConfigProperties minioConfigProperties;
     private final IdentifierGenerator multimediaIdGenerator;
-    private final ConcurrentMap<Long, MediaUploadMsg> mediaConcurrentMap;
+
+    protected String getBucketName() {
+        return minioConfigProperties.getVideo().getBucketName();
+    }
 
     /**
      * 文件上传
      *
-     * @param file MultipartFile格式文件
+     * @param video MultipartFile格式文件
      * @return 文件id
      */
     @Override
-    public Long videoUpload(MultipartFile file) {
-        try {
-            // 上传文件到服务器
-            String filePath = videoUtil.fileUpload(file);
-            long resourceId = multimediaIdGenerator.nextId(this).longValue();
-            MediaUploadMsg mediaMsg = MediaUploadMsg.builder()
-                    .id(resourceId)
-                    .name(file.getOriginalFilename())
-                    .rawFilePath(filePath)
-                    .ossDirPath(videoUtil.getRelativePath())
+    public String videoUpload(MultipartFile video) {
+        if (video.isEmpty()) {
+            throw new GlobalException("视频内容为空");
+        } else if (!Objects.equals(video.getContentType(), "video/mp4")) {
+            throw new GlobalException("视频格式必须为video/mp4");
+        }
+
+        try (BufferedInputStream inputStream = new BufferedInputStream(video.getInputStream())) {
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(getBucketName())
+                    .object(video.getOriginalFilename())
+                    .stream(inputStream, video.getSize(), -1)
+                    .contentType("video/mp4")
                     .build();
-            mediaConcurrentMap.putIfAbsent(resourceId, mediaMsg);
-            return resourceId;
-        } catch (IOException e) {
-            throw new GlobalException(e.getMessage());
+            minioClient.putObject(putObjectArgs);
+
+            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                    .bucket(getBucketName())
+                    .method(Method.GET)
+                    .object(video.getOriginalFilename())
+                    .build()
+            );
+        } catch (IOException | ErrorResponseException | InsufficientDataException | InternalException |
+                 InvalidKeyException | InvalidResponseException | NoSuchAlgorithmException | ServerException |
+                 XmlParserException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    /**
-     * 视频分片上传
-     *
-     * @param requestDTO 上传请求
-     * @return 上传消息
-     */
     @Override
-    public FileSliceUploadVo sliceVideoUpload(SliceFileUploadRequestDto requestDTO) {
-        try {
-            return videoUtil.sliceFileUpload(requestDTO);
-        } catch (IOException e) {
-            throw new GlobalException(e.getMessage());
-        }
+    public Boolean initSliceUpload(String md5, long chunkNum) {
+        return null;
     }
 
-    /**
-     * 视频合并
-     *
-     * @param chunks 视频分片数
-     * @param md5    视频摘要md5
-     * @return 视频资源ID
-     */
     @Override
-    public Long sliceVideoMerge(Integer chunks, String md5, String suffix){
-        try {
-            String filePath = videoUtil.sliceFileMerge(chunks, md5, suffix);
-
-            // 创造一个未使用在的resourceId
-
-            long resourceId = multimediaIdGenerator.nextId(this).longValue();
-            MediaUploadMsg mediaMsg = MediaUploadMsg.builder()
-                    .id(resourceId)
-                    .rawFilePath(filePath)
-                    .ossDirPath(videoUtil.getRelativePath())
-                    .build();
-            mediaConcurrentMap.putIfAbsent(resourceId, mediaMsg);
-            return resourceId;
-        } catch (IOException e) {
-            throw new GlobalException(e.getMessage());
-        }
+    public long sliceVideoUpload(SliceFileUploadRequestDto requestDTO) {
+        return 0L;
     }
 
-    /**
-     * 视频上传校验
-     *
-     * @param md5 视频摘要
-     * @return 视频资源ID
-     */
+
     @Override
-    public Long checkVideo(String md5) {
-        String filePath = videoUtil.checkFile(md5);
-        if (StringUtils.isEmpty(filePath)) {
-            return null;
-        } else {
-            throw new NotImplementedException();
-        }
+    public Boolean abortUpload(String md5) {
+        return Boolean.FALSE;
     }
 
-    /**
-     * 暂停后继续上传，返回已经上传的切片序号
-     *
-     * @param md5 视频摘要md5
-     * @return 已经上传的分片序号
-     */
     @Override
-    public Set<Integer> continueUpload(String md5) {
-        return videoUtil.continueUpload(md5);
+    public String sliceVideoMerge(String md5) {
+        return "";
     }
+
 }

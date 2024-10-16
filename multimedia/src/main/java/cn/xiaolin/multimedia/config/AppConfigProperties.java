@@ -7,10 +7,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description App相关配置信息
+ * @Description App相关配置信息，从配置文件读取
  * @create 2023/8/26
  */
-@ConfigurationProperties(prefix = "app", ignoreInvalidFields = true)
+@ConfigurationProperties(prefix = "app")
 @Getter
 @Setter
 @NoArgsConstructor

@@ -18,8 +18,8 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 @Data
 public class SliceFileUploadRequestDto {
-    private MultipartFile file;
-    private Integer chunk;
-    private Integer chunks;
     private String md5;
+    private MultipartFile chunkVideo;
+    private String chunkMd5;
+    private Long chunkId;
 }

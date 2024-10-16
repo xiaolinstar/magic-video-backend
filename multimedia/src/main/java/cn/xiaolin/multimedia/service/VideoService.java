@@ -14,39 +14,14 @@ import java.util.Set;
  */
 public interface VideoService {
 
-    /**
-     * 文件上传
-     * @param file MultipartFile格式文件
-     * @return 文件id
-     */
-    Long videoUpload(MultipartFile file);
 
-    /**
-     * 视频分片上传
-     * @param requestDTO 上传请求
-     * @return 上传消息
-     */
-    FileSliceUploadVo sliceVideoUpload(SliceFileUploadRequestDto requestDTO);
+    String videoUpload(MultipartFile video);
 
-    /**
-     * 视频合并
-     * @param chunks 视频分片数
-     * @param md5 视频摘要md5
-     * @return 视频资源ID
-     */
-    Long sliceVideoMerge(Integer chunks, String md5, String suffix);
+    Boolean initSliceUpload(String md5, long chunkNum);
 
-    /**
-     * 视频上传校验
-     * @param md5 视频摘要
-     * @return 视频资源ID
-     */
-    Long checkVideo(String md5);
+    long sliceVideoUpload(SliceFileUploadRequestDto requestDTO);
 
-    /**
-     * 暂停后继续上传，返回已经上传的切片序号
-     * @param md5 视频摘要md5
-     * @return 已经上传的分片序号
-     */
-    Set<Integer> continueUpload(String md5);
+    Boolean abortUpload(String md5);
+
+    String sliceVideoMerge(String md5);
 }

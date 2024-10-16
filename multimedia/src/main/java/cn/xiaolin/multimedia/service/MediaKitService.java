@@ -9,12 +9,8 @@ import java.io.File;
  */
 public interface MediaKitService {
 
-    /**
-     *
-     * @param file 视频文件
-     */
-    void media2Hls(File file);
+    void media2Hls(File video);
 
-    void media2Dash(File file);
+    void media2Dash(File video);
 
 }

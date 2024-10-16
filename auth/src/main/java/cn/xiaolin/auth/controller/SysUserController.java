@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -54,6 +55,11 @@ public class SysUserController {
         return item.map(Result::ok).orElseGet(Result::badRequest);
     }
 
-
+    @Operation(summary = "查询所有用户")
+    @GetMapping("/user")
+    public Result<List<SysUser>> listAll() {
+        List<SysUser> sysUserList = sysUserService.list();
+        return Result.ok(sysUserList);
+    }
 
 }

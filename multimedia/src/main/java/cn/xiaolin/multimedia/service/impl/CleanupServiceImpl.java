@@ -20,13 +20,9 @@ public class CleanupServiceImpl implements SmartLifecycle {
 
     private volatile boolean running = false;
 
-    private final OSS myOSSClient;
     private final ThreadPoolTaskExecutor mediaExecutor;
 
     private void cleanup() {
-        if (Objects.nonNull(myOSSClient)) {
-            myOSSClient.shutdown();
-        }
         if (Objects.nonNull(mediaExecutor)) {
             mediaExecutor.shutdown();
         }
