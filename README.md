@@ -7,6 +7,7 @@
 此外，本项目还尝试建立了企业级的持续集成/持续部署，开发者只需关注业务代码，代码发布与上线已经流水线化。
 
 ## 更新日志
+
 2024-09-22 构建docker-compose运行脚本
 
 - 本地环境local：容器运行
@@ -30,14 +31,37 @@
 - [ ]  本地自动构建、自动运行脚本
 - [ ]  开发环境关闭权限校验，完善代码灵活性
 - [ ]  SpringCloudGateway及其他微服务组件healthcheck
-- [x]  关闭docker-compose-local中暴露的本地端口，只支持容器内通信
+- [X]  关闭docker-compose-local中暴露的本地端口，只支持容器内通信
 - [ ]  各组件如Redis、MySQL、RabbitMQ连通性单元测试
-- [x]  minio使用非9000 9001端口无法启动
+- [X]  minio使用非9000 9001端口无法启动
 - [ ]  单元测试依赖其他配置，如MySQL、Redis、RabbitMQ等
 - [ ]  部署Prometheus监控Nginx流量
 - [ ]  docker-compose-local中容器名变更
 - [ ]  支持K8s容器编排和管理
- 
+- [ ]  快速启动文档更新，local和dev模式两种启动方式
+
+## 基础知识学习
+
+Java基础知识：JavaGuide
+
+- 基本：掌握Java基本语法、面向对象编程
+- 进阶：IO、stream流、计算机网络、数据结构
+- 高级：JVM、Java锁、多线程、MySQL、设计模式
+
+Java企业级框架：SpringBoot
+
+- 开发工具：Linux、git、Docker
+- 项目实战：哔哩哔哩-瑞吉外卖项目
+- 微服务项目：
+  - 分布式基础知识
+  - 注册中心（Nacos、Eureka、Zookeeper）
+  - RPC（Dubbo、gRPC）
+  - 消息队列（RabbitMQ、Kafka）
+  - 配置中心（Nacos、Config Server）
+- DevOps：
+  - 持续集成：Jenkins
+  - 容器编排：docker-compose、k8s
+
 ## 快速安装
 
 **安装项目**
@@ -63,10 +87,10 @@ mvn clean package
 **打包容器镜像**
 
 ```shell
-docker build -t xxl1997/magic-video:auth-0.0.1-SNAPSHOT auth/.
-docker build -t xxl1997/magic-video:gateway-0.0.1-SNAPSHOT gateway/.
-docker build -t xxl1997/magic-video:multimedia-0.0.1-SNAPSHOT multimedia/.
-docker build -t xxl1997/magic-video:core-0.0.1-SNAPSHOT core/.
+docker build -t xxl1997/magic-authauth:0.0.1-SNAPSHOT auth/.
+docker build -t xxl1997/magic-gateway:0.0.1-SNAPSHOT gateway/.
+docker build -t xxl1997/magic-multimedia:0.0.1-SNAPSHOT multimedia/.
+docker build -t xxl1997/magic-core:0.0.1-SNAPSHOT core/.
 ```
 
 **启动容器集群（本地开发环境）**
