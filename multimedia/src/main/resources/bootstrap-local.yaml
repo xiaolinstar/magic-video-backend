@@ -43,7 +43,7 @@ minio:
   video:
     bucket-name: magic-video
   hls:
-    bucket-name: magic-hls
+    bucket-name: magic-has
   dash:
     bucket-name: magic-dash
 

@@ -1,11 +1,12 @@
 spring:
   application:
-    name: multimedia
+    name: has
 
   # Nacos配置
   cloud:
     nacos:
       server-addr: localhost:8848
+
       # 服务发现
       discovery:
         cluster-name: NANJING
@@ -23,7 +24,7 @@ spring:
     host: localhost
     username: xiaolin
     password: 123456rabbit
-    virtual-host: /dev-media
+    virtual-host: /dev-has
     connection-timeout: 15000
 
   # 本地MySQL容器
@@ -31,26 +32,4 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-    url: jdbc:mysql://localhost:3306/dev_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
-
-minio:
-  endpoint: http://localhost:59000/
-  access-key: RzQywv1gIcgXeSSMMeNz
-  secret-key: 3bD0LUxmD4JhqUCcPMs9QkpCSfTCaG8whZWcSv69
-
-  image:
-    bucket-name: magic-image
-  video:
-    bucket-name: magic-video
-  hls:
-    bucket-name: magic-has
-  dash:
-    bucket-name: magic-dash
-
-app:
-  core-size: 3
-  max-pool-size: 4
-  queue-capacity: 8
-  thread-prefix: MediaThread-
-
-
+    url: jdbc:mysql://localhost:3306/dev_hls?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true

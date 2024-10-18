@@ -1,5 +1,6 @@
-# 使用官方的OpenJDK 17作为基础镜像
-FROM openjdk:17
+# 使用官方的OpenJDK 17.0.2作为基础镜像，支持amd64和arm64架构
+FROM openjdk:17.0.2
+
 
 ARG USER=xing.xiaolin@foxmail.com
 

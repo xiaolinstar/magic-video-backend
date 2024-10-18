@@ -86,8 +86,8 @@ services:
     image: minio/minio
     container_name: magic-dev-minio
     ports:
-      - "59000:9000"
-      - "59001:59001"
+      - "9010:9000"
+      - "9011:9001"
     networks:
       - magic-dev-network
     volumes:
@@ -96,4 +96,4 @@ services:
       TZ: Asia/Shanghai
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: xiaolin123minio
-    command: server /data --console-address ":59001"
+    command: server /data --console-address ":9001"

@@ -8,10 +8,10 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>hls</artifactId>
-	<name>hls</name>
+	<artifactId>has</artifactId>
+	<name>Http Adaptive Stream</name>
 	<version>0.0.1-SNAPSHOT</version>
-	<description>hls</description>
+	<description>Http Adaptive Stream</description>
 
 	<dependencies>
 		<dependency>

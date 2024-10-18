@@ -1,4 +1,4 @@
-package cn.xiaolin.hls.config;
+package cn.xiaolin.has.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

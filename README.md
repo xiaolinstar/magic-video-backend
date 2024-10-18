@@ -4,7 +4,9 @@
 
 本项目是一个使用Java技术栈实现的视频点播网站后端项目，全面涉及到了整个Java技术栈的主流技术，包括但不限于SpringBoot MySQL Redis MybatisPlus Nacos Dubbo。
 
-此外，本项目还尝试建立了企业级的持续集成/持续部署，开发者只需关注业务代码，代码发布与上线已经流水线化。
+此外，本项目还尝试建立了基于Jenkins的持续集成/持续部署，开发者只需关注业务代码，代码发布与上线已经流水线化。
+
+---
 
 ## 更新日志
 
@@ -39,35 +41,52 @@
 - [ ]  docker-compose-local中容器名变更
 - [ ]  支持K8s容器编排和管理
 - [ ]  快速启动文档更新，local和dev模式两种启动方式
+- [ ]  容器镜像依赖tag，全部更新为确定版本，而不要使用默认latest
+- [ ]  项目微服务关系架构图展示
 
-## 基础知识学习
+---
 
-Java基础知识：JavaGuide
+## Java服务端开发基础知识
 
-- 基本：掌握Java基本语法、面向对象编程
-- 进阶：IO、stream流、计算机网络、数据结构
-- 高级：JVM、Java锁、多线程、MySQL、设计模式
+> 本项目使用Java技术栈，想要参与到本项目的开发工作，需要具备以下基础知识
 
+### 必须掌握
+
+Java基础知识：面相对象编程、集合、线程池
+计算机基础知识：计算机网络、操作系统、Linux基础
 Java企业级框架：SpringBoot
+其他：git、docker
 
-- 开发工具：Linux、git、Docker
-- 项目实战：哔哩哔哩-瑞吉外卖项目
-- 微服务项目：
-  - 分布式基础知识
-  - 注册中心（Nacos、Eureka、Zookeeper）
-  - RPC（Dubbo、gRPC）
-  - 消息队列（RabbitMQ、Kafka）
-  - 配置中心（Nacos、Config Server）
-- DevOps：
-  - 持续集成：Jenkins
-  - 容器编排：docker-compose、k8s
+### 推荐掌握
 
-## 快速安装
+Java基础知识：Java IO、JVM、Java锁
 
-**安装项目**
+编程技巧：stream流、设计模式
+
+数据库知识：Redis、MySQL
+
+微服务：
+
+- 分布式基础知识：CAP理论、分布式ID
+- 数据库ORM工具：MybatisPlus
+- 注册中心（Nacos、Eureka、Zookeeper）
+- RPC（Dubbo、gRPC）
+- 消息队列（RabbitMQ、Kafka）
+- 配置中心（Nacos、ConfigServer）
+
+DevOps：
+
+- 持续集成：Jenkins
+- 容器编排：docker-compose、k8s
+
+---
+
+## 快速开始
+
+**克隆项目**
 
 ```shell
-git clone https://github.com/xlxingRun/magic-video-backend.git
+git clone git@github.com:xiaolinstar/magic-video-backend.git
 ```
 
 **进入目录**
@@ -76,256 +95,183 @@ git clone https://github.com/xlxingRun/magic-video-backend.git
 cd magic-video-backend
 ```
 
+### 快速体验
+
+> 组件和微服务全部容器化，使用docker-compose编排
+> 配置环境设置为local
+
+**docker compose启动**
+
+修改本地参数
+
+根目录下`.local.dev`中地址改为本地地址
+
+在shell中输入
+
+```shell
+docker compose -f docker-compose-local.yaml --env_file .local.env up -d
+```
+
+容器卸载
+
+> 不再使用的时候记得执行该指令以关闭所有容器
+
+```shell
+docker compose -f docker-compose-local.yaml --env_file .local.env down 
+```
+
+### 手动构建
+
+> docker容器的迁移性与处理器体系架构有关，如linux/arm64 linux/amd64
+>
+> 基于本地源代码构建镜像，可以自动匹配宿主机架构
+
 **编译项目(本地打包)**
 
 ```shell
-mvn clean package
+# 跳过单元测试
+mvn clean package -Dmaven.test.skip=true 
 ```
 
-本项目中包含多个微服务，编译后生成的`jar`包，在每个微服务目录的`target`中。
+本项目中包含多个微服务，编译后生成的`jar`包，在每个微服务的`target`目录中。
 
-**打包容器镜像**
+**构建容器镜像**
 
 ```shell
-docker build -t xxl1997/magic-authauth:0.0.1-SNAPSHOT auth/.
+docker build -t xxl1997/magic-auth:0.0.1-SNAPSHOT auth/.
 docker build -t xxl1997/magic-gateway:0.0.1-SNAPSHOT gateway/.
 docker build -t xxl1997/magic-multimedia:0.0.1-SNAPSHOT multimedia/.
 docker build -t xxl1997/magic-core:0.0.1-SNAPSHOT core/.
 ```
 
 **启动容器集群（本地开发环境）**
+
 创建并启动
 
 ```shell
-docker compose -f docker-compose-local.yaml up -d
+docker compose -f docker-compose-local.yaml --env_file .local.env up -d
 ```
 
-关闭并删除
+容器卸载
 
 ```shell
-docker compose -f docker-compose-local.yaml down
+docker compose -f docker-compose-local.yaml --env_file .local.env down
 ```
+
+### 参与项目
+
+> 开发环境dev，docker-compose启动中间件，本地IDEA启动微服务，将容器端口映射到宿主机，通过localhost访问
+
+**docker compose启动dev环境**
+
+修改`.dev.env`中环境变量
+
+启动基于docker的依赖环境
+
+```shell
+docker compose -f docker-compose-dev.yaml --env_file .dev.env up -d
+```
+
+在IDEA中设置所有微服务启动参数`dev`
+
+![ActiveProfile](assets/idea_active_profile.png)
+
+依次启动以下微服务
+
+1. auth
+2. gateway
+3. core
+4. multimedia
+
+---
 
 ## 项目配置
 
-### 端口号
-
 **端口配置原则**
+
 当设计容器与宿主机端口映射时：
 
 - 默认一致性映射，例如"9000:9000"
-- 若存在多个容器时，按顺序端口号依次+10
+- 若存在多个容器时，端口号增加前缀5，如"59001:9001"
 
-**微服务端口划分**
+**微服务概览**
 
-业务微服务
 
-- auth: 8999
-- gateway: 9000
-- core: 9001
-- multimedia: 90002
+| 微服务/组件 | 名称               | 宿主机端口     | 容器端口       |
+| ----------- | ------------------ | -------------- | -------------- |
+| auth        | 鉴权微服务         | 8999           |                |
+| gateway     | 网关微服务         | 9000           |                |
+| core        | 核心微服务         | 9001           |                |
+| multimedia  | 多媒体微服务       | 9002           |                |
+| has         | http自适应流微服务 | 9003           |                |
+| nacos       | 注册中心/配置中心  | 8848 9848 9849 | 8848 9848 9849 |
+| mysql       | 关系型数据库       | 3306           | 3306           |
+| auth-redis  | 鉴权分布式缓存     | 6379           | 6379           |
+| redis       | 分布式缓存         | 6389           | 6379           |
+| rabbitmq    | 消息队列           | 5672 15672     | 5672 15672     |
+| minio       | 对象存储           | 9010 9011      | 9000 9001      |
 
-中间件容器
-
-- nacos: 8848
-- mysql: 3306
-- redis:
-  - 鉴权缓存: 6379
-  - 数据缓存: 6389
-- rabbitmq: 5672 15672
+---
 
 ## 服务介绍
 
-### 权限微服务Auth
+微服务启动顺序：auth gateway core multimedia
 
-比较主流的权限管理框架主要有[SpringSecurity](https://spring.io/projects/spring-security/)、[SaToken](https://sa-token.cc/)、[Casbin](https://casbin.org/zh/)，本项目使用了文档对新手更友好的SaToken。本项目是一个微服务项目，微服务下实现认证授权的方案由：
+### 鉴权微服务Auth
 
-1. 基于Redis中间件实现分布式Session
-2. 无状态JsonWebToken（需要解决登出问题）
+> 流行的鉴权框架主要有[SpringSecurity](https://spring.io/projects/spring-security/)、[SaToken](https://sa-token.cc/)、[Casbin](https://casbin.org/zh/)，本项目使用了文档对新手更友好的SaToken。
 
-> 环境依赖
+微服务下实现认证授权的方案：
 
-- 注册中心：Nacos
-- 配置中心：Nacos
-- 权限数据库：MySQL
-- SaToken分布式Session中间件：Redis
-- RPC服务提供者：Dubbo
+- 基于Redis中间件实现分布式Session✅
+- 无状态JsonWebToken（需要解决登出问题）
 
-开发环境development
+**环境依赖**
 
-```
+- 注册中心/配置中心：nacos
+- 权限关系数据库：mysql
+- SaToken分布式缓存：auth-redis
 
-```
+**对外服务提供Provider**
 
-测试环境test
+RPC服务提供者：dubbo
 
-```
-
-```
-
-预发环境staging
-
-```
-
-```
-
-生产环境production
-
-```
-
-```
+---
 
 ### 网关微服务Gateway
 
-微服务网管是后端流量的入口，访问后端资源不应该直接访问具体的服务，而是由Gateway进行路由和调度。同时配合Nacos注册中心，可以进行有效的负载均衡，将流量路由到**服务**，而不是**实例**。
+网关Gateway是后端服务的入口，访问后端请求统一由Gateway进行路由和调度。配合Nacos注册中心，实现负载均衡，将流量路由到**服务**，而不是**实例**。
 
 认证授权也统一在网关处理，网关后面的微服务与权限服务解耦合。
 
-> 环境依赖
+**环境依赖**
 
-- 注册中心：Nacos
-- 配置中心：Nacos
-- SaToken分布式Session中间件：Redis
-- RPC服务提供者：Dubbo
+- 注册中心/配置中心：nacos
+- SaToken分布式缓存：auth-redis
+- RPC服务提供者：dubbo
 
 ### 核心微服务Core
 
-主要包括视频点播相关的视频、资源、导演、编剧等信息，提供基本的增删改查操作，主要业务逻辑在Core中实现。
+视频点播相关的视频、资源、导演、编剧等增删改查操作。
 
-> 环境依赖
+**环境依赖**
 
-- 注册中心：Nacos
-- 配置中心：Nacos
-- 核心数据库：MySQL
-- 分布式缓存：Redis
-- 消息队列：RabbitMQ
+- 注册中心/配置中心：nacos
+- 关系数据库：mysql
+- 分布式缓存：redis
+- 消息队列：rabbitmq
 
 ### 多媒体微服务Multimedia
 
-## 3. 快速启动
+图像、视频等前端上传资源逻辑处理，数据存储。
 
-### 3.1 本地开发环境
+**环境依赖**
 
-#### 1. 启动docker-compose
+- 注册中心/配置中心：nacos
+- 关系数据库：mysql
+- 消息队列：rabbitmq
+- 对象存储：minio
 
-本地开发环境依赖中间件：mysql redis rabbitmq等，使用docker-compose编排启动
+## DevOps
 
-#### 2. 启动四个微服务项目
-
-建议直接在Idea中按下列顺序启动：
-
-1. auth, localhost:8999
-2. gateway, localhost:9001
-3. core, localhost:9000
-4. multimedia, localhost:9002
-
-#### 3. Todo
-
-- [X]  启用nacos配置中心，并在启动时导入默认应用配置
-- [X]  微服务容器化
-- [X]  将视频存储在本地，替代阿里云oss
-
-### 3.2 生产环境（未完成）
-
-每一个jar包位于子项目的/target/xxx.jar，构建Docker镜像
-使用buildx构架多平台版本镜像
-
-```shell
-docker buildx build --platform linux/amd64,linux/arm64 -t xxl1997/magic-video:backend-auth auth/.
-docker buildx build --platform linux/amd64,linux/arm64 -t xxl1997/magic-video:backend-core core/.
-```
-
-启动顺序
-
-1. auth: www.xiaolin.fun
-2. gateway: www.xiaolin.fun
-3. core: www.xingxiaolin.cn
-4. multimedia: www.xingxiaolin.cn
-
-注册中心 负载均衡 容错 配置中心 限流
-
-RPC 服务治理 ESB
-
-语言无关异构：
-
-- gRPC
-- Thrift IDL
-- Web服务端口号
-
-  - auth: 8999
-  - core: 9000
-  - gateway: 9001
-  - multimedia: 9002
-- gRPC服务端口号
-
-  - auth: 9999
-- MySQL
-
-  - 腾讯云TD-SQL兼容MYSQL5.7
-- Redis
-
-  - 数据缓存: www.xiaolin.fun
-    - 开发环境 database 0
-    - 生产环境 database 2
-  - 微服务认证授权: www.xingxiaolin.cn
-    - 开发环境 database 0
-    - 生产环境 database 2
-- RabbitMQ
-
-  - host: www.xiaolin.fun
-  - virtual-host: /media
-  - connection-timeout: 15000
-
-### 服务依赖
-
-Auth:
-
-- Redis鉴权使用
-- MySQL
-- gRPC生产者
-  Core:
-- MySQL
-- Redis
-- RabbitMQ消费
-  Gateway:
-- Redis鉴权使用
-- gRPC消费者
-  Multimedia:
-- FFMpeg
-- FFProbe
-- 阿里云OSS
-- RabbitMQ生产
-- Redis: （TODO）判断视频是否已经存在于服务器
-
-### 开发环境Docker-compose快速启动
-
-容器名称：
-
-- 注册中心、配置中心nacos: magic-dev-nacos
-- 业务数据库mysql: magic-dev-mysql
-- 消息队列rabbitmq: magic-dev-rabbitmq
-- 鉴权缓存redis: magic-dev-auth-redis
--
-
-### 可选配置
-
-- Nacos注册中心
-- Nacos配置中心
-
-## 4. 微服务介绍
-
-### 权限中心auth
-
-权限中心采用SaToken集成统一微服务认证和授权，分布式Session解决跨服务访问。目前近支持简单的基于角色的权限控制。主要有三个实体构成：用户、角色、权限。
-对外提供gRPC服务接口，可以供网关获取权限信息。
-
-### 网关gateway
-
-所有的服务请求都必须经过网关路由到特定的微服务。网关的主要职责：
-
-- 负载均衡和路由分发
-- 集中式认证和授权
-
-### 核心服务core
-
-## 5.持续集成/持续部署
+持续集成、持续部署

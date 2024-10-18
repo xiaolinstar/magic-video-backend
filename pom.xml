@@ -41,7 +41,7 @@
         <module>core</module>
         <module>auth</module>
         <module>gateway</module>
-        <module>hls</module>
+        <module>has</module>
 
     </modules>
 

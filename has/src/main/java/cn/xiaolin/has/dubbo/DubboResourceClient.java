@@ -1,6 +1,5 @@
-package cn.xiaolin.hls.dubbo;
+package cn.xiaolin.has.dubbo;
 
-import org.apache.dubbo.config.annotation.DubboReference;
 import org.springframework.stereotype.Service;
 
 /**
