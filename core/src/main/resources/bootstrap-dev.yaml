@@ -36,10 +36,10 @@ spring:
   data:
     # 数据库缓存，Redis 端口号6389
     redis:
-      client-type: lettuce
       database: 0
       host: localhost
       port: 6389
+      client-type: lettuce
       lettuce:
         pool:
           enabled: true

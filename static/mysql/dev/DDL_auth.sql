@@ -90,8 +90,8 @@ CREATE TABLE `sys_permission`
     `deleted`            TINYINT(1) NOT NULL DEFAULT false COMMENT '逻辑删除',
     `create_time`        DATETIME   NOT NULL COMMENT '创建时间',
     `update_time`        DATETIME   NOT NULL COMMENT '更新时间',
-    `created_by_user_id` BIGINT     NOT NULL COMMENT '创建人',
-    `updated_by_user_id` BIGINT     NOT NULL COMMENT '更新人',
+    `created_by_user_id` BIGINT     NOT NULL COMMENT '创建人id',
+    `updated_by_user_id` BIGINT     NOT NULL COMMENT '更新人id',
     PRIMARY KEY (id),
     UNIQUE INDEX `idx_name` (name)
 ) ENGINE = InnoDB

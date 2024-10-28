@@ -1,6 +1,9 @@
 # 多媒体微服务
 
-版本0.9 可以传输整个视频
+图片、视频等静态资源接收和存储服务
+
+## 更新日志
+
 
 ## Todo
 
@@ -16,12 +19,11 @@
 
 ## 环境依赖
 
-- 在服务器环境变量中，增加阿里云OSS连接密钥(Dockerfile中添加环境变量)
-- FFmpeg
-- 阿里云OSS Bucket
-- 配置中心Nacos
+- 注册中心Nacos
+- MinIO：配置文件中设置MinIO access-key和secret-key
+- FFmpeg：在Dockerfile中下载
 
-## 图片视频服务
+## 服务功能
 
 ### 图片视频服务
 
@@ -92,3 +94,5 @@ graph TD
     I --> J[结束]
     E --> J
 ```
+
+## 参考

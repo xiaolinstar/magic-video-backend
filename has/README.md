@@ -1,9 +1,15 @@
 # Http Adaptive Streaming视频转码
-The following was discovered as part of building this project:
 
-* No Docker Compose services found. As of now, the application won't start! Please add at least one service to the `compose.yaml` file.
+将视频转码为dash和hls格式
+
+## 更新日志
+
+2024-10-28 更新文档目录结构
+
 
 ## Todos
+
+- [ ]  ffmpeg转码dash
 
 ## 开发文档
 
@@ -24,5 +30,9 @@ sequenceDiagram
 ```
 
 同步关系：步骤7与步骤6同步
+
 代码实现：远程关系调用，在hls微服务远程调用core微服务
 
+## 参考
+
+参考内容

@@ -22,20 +22,23 @@ import java.time.Duration;
 @Configuration
 public class CacheConfig {
 
+    private static final String redisCachePrefix = "magic-video::";
     /**
-     * 默认Cache配置类
-     * 设置缓存国旗时间，30分钟
+     * Spring Data Redis
+     * 默认RedisCache配置，Redis连接池
+     * 设置缓存过期时间，30分钟
      * 增加缓存前缀
      */
     @Bean
     public RedisCacheConfiguration cacheConfiguration() {
         return RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofMillis(30L))
-                .prefixCacheNameWith("magic-video::");
+                .prefixCacheNameWith(redisCachePrefix);
     }
 
 
     /**
+     * Spring Cache
      * 自定义CoreCacheManager
      * @return CacheManager Bean
      */

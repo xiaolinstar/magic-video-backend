@@ -24,6 +24,19 @@
 - 中间件数据文件、配置文件本地volume映射，新增volume文件夹统一管理
 - 删除.gitignore文件中的test/目录，允许将单元测试添加到git仓库
 
+## 服务文档
+
+[Auth权限微服务](/auth/README.md)
+
+[Gateway网关](/gateway/README.md)
+
+[Core核心微服务](/core/README.md)
+
+[Has视频转码微服务](/has/README.md)
+
+[Multimedia多媒体微服务](/multimedia/README.md)
+
+
 ## 待办Todos
 
 - [ ]  搭建Maven私有仓库Nexus
