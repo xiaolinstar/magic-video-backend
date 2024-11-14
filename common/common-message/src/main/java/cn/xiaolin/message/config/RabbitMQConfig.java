@@ -1,9 +1,13 @@
 package cn.xiaolin.message.config;
 
 import cn.xiaolin.message.constant.MessageQueueConsts;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.amqp.support.converter.MessageConverter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -34,4 +38,13 @@ public class RabbitMQConfig {
         return new FanoutExchange(MessageQueueConsts.EXCHANGE_MEDIA_RESOURCE);
     }
 
+    @Bean("resourceQueue")
+    public Queue resourceFanoutQueue() {
+        return new Queue(MessageQueueConsts.QUEUE_MEDIA_RESOURCE);
+    }
+
+    @Bean
+    public Binding resourceFanoutBinding(@Qualifier("resourceQueue")Queue queue, FanoutExchange fanoutExchange) {
+        return BindingBuilder.bind(queue).to(fanoutExchange);
+    }
 }

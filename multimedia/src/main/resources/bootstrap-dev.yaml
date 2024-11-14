@@ -34,7 +34,7 @@ spring:
     url: jdbc:mysql://localhost:3306/dev_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 
 minio:
-  endpoint: http://localhost:59000/
+  endpoint: http://localhost:9010/
   access-key: RzQywv1gIcgXeSSMMeNz
   secret-key: 3bD0LUxmD4JhqUCcPMs9QkpCSfTCaG8whZWcSv69
 
@@ -43,7 +43,7 @@ minio:
   video:
     bucket-name: magic-video
   hls:
-    bucket-name: magic-has
+    bucket-name: magic-hls
   dash:
     bucket-name: magic-dash
 

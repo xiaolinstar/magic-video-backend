@@ -34,7 +34,7 @@ spring:
     connection-timeout: 15000
 
   data:
-    # 数据库缓存，Redis 端口号6389
+    # 数据库缓存，Redis 端口号6379
     redis:
       client-type: lettuce
       database: 0
@@ -49,3 +49,14 @@ spring:
 core:
   video:
     prefix-url: https://vod-videos-xiaolin.oss-cn-beijing.aliyuncs.com/
+
+dubbo:
+  # 将Dubbo注册到Nacos中，这样可供消费者直接使用
+  application:
+    name: dubbo-core-provider
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://magic-local-nacos:8848
+    group: DEV_DUBBO_GROUP

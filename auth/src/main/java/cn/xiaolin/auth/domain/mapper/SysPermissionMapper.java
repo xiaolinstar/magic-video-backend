@@ -10,23 +10,17 @@ import java.util.Set;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 系统权限mapper
  * @create 2023/08/10
  */
 @Mapper
 public interface SysPermissionMapper extends BaseMapper<SysPermission> {
 
-    List<SysPermission> listPermByRoleId(@Param("role_id") Long roleId);
-
+    List<SysPermission> listPermsByRoleId(@Param("role_id") Long roleId);
     List<SysPermission> listPermsByUserId(@Param("user_id") Long userId);
     List<SysPermission> listPermsByUsername(@Param("username") String username);
-
-
-
     Set<SysPermission> listPermsWithRoleByUserId(@Param("user_id") Long userId);
-
     Set<SysPermission> listPermsWithRoleByUsername(@Param("username") String username);
-
-
 
 }
 

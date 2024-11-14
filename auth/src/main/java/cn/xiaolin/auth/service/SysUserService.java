@@ -40,6 +40,8 @@ public interface SysUserService extends IService<SysUser> {
 
     void logout();
 
+    void kickOut(Long userId);
+
     /**
      * 查询具有角色roleId的所有用户
      * @param roleId 角色id

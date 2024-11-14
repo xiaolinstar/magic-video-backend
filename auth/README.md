@@ -10,18 +10,27 @@
 
 ## TODO
 
+根据业务需求来实现类及其功能
+
 增加一些个性化接口
 
-- [ ]  踢人下线 kick-out
-- [ ]  根据用户id，查询用户的所有角色名
-- [ ]  根据用户id，查询用户的所有权限
-- [ ]  根据用户id，查询用户的所有权限（包括角色间接用户的权限）
+
+- [X]  踢人下线 kickOut
+- [X]  根据用户id，查询用户的所有角色名DubboUserPermService:getRoleByUserId
+- [X]  根据用户id，查询用户的所有权限 DubboUserPermService:getPermByUserId
+- [X]  根据用户id，查询用户的所有权限（包括角色间接用户的权限）DubboUserPermService:getPermWithRolesByUserId
 - [ ]  根据用户名，查询用户的所有角色名
 - [ ]  根据用户名，查询用户的所有权限
 - [ ]  根据用户名，查询用户的所有权限（包括角色间接用户的权限）
-- [ ]  用户注册，验证用户名必须唯一
+- [X]  查询具有某角色的所有用户 SysUserService:listUsersByRoleId
+- [X]  查询具有某权限的所有用户 SysUserService:listUsersByPermId
+- [X]  查询具有某权限的所有用户，包括基于角色间接拥有权限的用户 SysUserService:listUsersWithRoleByPermId
+- [ ]  用户注册，校验用户名必须唯一
 - [X]  password加密后数据插入MySQL中数据不一致：重复调用加密算法，已解决
 - [ ]  SysPermission，view modify delete评估弃用，权限包含在name中
+- [ ]  理清楚方法与类之间的关系
+- [ ]  Dubbo服务端口号设置，替代-1端口号
+
 
 ## 环境依赖
 

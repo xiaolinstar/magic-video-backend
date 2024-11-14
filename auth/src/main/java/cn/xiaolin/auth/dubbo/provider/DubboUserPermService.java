@@ -1,4 +1,4 @@
-package cn.xiaolin.auth.dubbo;
+package cn.xiaolin.auth.dubbo.provider;
 
 import cn.xiaolin.auth.domain.entity.SysPermission;
 import cn.xiaolin.auth.domain.entity.SysRole;

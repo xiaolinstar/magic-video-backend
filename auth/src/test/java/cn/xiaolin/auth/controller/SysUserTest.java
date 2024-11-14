@@ -60,7 +60,6 @@ class SysUserTest {
         String username = "xiaolin";
         String password = "123456xxl";
 
-
         SysUserReqDto reqDto = SysUserReqDto.builder()
                 .username(username)
                 .password(password)

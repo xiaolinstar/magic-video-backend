@@ -19,13 +19,13 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,name,description, view,
+        id,name,description,view,
         modify,revision,deleted,
         create_time,update_time,created_by_user_id,
         updated_by_user_id
     </sql>
 
-    <select id="listPermByRoleId" resultType="cn.xiaolin.auth.domain.entity.SysPermission">
+    <select id="listPermsByRoleId" resultType="cn.xiaolin.auth.domain.entity.SysPermission">
         select p.id, p.name, p.description, p.view, p.modify
         from `sys_permission` p join `sys_role_permission` rp on p.id = rp.sys_permission_id
         where sys_role_id = ${role_id}

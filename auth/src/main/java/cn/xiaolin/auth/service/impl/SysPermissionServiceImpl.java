@@ -7,9 +7,7 @@ import cn.xiaolin.auth.domain.entity.SysPermission;
 import cn.xiaolin.auth.service.SysPermissionService;
 import cn.xiaolin.auth.domain.mapper.SysPermissionMapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
 import java.util.Objects;
@@ -82,8 +80,8 @@ public class SysPermissionServiceImpl extends ServiceImpl<SysPermissionMapper, S
      * @return 系统权限
      */
     @Override
-    public List<SysPermission> listPermByRoleId(Long roleId) {
-        return sysPermissionMapper.listPermByRoleId(roleId);
+    public List<SysPermission> listPermsByRoleId(Long roleId) {
+        return sysPermissionMapper.listPermsByRoleId(roleId);
     }
 
     /**

@@ -6,8 +6,6 @@ import io.minio.BucketExistsArgs;
 import io.minio.MakeBucketArgs;
 import io.minio.MinioClient;
 import lombok.RequiredArgsConstructor;
-import net.bramp.ffmpeg.FFmpeg;
-import net.bramp.ffmpeg.FFprobe;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,16 +25,6 @@ import java.util.concurrent.ConcurrentMap;
 @RequiredArgsConstructor
 public class AppConfig {
     private final MinioConfigProperties minioConfigProperties;
-
-    @Bean
-    public FFmpeg ffmpeg() throws IOException {
-        return new FFmpeg();
-    }
-
-    @Bean
-    public FFprobe ffprobe() throws IOException {
-        return new FFprobe();
-    }
 
     @Bean
     public ConcurrentMap<String, Long> resourceIdMap() {

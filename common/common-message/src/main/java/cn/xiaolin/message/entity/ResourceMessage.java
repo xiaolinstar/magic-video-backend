@@ -1,4 +1,4 @@
-package cn.xiaolin.message.msg;
+package cn.xiaolin.message.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -20,21 +20,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Builder
 @AllArgsConstructor
-public class MediaUploadMsg {
+public class ResourceMessage {
     /** 资源Id */
     private Long id;
-    /** 资源名称 */
-    private String name;
-    /** 摘要算法md5值;判断数据库中是否已经存在，避免重复上传 */
+    /** 资源摘要 */
     private String md5;
+    /** 视频资源 */
+    private String mp4;
     /** HLS资源 */
     private String m3u8;
     /** DASH资源 */
     private String mpd;
-    /** 切片文件资源目录路径，上传到云存储的路径 */
-    @JsonIgnore
-    private String ossDirPath;
-    /** 文件路径，可以在服务器上寻址  */
-    @JsonIgnore
-    private String rawFilePath;
 }

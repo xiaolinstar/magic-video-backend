@@ -49,7 +49,7 @@ public interface SysPermissionService extends IService<SysPermission> {
      * @param roleId 角色id
      * @return 系统权限
      */
-    List<SysPermission> listPermByRoleId(Long roleId);
+    List<SysPermission> listPermsByRoleId(Long roleId);
 
     /**
      * 查询用户userId的权限

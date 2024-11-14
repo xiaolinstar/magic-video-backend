@@ -22,7 +22,7 @@
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <mybatis-plus-generator.version>3.5.3.1</mybatis-plus-generator.version>
         <redis.version>3.1.2</redis.version>
-        <mysql.version>8.0.33</mysql.version>
+        <mysql.version>8.2.0</mysql.version>
         <snakeyml.version>2.0</snakeyml.version>
         <nacos.config.version>2022.0.0.0</nacos.config.version>
         <nacos.discovery.version>2022.0.0.0</nacos.discovery.version>
@@ -178,6 +178,13 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-gateway</artifactId>
                 <version>${spring-cloud-gateway.version}</version>
+            </dependency>
+
+            <!--MySQL-->
+            <dependency>
+                <groupId>com.mysql</groupId>
+                <artifactId>mysql-connector-j</artifactId>
+                <version>${mysql.version}</version>
             </dependency>
 
         </dependencies>

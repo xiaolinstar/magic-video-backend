@@ -1,20 +1,16 @@
-package cn.xiaolin.multimedia.config;
+package cn.xiaolin.auth.controller;
 
-import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description RabbitMQ消息队列
- * @create 2024/10/12
+ * @Description 登录相关测试
+ * @create 2024/10/31
  */
 @SpringBootTest
 @ActiveProfiles("dev")
-public class RabbitMQTest {
+public class LoginTest {
 
-    @Test
-    public void rabbitTest () {
 
-    }
 }

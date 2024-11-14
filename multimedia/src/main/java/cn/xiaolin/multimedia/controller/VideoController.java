@@ -4,17 +4,13 @@ import cn.xiaolin.utils.constant.ApiRouterConsts;
 import cn.xiaolin.utils.resp.Result;
 import cn.xiaolin.multimedia.domain.dto.SliceFileUploadRequestDto;
 import cn.xiaolin.multimedia.domain.vo.FileSliceUploadVo;
-import cn.xiaolin.multimedia.service.MediaKitService;
 import cn.xiaolin.multimedia.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com

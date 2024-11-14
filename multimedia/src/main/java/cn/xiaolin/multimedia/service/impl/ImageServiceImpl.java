@@ -5,7 +5,6 @@ import cn.xiaolin.multimedia.service.ImageService;
 import cn.xiaolin.utils.exception.GlobalException;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
-import io.minio.ObjectWriteResponse;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import io.minio.http.Method;

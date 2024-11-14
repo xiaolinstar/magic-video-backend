@@ -16,6 +16,7 @@
 - [ ]  CleanupServiceImpl类优化，使用自动关闭机制
 - [ ]  定时任务扫描resource数据库，转hls和dash
 - [ ]  从网络上下载资源，并存储到minio库
+- [ ]  multimedia需要连接mysql吗？
 
 ## 环境依赖
 

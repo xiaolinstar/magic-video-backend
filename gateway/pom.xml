@@ -24,6 +24,18 @@
 			<artifactId>spring-cloud-starter-gateway</artifactId>
 		</dependency>
 
+		<!--Redis配置-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!--Apache连接池，配合redis使用-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+		</dependency>
+
 		<!-- Sa-Token 权限认证（Reactor响应式集成）, 在线文档：https://sa-token.cc -->
 		<dependency>
 			<groupId>cn.dev33</groupId>
@@ -36,11 +48,6 @@
 			<groupId>cn.dev33</groupId>
 			<artifactId>sa-token-redis-jackson</artifactId>
 			<version>1.35.0.RC</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.apache.commons</groupId>
-			<artifactId>commons-pool2</artifactId>
 		</dependency>
 
 		<!--Ribbon做负载均衡时添加的loadbalancer依赖-->

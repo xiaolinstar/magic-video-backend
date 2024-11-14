@@ -1,5 +1,5 @@
-# 使用官方的OpenJDK 17作为基础镜像
-FROM openjdk:17-jdk-slim
+# 使用官方的OpenJDK 17.0.2作为基础镜像
+FROM openjdk:17.0.2
 
 ARG USER=xing.xiaolin@foxmail.com
 
@@ -16,12 +16,6 @@ ENV JAR_VERSION=0.0.1-SNAPSHOT
 
 # 维护者
 MAINTAINER ${USER}
-
-# 更新包列表并安装 FFmpeg
-RUN apt-get update && \
-    apt-get install -y ffmpeg && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
 
 
 # 拷贝文件到Docker容器目录中

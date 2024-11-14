@@ -30,6 +30,25 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
+		<!--Redis配置-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis</artifactId>
+		</dependency>
+
+		<!--连接池-->
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+		</dependency>
+
+		<!--MySQL-->
+		<dependency>
+			<groupId>com.mysql</groupId>
+			<artifactId>mysql-connector-j</artifactId>
+		</dependency>
+
+
 		<!--SpringCache-->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

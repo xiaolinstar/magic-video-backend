@@ -22,9 +22,10 @@ spring:
 
   rabbitmq:
     host: magic-local-rabbitmq
+    port: 5672
     username: xiaolin
     password: 123456rabbit
-    virtual-host: /dev-has
+    virtual-host: /local-media
     connection-timeout: 15000
 
   # 本地MySQL容器
@@ -33,3 +34,13 @@ spring:
     username: root
     password: 123456
     url: jdbc:mysql://magic-local-mysql:3306/dev_hls?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
+
+dubbo:
+  application:
+    name: dubbo-has-consumer
+  protocol:
+    name: dubbo
+    port: -1
+  registry:
+    address: nacos://magic-local-nacos:8848
+    group: DEV_DUBBO_GROUP

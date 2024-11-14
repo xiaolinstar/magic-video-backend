@@ -10,6 +10,8 @@
 ## Todos
 
 - [ ]  ffmpeg转码dash
+- [ ]  ffmpeg转吗hls
+- [ ]  mysql依赖是需要的吗？
 
 ## 开发文档
 
@@ -19,19 +21,24 @@
 sequenceDiagram
     participant 前端服务
     participant core微服务
-    前端服务 ->> core微服务: 1.新增或更新视频资源
-    core微服务 ->> core微服务: 2.定时任务：扫描resource表，查找未编码视频资源
-    core微服务 ->> MQ消息队列: 3.生成待办消息Producer
-    MQ消息队列 ->> hls微服务: 4.消费待办消息
-    hls微服务 ->> hls微服务: 5.mp4转hls和dash
-    hls微服务 ->> core微服务: 6.视频编码完成，返回url
-    core微服务 ->> core微服务: 7.更新resource表，填充hls和dash字段
+    participant MQ消息队列
+    participant has微服务
+    participant multimedia微服务
+    前端服务 ->> multimedia微服务: 1.1 上传图像、视频
+    multimedia微服务 ->> multimedia微服务: 1.2 md5校验，视频存储到Minio
+    multimedia微服务 ->> 前端服务: 1.3 成功，返回资源id；失败，返回错误信息
+    前端服务 ->> core微服务: 2.1 新增或更新视频资源
+    core微服务 ->> core微服务: 2.2 视频存储到Minio，写resource表
+    core微服务 ->> 前端服务: 2.3 返回视频上传状态：成功or失败
+    core微服务 ->> MQ消息队列: 2.4 生成转码待办消息Producer
+    MQ消息队列 ->> has微服务: 2.5 消费待办消息Consumer
+    has微服务 ->> has微服务: 2.6 视频转hls和dash
+    has微服务 ->> core微服务: 2.7 rpc调用core微服务写resource表
 
 ```
 
 同步关系：步骤7与步骤6同步
 
-代码实现：远程关系调用，在hls微服务远程调用core微服务
 
 ## 参考
 

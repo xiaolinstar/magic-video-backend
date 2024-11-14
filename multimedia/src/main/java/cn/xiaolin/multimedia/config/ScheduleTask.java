@@ -14,7 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 @EnableScheduling
 @RequiredArgsConstructor
 public class ScheduleTask {
-    @Scheduled(fixedDelay = 10000)
+
     public void videoResourceScan() {
         System.out.println("Hello 定时任务");
     }

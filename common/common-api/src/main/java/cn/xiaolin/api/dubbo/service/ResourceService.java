@@ -1,6 +1,7 @@
 package cn.xiaolin.api.dubbo.service;
 
-import java.util.List;
+import cn.xiaolin.api.domain.dto.ResourceDto;
+
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -9,4 +10,7 @@ import java.util.List;
  */
 public interface ResourceService {
 
+    ResourceDto getResourceById(Long id);
+
+    void saveResource(ResourceDto resourceDto);
 }

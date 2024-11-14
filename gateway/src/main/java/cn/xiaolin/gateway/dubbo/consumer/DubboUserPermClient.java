@@ -1,4 +1,4 @@
-package cn.xiaolin.gateway.dubbo;
+package cn.xiaolin.gateway.dubbo.consumer;
 
 import cn.xiaolin.api.dubbo.service.UserPermService;
 import org.apache.dubbo.config.annotation.DubboReference;

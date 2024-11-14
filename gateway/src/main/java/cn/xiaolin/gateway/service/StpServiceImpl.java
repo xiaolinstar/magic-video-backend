@@ -1,7 +1,7 @@
 package cn.xiaolin.gateway.service;
 
 import cn.dev33.satoken.stp.StpInterface;
-import cn.xiaolin.gateway.dubbo.DubboUserPermClient;
+import cn.xiaolin.gateway.dubbo.consumer.DubboUserPermClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -91,7 +91,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
                 .password(encodedPassword)
                 .admission(Boolean.TRUE)
                 .build();
-        System.out.println(encodedPassword);
         return saveAndReturn(dto);
     }
 
@@ -116,6 +115,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     @Override
     public void logout() {
         StpUtil.logout();
+    }
+
+    @Override
+    public void kickOut(Long userId) {
+        StpUtil.kickout(userId);
     }
 
 

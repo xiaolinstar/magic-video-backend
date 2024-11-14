@@ -1,8 +1,6 @@
 package cn.xiaolin.multimedia.service.impl;
 
-import com.aliyun.oss.OSS;
 import lombok.RequiredArgsConstructor;
-import net.bramp.ffmpeg.FFmpeg;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
