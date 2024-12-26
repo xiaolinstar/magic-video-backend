@@ -4,7 +4,6 @@ import cn.xiaolin.multimedia.config.MinioConfigProperties;
 import cn.xiaolin.multimedia.domain.dto.SliceFileUploadRequestDto;
 import cn.xiaolin.multimedia.service.VideoService;
 import cn.xiaolin.utils.exception.GlobalException;
-import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
@@ -31,16 +30,16 @@ import java.util.concurrent.ConcurrentMap;
  * @create 2023/7/23
  */
 @Service
-@RequiredArgsConstructor
 @EnableConfigurationProperties(MinioConfigProperties.class)
 public class VideoServiceImpl implements VideoService {
 
     private final MinioClient minioClient;
-    private final MinioConfigProperties minioConfigProperties;
-    private final IdentifierGenerator multimediaIdGenerator;
+    private final String videoBucketName;
 
-    protected String getBucketName() {
-        return minioConfigProperties.getVideo().getBucketName();
+
+    public VideoServiceImpl(MinioClient minioClient, MinioConfigProperties minioConfigProperties) {
+        this.minioClient = minioClient;
+        this.videoBucketName = minioConfigProperties.getVideo().getBucketName();
     }
 
     /**
@@ -59,7 +58,7 @@ public class VideoServiceImpl implements VideoService {
 
         try (BufferedInputStream inputStream = new BufferedInputStream(video.getInputStream())) {
             PutObjectArgs putObjectArgs = PutObjectArgs.builder()
-                    .bucket(getBucketName())
+                    .bucket(videoBucketName)
                     .object(video.getOriginalFilename())
                     .stream(inputStream, video.getSize(), -1)
                     .contentType("video/mp4")
@@ -67,7 +66,7 @@ public class VideoServiceImpl implements VideoService {
             minioClient.putObject(putObjectArgs);
 
             return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                    .bucket(getBucketName())
+                    .bucket(videoBucketName)
                     .method(Method.GET)
                     .object(video.getOriginalFilename())
                     .build()

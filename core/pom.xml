@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>cn.xiaolin</groupId>
-		<artifactId>magic-video-parent</artifactId>
+		<artifactId>magic-video-backend</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
@@ -29,6 +29,11 @@
 			<artifactId>common-utils</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>cn.xiaolin</groupId>
+			<artifactId>common-db</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 
 		<!--Redis配置-->
 		<dependency>
@@ -36,18 +41,11 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 
-		<!--连接池-->
+		<!--Apache连接池，配合redis使用-->
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-pool2</artifactId>
 		</dependency>
-
-		<!--MySQL-->
-		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
-		</dependency>
-
 
 		<!--SpringCache-->
 		<dependency>

@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.xiaolin</groupId>
-        <artifactId>magic-video-parent</artifactId>
+        <artifactId>magic-video-backend</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -19,6 +19,7 @@
         <module>common-utils</module>
         <module>common-api</module>
         <module>common-message</module>
+        <module>common-db</module>
     </modules>
 
     <dependencies>

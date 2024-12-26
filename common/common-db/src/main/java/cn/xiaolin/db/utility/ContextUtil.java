@@ -1,4 +1,4 @@
-package cn.xiaolin.utils.utility;
+package cn.xiaolin.db.utility;
 
 import org.apache.commons.lang3.NotImplementedException;
 
