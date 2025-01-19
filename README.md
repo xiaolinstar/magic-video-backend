@@ -18,7 +18,7 @@
 2024-10-16 minio替换阿里云oss
 
 - 本地缓存内容过多，导致启动容器失败，定期清理docker本地缓存
-- .dev.env .local.env设置docker-compose环境变量，cli启动时增加参数`--env_file`
+- .dev.env .local.env设置docker-compose环境变量，cli启动时增加参数`--env-file`
 - 容器名称变更，magic-core magic-auth等
 - hls微服务完善，支持视频编码为dash和hls
 - 中间件数据文件、配置文件本地volume映射，新增volume文件夹统一管理
@@ -57,7 +57,7 @@
 - [ ]  容器镜像依赖tag，全部更新为确定版本，而不要使用默认latest
 - [ ]  项目微服务关系架构图展示
 - [X]  重新安排pom依赖，应满足最小依赖原则
-- [ ]  将aliyun oss的资源迁移到minio
+- [ ]  将aliyun oss的资源迁移到 minio
 
 ---
 
@@ -124,7 +124,7 @@ cd magic-video-backend
 在shell中输入
 
 ```shell
-docker compose -f docker-compose-local.yaml --env_file .local.env up -d
+docker compose -f docker-compose-local.yaml --env-file .local.env up -d
 ```
 
 容器卸载
@@ -132,7 +132,7 @@ docker compose -f docker-compose-local.yaml --env_file .local.env up -d
 > 不再使用的时候记得执行该指令以关闭所有容器
 
 ```shell
-docker compose -f docker-compose-local.yaml --env_file .local.env down 
+docker compose -f docker-compose-local.yaml --env-file .local.env down 
 ```
 
 ### 手动构建
@@ -164,13 +164,13 @@ docker build -t xxl1997/magic-core:0.0.1-SNAPSHOT core/.
 创建并启动
 
 ```shell
-docker compose -f docker-compose-local.yaml --env_file .local.env up -d
+docker compose -f docker-compose-local.yaml --env-file .local.env up -d
 ```
 
 容器卸载
 
 ```shell
-docker compose -f docker-compose-local.yaml --env_file .local.env down
+docker compose -f docker-compose-local.yaml --env-file .local.env down
 ```
 
 ### 参与项目
@@ -184,7 +184,7 @@ docker compose -f docker-compose-local.yaml --env_file .local.env down
 启动基于docker的依赖环境
 
 ```shell
-docker compose -f docker-compose-dev.yaml --env_file .dev.env up -d
+docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
 ```
 
 在IDEA中设置所有微服务启动参数`dev`
