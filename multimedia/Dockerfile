@@ -14,10 +14,6 @@ ENV ENVIRONMENT=local
 # Jar包的版本，使用脚本从pom.xml中动态获取
 ENV JAR_VERSION=0.0.1-SNAPSHOT
 
-# 维护者
-MAINTAINER ${USER}
-
-
 # 拷贝文件到Docker容器目录中
 COPY target/multimedia-${JAR_VERSION}.jar /app/multimedia-${JAR_VERSION}.jar
 

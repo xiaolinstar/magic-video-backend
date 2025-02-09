@@ -26,14 +26,13 @@
 
 [Auth 权限微服务](/auth/README.md)
 
-[Gateway 网关](/gateway/README.md)
+[Gateway 微服务网关](/gateway/README.md)
 
 [Core 核心微服务](/core/README.md)
 
-[Has 视频转码微服务](/has/README.md)
+[Has 视频编码微服务](/has/README.md)
 
 [Multimedia 多媒体微服务](/multimedia/README.md)
-
 
 ## 待办Todos
 
@@ -62,17 +61,17 @@
 
 > 本项目使用Java技术栈，想要参与到本项目的开发工作，需要具备以下基础知识
 
-### 必须掌握
+### 基础能力
 
 Java 基础知识：面相对象编程、集合、线程池
 
 计算机基础知识：计算机网络、操作系统、Linux 基础
 
-Java 企业级框架：SpringBoot
+版本管理：Git GitHub
 
-其他：Git Docker
+容器化：Docker & Docker-Compose
 
-### 推荐掌握
+### 进阶能力
 
 Java 基础知识：Java IO、JVM、锁
 
@@ -153,13 +152,14 @@ mvn clean package -Dmaven.test.skip=true
 
 **构建容器镜像**
 
-> 基于本地源代码构建镜像，会自动匹配宿主机架构
+> 基于本地源代码构建镜像，会自动匹配宿主机 CPU 架构
 
 ```shell
 docker build -t xxl1997/magic-auth:0.0.1-SNAPSHOT auth/.
 docker build -t xxl1997/magic-gateway:0.0.1-SNAPSHOT gateway/.
 docker build -t xxl1997/magic-multimedia:0.0.1-SNAPSHOT multimedia/.
 docker build -t xxl1997/magic-core:0.0.1-SNAPSHOT core/.
+docker build -t xxl1997/magic-has:0.0.1-SNAPSHOT has/.
 ```
 
 **启动容器集群（本地开发环境）**
@@ -182,7 +182,7 @@ docker compose -f docker-compose-local.yaml --env-file .local.env down
 
 **docker compose 启动 dev 环境**
 
-修改`.dev.env`中环境变量，`docker-compose.yaml` 中只包含中间件
+修改 `.dev.env` 中环境变量，`docker-compose.yaml` 中只包含中间件
 
 ```shell
 docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
@@ -198,6 +198,7 @@ docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
 2. gateway
 3. core
 4. multimedia
+5. has
 
 ---
 
@@ -236,6 +237,7 @@ docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
 ### Auth 权限微服务
 
 流行的鉴权框架主要有
+
 - [SpringSecurity](https://spring.io/projects/spring-security/)
 - [Apache Shiro](https://shiro.apache.org/)
 - [SaToken](https://sa-token.cc/)
@@ -283,10 +285,12 @@ RPC服务提供者：dubbo
 - 分布式缓存：redis
 - 消息队列：rabbitmq
 
-### Has 视频转码微服务
+### Has 视频编码微服务
+
 视频转码微服务，支持视频编码为 dash 和 hls。
 
 **环境依赖**
+
 - 注册中心/配置中心：nacos
 - 关系数据库：mysql
 - 消息队列：rabbitmq
@@ -306,6 +310,4 @@ RPC服务提供者：dubbo
 
 持续集成、持续部署
 
-
 ## 参考
-
