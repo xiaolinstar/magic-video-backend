@@ -54,6 +54,8 @@
 - [ ]  项目微服务关系架构图展示
 - [X]  重新安排 pom 依赖，应满足最小依赖原则
 - [ ]  将视频存储在 minio，替代 aliyun-oss
+- [ ]  开发环境编排顺序，一键启动各微服务
+- [ ]  定义清楚微服务启动上的拓扑依赖关系
 
 ---
 
@@ -109,21 +111,32 @@ git clone git@github.com:xiaolinstar/magic-video-backend.git
 cd magic-video-backend
 ```
 
-### 本地体验
+### 本地模式体验 local
 
-> 组件和微服务全部容器化，使用 docker-compose 编排
+#### 快速启动
+
+> 组件和微服务全部容器化，使用 docker-compose 编排，无需任何配置。
 >
 > 配置环境设置为 local
 
-注意：DockerHub 仓库中镜像支持amd64架构，如使用其他架构，需要手动构建镜像
+注意：DockerHub 仓库中镜像支持 amd64 架构，如使用其他架构，需要手动构建镜像
 
 **docker compose 启动**
 
 修改本地参数
 
-根目录下 `.local.dev` 中地址改为本地地址
+**重要：根目录下 `.local.dev` 中地址修改**
 
 在终端中输入
+
+> docker compose 启动
+> 
+> 指定当前目录下的 -f docker-compose-local.yaml 文件（默认：docker-compose.yaml 时可以不指定）
+> 
+> 指定环境变量文件 --env-file .local.env
+> 
+> 启动 up，以后台方式运行 -d
+> 
 
 ```shell
 docker compose -f docker-compose-local.yaml --env-file .local.env up -d
@@ -132,16 +145,24 @@ docker compose -f docker-compose-local.yaml --env-file .local.env up -d
 容器卸载
 
 > 不再使用的时候记得执行该指令关闭所有容器
+> 
+> 注意不能使用 docker compose down，而是与启动命令相反
+> 
 
 ```shell
 docker compose -f docker-compose-local.yaml --env-file .local.env down 
 ```
 
-### 手动构建
+#### 手动编译镜像启动
 
-> docker容器的迁移性与处理器体系架构有关，如 linux/arm64 linux/amd64
+> docker 容器的迁移性与处理器体系架构有关，如 linux/arm64 linux/amd64
+> 
+> 如果 dockerhub 没有所需镜像，或镜像不是所需版本，可在本地自行构建
+> 
 
 **编译项目(本地打包)**
+
+> 本项目包含项目级 maven ，但下述在终端执行的命令需本地用户级 maven
 
 ```shell
 # 跳过单元测试
@@ -176,13 +197,15 @@ docker compose -f docker-compose-local.yaml --env-file .local.env up -d
 docker compose -f docker-compose-local.yaml --env-file .local.env down
 ```
 
-### 开发模式启动
+### 开发模式启动 dev
 
-> 开发环境 dev，docker-compose 启动中间件，本地 IDEA 启动微服务，将容器端口映射到宿主机
+> docker-compose 启动所依赖的中间件，本地 IDEA 启动微服务，将容器端口映射到宿主机
 
 **docker compose 启动 dev 环境**
 
-修改 `.dev.env` 中环境变量，`docker-compose.yaml` 中只包含中间件
+修改 `.dev.env` 中环境变量
+
+`docker-compose.yaml` 中只包含中间件
 
 ```shell
 docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
@@ -194,13 +217,15 @@ docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
 
 依次启动以下微服务
 
+> 微服务间有顺序上的依赖关系
+
 1. auth
 2. gateway
 3. core
 4. multimedia
 5. has
 
----
+--- 
 
 ## 项目配置
 
@@ -232,47 +257,46 @@ docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
 
 ## 服务介绍
 
-微服务启动顺序：auth gateway core multimedia
+微服务启动顺序：auth gateway core multimedia has
 
 ### Auth 权限微服务
 
 流行的鉴权框架主要有
 
-- [SpringSecurity](https://spring.io/projects/spring-security/)
-- [Apache Shiro](https://shiro.apache.org/)
-- [SaToken](https://sa-token.cc/)
-- [Casbin](https://casbin.org/zh/)
+| 框架             | 描述                | 许可证               | 能力  |
+|----------------|-------------------|-------------------|-----|
+| SpringSecurity | Spring原生安全组件      | Apache License V2 | 重量级 |
+| Apache Shiro   | 简单的 Java 安全组件     | Apache License V2 | 轻量级 |
+| SaToken        | 完美适配 Spring 国产安全组件 | Apache License V2 | 轻量级 |
+| Casbin         | 全面跨平台安全组件         | Apache License V2 | 轻量级 |
 
-本项目使用了文档友好的 SaToken。
 
-微服务下实现认证授权的方案：
+本项目使用了文档友好的 [SaToken](https://sa-token.cc/)。
 
-- ✅基于 Redis 中间件实现分布式Session
-- 无状态 JsonWebToken（需要解决登出问题）
+微服务下实现认证授权的方案：基于 Redis 实现分布式 Session
 
 **环境依赖**
 
 - 注册中心/配置中心：nacos
 - 权限关系数据库：mysql
 - SaToken 分布式缓存：auth-redis
-
-**对外服务提供Provider**
-
-RPC服务提供者：dubbo
+- RPC服务提供者：dubbo
 
 ---
 
 ### 网关 Gateway
 
-网关Gateway是后端服务的入口，访问后端请求统一由Gateway进行路由和调度。配合Nacos注册中心，实现负载均衡，将流量路由到**服务**，而不是**实例**。
+网关 Gateway 是后端服务的入口，访问后端请求统一由 Gateway 进行路由和调度。配合 Nacos 注册中心，实现负载均衡，将流量路由到**服务**，而不是**实例**。
 
-认证授权也统一在网关处理，网关后面的微服务与权限服务解耦合。
+认证授权统一在网关处理，网关后面的微服务与权限服务解耦合。
 
 **环境依赖**
 
 - 注册中心/配置中心：nacos
-- SaToken分布式缓存：auth-redis
+- SaToken 分布式缓存：auth-redis
 - RPC服务提供者：dubbo
+
+---
 
 ### Core 核心微服务
 

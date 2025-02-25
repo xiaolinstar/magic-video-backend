@@ -1,12 +1,12 @@
 # 认证授权微服务
 
-认证授权功能基于Sa-Token实现
+认证授权功能基于 Sa-Token 实现
 
 ## 实现方式
 
 [在WebFlux中注册过滤器](https://sa-token.cc/doc.html#/up/global-filter)
 
-在Gateway微服务增加认证授权限制，通过rpc调用auth微服务
+在 Gateway 微服务增加认证授权限制，通过 rpc 调用 auth 微服务
 
 ## TODO
 
@@ -27,7 +27,7 @@
 - [X]  查询具有某权限的所有用户，包括基于角色间接拥有权限的用户 SysUserService:listUsersWithRoleByPermId
 - [ ]  用户注册，校验用户名必须唯一
 - [X]  password加密后数据插入MySQL中数据不一致：重复调用加密算法，已解决
-- [ ]  SysPermission，view modify delete评估弃用，权限包含在name中
+- [ ]  SysPermission，view modify delete 评估弃用，权限包含在name中
 - [ ]  理清楚方法与类之间的关系
 - [ ]  Dubbo服务端口号设置，替代-1端口号
 
@@ -57,14 +57,20 @@
 | SysUserPermController | 用户权限关联 | ✅ | ✅ | ✅ | ✅ |
 | SysUserRoleController | 用户角色关联 | ✅ | ✅ | ✅ | ✅ |
 
-## 服务提供者Provider
+## 服务提供者 Provider
 
 在auth微服务中，用户显式进行权限相关操作，如登录、注册、资源查询等，当用户登录完成后，客户端将获取cookie或session id，之后的后端请求会进行隐式认证和授权。
 
 整个后端微服务的入口是Gateway，因此需要在Gateway微服务进行，该过程是同步的，因此使用rpc方式实现。
 
-auth提供以下3个服务：
+auth 提供以下 3 个函数服务：
 
-- 根据用户ID获取用户的权限列表：getPermByUserId
-- 根据用户ID获取用户的权限列表：getRoleByUserId
-- 根据用户ID获取用户的权限列表，包括角色关联的权限：getPermWithRolesByUserId
+| 函数名 | 功能描述 |
+|-----|------|
+| getPermByUserId | 根据用户ID获取用户的权限列表 |
+| getRoleByUserId | 根据用户ID获取用户的权限列表 |
+| getPermWithRolesByUserId | 根据用户ID获取用户的权限列表，包括角色关联的权限 |
+
+
+## 参考
+

@@ -19,17 +19,18 @@
     <properties>
         <java.version>17</java.version>
         <spring-cloud.version>2022.0.3</spring-cloud.version>
+        <spring.cache.version>3.1.2</spring.cache.version>
+        <spring-actuator.version>3.1.2</spring-actuator.version>
+        <spring.aop>3.1.2</spring.aop>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <mybatis-plus-generator.version>3.5.5</mybatis-plus-generator.version>
         <redis.version>3.1.2</redis.version>
         <mysql.version>8.3.0</mysql.version>
         <commons-pool2.version>2.11.1</commons-pool2.version>
-        <spring-actuator.version>3.1.2</spring-actuator.version>
         <snakeyml.version>2.0</snakeyml.version>
         <nacos.config.version>2022.0.0.0</nacos.config.version>
         <nacos.discovery.version>2022.0.0.0</nacos.discovery.version>
         <cloud.bootstrap.version>4.0.0</cloud.bootstrap.version>
-        <spring.cache.version>3.1.2</spring.cache.version>
         <spring-boot-starter-test.version>3.3.4</spring-boot-starter-test.version>
         <dubbo.version>3.3.0</dubbo.version>
         <spring-cloud-gateway.version>4.0.6</spring-cloud-gateway.version>
@@ -125,6 +126,12 @@
                 <version>${spring-cloud.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-aop</artifactId>
+                <version>${spring.aop}</version>
             </dependency>
 
             <!--解决spring依赖的yaml版本问题-->

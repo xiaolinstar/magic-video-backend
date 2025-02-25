@@ -29,6 +29,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("dev")
 class MinioClientTest {
 
+    // 自动注入Minio客户端实例
     @Autowired
     private MinioClient minioClient;
 
@@ -85,7 +86,7 @@ class MinioClientTest {
 
         PutObjectArgs objectArgs = PutObjectArgs.builder()
                 .bucket(bucketName)
-                .object("sparrow.svg")
+                .object(objectName)
                 .contentType(urlConnection.getContentType())
                 .stream(new BufferedInputStream(urlConnection.getInputStream()),
                         urlConnection.getContentLengthLong(),
@@ -99,7 +100,7 @@ class MinioClientTest {
                 .method(Method.GET)
                 .build()
         );
-        assertTrue(objectUrl.contains("sparrow.svg"));
+        assertTrue(objectUrl.contains(objectName));
 
         minioClient.removeObject(RemoveObjectArgs.builder()
                 .bucket(bucketName)

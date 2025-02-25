@@ -1,9 +1,8 @@
 package cn.xiaolin.multimedia.controller;
 
+import cn.xiaolin.multimedia.enums.VideoTypeEnum;
 import cn.xiaolin.utils.constant.ApiRouterConsts;
 import cn.xiaolin.utils.resp.Result;
-import cn.xiaolin.multimedia.domain.dto.SliceFileUploadRequestDto;
-import cn.xiaolin.multimedia.domain.vo.FileSliceUploadVo;
 import cn.xiaolin.multimedia.service.VideoService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.NotImplementedException;
@@ -23,24 +22,19 @@ import java.util.Map;
 public class VideoController {
     private final VideoService videoService;
 
-    @PostMapping("/video/slice")
-    public Result<FileSliceUploadVo> one(@RequestParam MultipartFile chunkVideo,
+    @PostMapping("/video/chunk")
+    public Result<Map<String, Long>> one(@RequestParam MultipartFile chunkVideo,
                                          @RequestParam String md5,
                                          @RequestParam long chunkId,
                                          @RequestParam String chunkMd5) {
-        SliceFileUploadRequestDto requestDTO = SliceFileUploadRequestDto.builder()
-                .md5(md5)
-                .chunkVideo(chunkVideo)
-                .chunkId(chunkId)
-                .chunkMd5(chunkMd5)
-                .build();
-        videoService.sliceVideoUpload(requestDTO);
-        return Result.ok();
+        long nextChunkId = videoService.uploadVideoChunk(chunkVideo, md5, chunkId, chunkMd5);
+        return Result.ok(Map.of("nextChunkId", nextChunkId));
     }
 
-    @PostMapping("/video/merge")
-    public Result<Map<String, Long>> sliceMerge(@RequestParam String md5) {
-        throw new NotImplementedException();
+    @GetMapping("/video/merge")
+    public Result<Map<String, Long>> sliceMerge(@RequestParam String md5, @RequestParam VideoTypeEnum videoType) {
+        videoService.videoChunksMerge(md5, videoType);
+        return Result.ok();
     }
 
     @GetMapping("/video/check")

@@ -1,6 +1,6 @@
 # 多媒体微服务
 
-图片、视频等静态资源接收和存储服务
+图片、视频等静态资源上传和存储服务
 
 ## 更新日志
 
@@ -10,13 +10,13 @@
 - [X]  视频存储在本地
 - [X]  上传整个文件
 - [ ]  更优雅的代码结构
-- [ ]  HLS编码生成master.m3u8
-- [ ]  DASH视频编码
-- [ ]  HLS和DASH编码支持动态参数
-- [ ]  CleanupServiceImpl类优化，使用自动关闭机制
-- [ ]  定时任务扫描resource数据库，转hls和dash
-- [ ]  从网络上下载资源，并存储到minio库
-- [ ]  multimedia需要连接mysql吗？
+- [ ]  HLS 编码生成 master.m3u8
+- [ ]  DASH 视频编码
+- [ ]  HLS 和 DASH 编码支持动态参数
+- [ ]  CleanupServiceImpl 类优化，使用自动关闭机制
+- [ ]  定时任务扫描 resource 数据库，转 hls 和 dash
+- [ ]  从网络上下载资源，并存储到 minio 库
+- [X]  multimedia 不需要连接 mysql，删除相关依赖和配置
 
 ## 环境依赖
 
