@@ -1,6 +1,5 @@
 package cn.xiaolin.multimedia.service;
 
-import cn.xiaolin.multimedia.domain.dto.SliceFileUploadRequestDto;
 import cn.xiaolin.multimedia.enums.VideoTypeEnum;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,13 +12,14 @@ import org.springframework.web.multipart.MultipartFile;
 public interface VideoService {
 
 
-    String videoUpload(MultipartFile video);
+    String uploadVideoMinio(MultipartFile video);
 
-    Boolean initSliceUpload(String md5, long chunkNum);
+    String uploadVideoMinio(String videoName);
 
     Long uploadVideoChunk(MultipartFile chunkVideo, String md5, long chunkId, String chunkMd5);
 
     Boolean abortUpload(String md5);
 
     void videoChunksMerge(String md5, VideoTypeEnum videoType);
+
 }

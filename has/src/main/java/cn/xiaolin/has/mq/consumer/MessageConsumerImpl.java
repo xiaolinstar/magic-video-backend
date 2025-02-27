@@ -2,8 +2,12 @@ package cn.xiaolin.has.mq.consumer;
 
 import cn.xiaolin.message.constant.MessageQueueConsts;
 import cn.xiaolin.message.entity.ResourceMessage;
+import cn.xiaolin.message.service.consumer.MessageConsumer;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Service;
+
+import java.net.URL;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -12,12 +16,13 @@ import org.springframework.stereotype.Service;
  */
 
 @Service
-public class ResourceConsumerImpl {
+@Slf4j
+public class MessageConsumerImpl implements MessageConsumer {
 
+    @Override
     @RabbitListener(queues = {MessageQueueConsts.QUEUE_MEDIA_RESOURCE})
-    public void consume(ResourceMessage resourceMessage) {
-        System.out.println("resource消费 " + resourceMessage);
+    public void pullUrlMessage(URL url) {
+        log.info("接收到URL：{}", url);
     }
-
 }
 

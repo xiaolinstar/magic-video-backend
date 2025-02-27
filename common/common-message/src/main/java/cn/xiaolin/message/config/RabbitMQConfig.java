@@ -38,11 +38,21 @@ public class RabbitMQConfig {
         return new FanoutExchange(MessageQueueConsts.EXCHANGE_MEDIA_RESOURCE);
     }
 
+    /**
+     * 消息队列
+     * @return 消息队列
+     */
     @Bean("resourceQueue")
     public Queue resourceFanoutQueue() {
         return new Queue(MessageQueueConsts.QUEUE_MEDIA_RESOURCE);
     }
 
+    /**
+     * 绑定交换机和队列
+     * @param queue 消息队列
+     * @param fanoutExchange 交换机
+     * @return 绑定关系
+     */
     @Bean
     public Binding resourceFanoutBinding(@Qualifier("resourceQueue")Queue queue, FanoutExchange fanoutExchange) {
         return BindingBuilder.bind(queue).to(fanoutExchange);

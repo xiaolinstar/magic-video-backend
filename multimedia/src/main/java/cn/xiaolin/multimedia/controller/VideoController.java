@@ -45,7 +45,7 @@ public class VideoController {
 
     @PostMapping("/video")
     public Result<Map<String, String>> one(MultipartFile video) {
-        String videoUrl = videoService.videoUpload(video);
+        String videoUrl = videoService.uploadVideoMinio(video);
         return Result.ok(Map.of("url", videoUrl));
     }
 }

@@ -26,13 +26,6 @@ spring:
     virtual-host: /local-media
     connection-timeout: 15000
 
-  # 本地MySQL容器
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
-    url: jdbc:mysql://magic-local-mysql:3306/local_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
-
 minio:
   endpoint: http://magic-local-minio:9000/
   access-key: RzQywv1gIcgXeSSMMeNz
@@ -54,4 +47,5 @@ app:
   queue-capacity: 8
   thread-prefix: MediaThread-
 
+  video-file-dir: magic-video
 

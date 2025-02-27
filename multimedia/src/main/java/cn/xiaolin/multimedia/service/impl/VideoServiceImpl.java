@@ -1,5 +1,7 @@
 package cn.xiaolin.multimedia.service.impl;
 
+import cn.xiaolin.message.service.producer.MessageProducer;
+import cn.xiaolin.multimedia.config.AppConfigProperties;
 import cn.xiaolin.multimedia.config.MinioConfigProperties;
 import cn.xiaolin.multimedia.enums.VideoTypeEnum;
 import cn.xiaolin.multimedia.service.VideoService;
@@ -9,11 +11,14 @@ import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import io.minio.http.Method;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -28,29 +33,35 @@ import java.util.stream.Stream;
  * @Description 视频服务实现类
  * @create 2023/7/23
  */
+
+@Slf4j
 @Service
-@EnableConfigurationProperties(MinioConfigProperties.class)
+@EnableConfigurationProperties({MinioConfigProperties.class, AppConfigProperties.class})
 public class VideoServiceImpl implements VideoService {
 
     private final MinioClient minioClient;
     private final String videoBucketName;
-    // TODO 视频文件存储目录，使用配置参数定义，在项目启动时创建
-    private final static String videoFileDir = "/Users/xlxing/Documents/magic-video";
+    private final String videoFileDir;
+    private final MessageProducer messageProducer;
 
-
-    public VideoServiceImpl(MinioClient minioClient, MinioConfigProperties minioConfigProperties) {
+    public VideoServiceImpl(MinioClient minioClient,
+                            MinioConfigProperties minioConfigProperties,
+                            AppConfigProperties appConfigProperties,
+                            MessageProducer messageProducer) {
         this.minioClient = minioClient;
         this.videoBucketName = minioConfigProperties.getVideo().getBucketName();
+        this.videoFileDir = Path.of(System.getProperty("user.home"), appConfigProperties.getVideoFileDir()).toString();
+        this.messageProducer = messageProducer;
     }
 
     /**
-     * 文件上传
+     * 视频上传到minio
      *
      * @param video MultipartFile格式文件
-     * @return 文件id
+     * @return 视频访问 URL
      */
     @Override
-    public String videoUpload(MultipartFile video) {
+    public String uploadVideoMinio(MultipartFile video) {
         if (video.isEmpty()) {
             throw new GlobalException("视频内容为空");
         } else if (!Objects.equals(video.getContentType(), "video/mp4")) {
@@ -79,9 +90,37 @@ public class VideoServiceImpl implements VideoService {
         }
     }
 
+    /**
+     * 视频上传到minio
+     * @param videoName 视频标识
+     * @return 视频访问 URL
+     */
     @Override
-    public Boolean initSliceUpload(String md5, long chunkNum) {
-        return null;
+    public String uploadVideoMinio(String videoName) {
+        Path videoPath = Path.of(videoFileDir, videoName);
+        File videoFile = videoPath.toFile();
+        if (!videoFile.exists()) {
+            throw new GlobalException("文件不存在 " + videoPath);
+        }
+        try (BufferedInputStream inputStream =
+                     new BufferedInputStream(new FileInputStream(videoFile))) {
+            PutObjectArgs putObjectArgs = PutObjectArgs.builder()
+                    .bucket(videoBucketName)
+                    .object(videoName)
+                    .stream(inputStream, videoFile.length(), -1)
+                    .contentType("video/mp4")
+                    .build();
+            minioClient.putObject(putObjectArgs);
+            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
+                    .bucket(videoBucketName)
+                    .method(Method.GET)
+                    .object(videoName)
+                    .build());
+        } catch (IOException | ErrorResponseException | InsufficientDataException | InternalException |
+                 InvalidKeyException | InvalidResponseException | NoSuchAlgorithmException | ServerException |
+                 XmlParserException e) {
+            throw new GlobalException("上传视频失败：" + e.getMessage());
+        }
     }
 
     /**
@@ -159,6 +198,7 @@ public class VideoServiceImpl implements VideoService {
         if (!targetFile.exists()) {
             List<Path> chunkPathList = getChunkFiles(dirFile);
             try (FileOutputStream outputStream = new FileOutputStream(targetFile)) {
+                // 1. 合并分片
                 chunkPathList.forEach(chunkPath -> {
                     try (FileInputStream inputStream = new FileInputStream(chunkPath.toFile())) {
                         byte[] bytes = new byte[4096];
@@ -170,11 +210,27 @@ public class VideoServiceImpl implements VideoService {
                         throw new GlobalException("合并分片失败：" + e.getMessage());
                     }
                 });
+
+                // 2. 上传视频到minio
+                String videoUrl = uploadVideoMinio(targetFile.getName());
+                // 3. 消息生产，并发送到消息队列
+                pushVideoMinioMessage(videoUrl);
             } catch (IOException e) {
                 throw new GlobalException("合并分片失败：" + e.getMessage());
             }
         }
     }
+
+    // 消息生产，并发送到消息队列
+    private void pushVideoMinioMessage(String videoUrl) {
+        try {
+            messageProducer.sendVideoMessage(new URL(videoUrl));
+        } catch (MalformedURLException e) {
+            log.error("发送视频URL失败：{}", e.getMessage());
+        }
+    }
+
+
     private List<Path> getChunkFiles(File dirFile) {
         String[] chunkNames = dirFile.list();
         if (chunkNames == null || chunkNames.length == 0) {

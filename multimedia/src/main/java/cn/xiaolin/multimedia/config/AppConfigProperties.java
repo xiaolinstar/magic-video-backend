@@ -19,4 +19,8 @@ public class AppConfigProperties {
     private Integer maxPoolSize;
     private Integer queueCapacity;
     private String threadPrefix;
+
+    // 视频文件夹
+    private String videoFileDir;
+
 }
