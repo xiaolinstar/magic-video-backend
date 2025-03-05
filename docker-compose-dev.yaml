@@ -82,17 +82,32 @@ services:
       RABBITMQ_DEFAULT_PASS: 123456rabbit
       RABBITMQ_DEFAULT_VHOST: /dev-media
 
-  magic-minio:
+  magic-multimedia-minio:
     image: minio/minio
-#    image: minio/minio:RELEASE.2024-09-22T00-33-43Z
-    container_name: magic-dev-minio
+    container_name: magic-dev-multimedia-minio
     ports:
       - "9010:9000"
       - "9011:9001"
     networks:
       - magic-dev-network
     volumes:
-      - $MINIO_DATA:/data
+      - $MULTIMEDIA_MINIO_DATA:/data
+    environment:
+      TZ: Asia/Shanghai
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: xiaolin123minio
+    command: server /data --console-address ":9001"
+
+  magic-has-minio:
+    image: minio/minio
+    container_name: magic-dev-has-minio
+    ports:
+      - "9020:9000"
+      - "9021:9001"
+    networks:
+      - magic-dev-network
+    volumes:
+      - $HAS_MINIO_DATA:/data
     environment:
       TZ: Asia/Shanghai
       MINIO_ROOT_USER: minio

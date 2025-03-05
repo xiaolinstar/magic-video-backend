@@ -37,3 +37,18 @@ dubbo:
   registry:
     address: nacos://localhost:8848
     group: DEV_DUBBO_GROUP
+
+minio:
+  endpoint: http://localhost:9020/
+  access-key: bnY5rNCWoZUXNSk7CcR0
+  secret-key: xehoJrBBQrsYWv0aZC7yoH3jlPFQ4HusBhubmaRF
+
+  hls:
+    bucket-name: magic-hls
+  dash:
+    bucket-name: magic-dash
+app:
+  hls-file-dir: hls-video
+  dash-file-dir: dash-video
+
+

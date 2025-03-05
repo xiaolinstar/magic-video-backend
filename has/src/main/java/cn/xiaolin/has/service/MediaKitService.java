@@ -8,7 +8,15 @@ import java.io.File;
  * @create 2024/11/11
  */
 public interface MediaKitService {
-    void media2Hls(File video);
+    /**
+     * 视频（默认：1080p mp4格式）转hls
+     * @param videoUrl 视频源url
+     */
+    void media2Hls(String videoUrl);
 
-    void media2Dash(File video);
+    /**
+     * 视频（默认：1080p mp4格式）转dash
+     * @param videoUrl 视频源dash
+     */
+    void media2Dash(String videoUrl);
 }

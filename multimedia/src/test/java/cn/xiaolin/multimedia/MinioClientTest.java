@@ -1,4 +1,4 @@
-package cn.xiaolin.multimedia.config;
+package cn.xiaolin.multimedia;
 
 import io.minio.*;
 import io.minio.errors.*;
@@ -7,7 +7,6 @@ import io.minio.messages.Bucket;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.UrlResource;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.io.*;

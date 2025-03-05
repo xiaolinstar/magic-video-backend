@@ -17,7 +17,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -50,7 +49,7 @@ public class VideoTest {
     @Test
     public void writeVideoChunks() throws IOException {
         String videoFileDir = Path.of(System.getProperty("user.home"), appConfigProperties.getVideoFileDir()).toString();
-        String md5 = "magic-video-test";
+        String md5 = "this-is-md5";
         String sreFilePath = "/Users/xlxing/IdeaProjects/magic-video-backend/multimedia/Otis & Ruby.mp4";
         byte[] content = Files.readAllBytes(Path.of(sreFilePath));
 
@@ -84,7 +83,7 @@ public class VideoTest {
     @Test
     public void videoMergeTest() throws IOException {
         String videoFileDir = Path.of(System.getProperty("user.home"), appConfigProperties.getVideoFileDir()).toString();
-        String md5 = "magic-video-test";
+        String md5 = "this-is-md5";
         videoService.videoChunksMerge(md5, VideoTypeEnum.MP4);
         Path targetPath = Path.of(videoFileDir, md5+".mp4");
         byte[] bytes = Files.readAllBytes(targetPath);

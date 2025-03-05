@@ -193,7 +193,8 @@ public class VideoServiceImpl implements VideoService {
         }
 
         // 创建目标文件：videoFileDir/md5+videoType
-        Path targetPath = Path.of(videoFileDir, md5 + ".mp4");
+        String videoName = md5 + ".mp4";
+        Path targetPath = Path.of(videoFileDir, videoName);
         File targetFile = targetPath.toFile();
         if (!targetFile.exists()) {
             List<Path> chunkPathList = getChunkFiles(dirFile);
@@ -213,20 +214,17 @@ public class VideoServiceImpl implements VideoService {
 
                 // 2. 上传视频到minio
                 String videoUrl = uploadVideoMinio(targetFile.getName());
+
                 // 3. 消息生产，并发送到消息队列
-                pushVideoMinioMessage(videoUrl);
+                try {
+                    messageProducer.sendVideoMessage(new URL(videoUrl));
+                } catch (MalformedURLException e) {
+                    log.error("发送视频URL失败：{}", e.getMessage());
+                }
+
             } catch (IOException e) {
                 throw new GlobalException("合并分片失败：" + e.getMessage());
             }
-        }
-    }
-
-    // 消息生产，并发送到消息队列
-    private void pushVideoMinioMessage(String videoUrl) {
-        try {
-            messageProducer.sendVideoMessage(new URL(videoUrl));
-        } catch (MalformedURLException e) {
-            log.error("发送视频URL失败：{}", e.getMessage());
         }
     }
 
