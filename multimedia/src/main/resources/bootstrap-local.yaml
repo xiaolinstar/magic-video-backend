@@ -27,7 +27,7 @@ spring:
     connection-timeout: 15000
 
 minio:
-  endpoint: http://magic-local-minio:9000/
+  endpoint: http://magic-local-multimedia-minio:9000/
   access-key: RzQywv1gIcgXeSSMMeNz
   secret-key: 3bD0LUxmD4JhqUCcPMs9QkpCSfTCaG8whZWcSv69
 

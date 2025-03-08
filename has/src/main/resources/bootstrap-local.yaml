@@ -28,13 +28,6 @@ spring:
     virtual-host: /local-media
     connection-timeout: 15000
 
-  # 本地MySQL容器
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
-    url: jdbc:mysql://magic-local-mysql:3306/dev_hls?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
-
 dubbo:
   application:
     name: dubbo-has-consumer
@@ -43,4 +36,18 @@ dubbo:
     port: -1
   registry:
     address: nacos://magic-local-nacos:8848
-    group: DEV_DUBBO_GROUP
+    group: LOCAL_DUBBO_GROUP
+
+minio:
+  endpoint: http://magic-local-has-minio:9000
+  access-key: bnY5rNCWoZUXNSk7CcR0
+  secret-key: xehoJrBBQrsYWv0aZC7yoH3jlPFQ4HusBhubmaRF
+
+  hls:
+    bucket-name: magic-hls
+  dash:
+    bucket-name: magic-dash
+app:
+  hls-file-dir: hls-video
+  dash-file-dir: dash-video
+

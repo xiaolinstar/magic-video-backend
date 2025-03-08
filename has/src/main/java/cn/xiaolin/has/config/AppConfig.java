@@ -45,8 +45,6 @@ public class AppConfig implements CommandLineRunner {
 
     /**
      * 初始化Minio客户端
-     * TODO 桶权限需设置为public
-     * TODO 视频资源m3u8、ts等过期时间为永久
      * @return minio客户端
      */
     @Bean
@@ -80,8 +78,6 @@ public class AppConfig implements CommandLineRunner {
                 throw new GlobalException(e.getMessage());
             }
         });
-
-
 
         return minioClient;
     }

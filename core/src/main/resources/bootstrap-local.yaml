@@ -59,4 +59,4 @@ dubbo:
     port: -1
   registry:
     address: nacos://magic-local-nacos:8848
-    group: DEV_DUBBO_GROUP
+    group: LOCAL_DUBBO_GROUP
