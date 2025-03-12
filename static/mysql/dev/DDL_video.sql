@@ -254,12 +254,12 @@ CREATE TABLE resource
     `id`                 BIGINT     NOT NULL COMMENT '主键;雪花算法生成，Jackson序列化时转string',
     `name`               VARCHAR(255) COMMENT '资源名称',
     `md5`                VARCHAR(255) COMMENT '摘要算法md5值;判断数据库中是否已经存在，避免重复上传',
-    `mp4`                VARCHAR(255) COMMENT 'MP4资源地址',
-    `m3u8`               VARCHAR(255) COMMENT 'HLS资源',
-    `mpd`                VARCHAR(255) COMMENT 'DASH资源',
-    `avatar`             VARCHAR(255) COMMENT '封面图',
+    `mp4`                VARCHAR(2048) COMMENT 'MP4资源地址',
+    `m3u8`               VARCHAR(2048) COMMENT 'HLS资源',
+    `mpd`                VARCHAR(2048) COMMENT 'DASH资源',
+    `avatar`             VARCHAR(2048) COMMENT '封面图',
     `title`              VARCHAR(255) COMMENT '标题',
-    `description`        VARCHAR(255) COMMENT '标题',
+    `description`        VARCHAR(2048) COMMENT '标题',
     `revision`           INT        NOT NULL DEFAULT 0 COMMENT '乐观锁',
     `deleted`            TINYINT(1) NOT NULL DEFAULT false COMMENT '逻辑删除',
     `create_time`        DATETIME   NOT NULL COMMENT '创建时间',
@@ -270,8 +270,8 @@ CREATE TABLE resource
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT = '视频资源';
 
-INSERT INTO `resource` VALUES (1693269599677710338,'关于我和鬼变成家人的那件事-开头剪辑',NULL,NULL,'video/396bbfb6-0e84-4fcd-a2b3-eea5e797b58a/720p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/prettygirl.tiff','许光汉健身房激情撩汉','这是一个描述，但是我不知道写些什么',0,0,'2023-08-20 22:34:45','2023-08-20 22:34:45',0,0),
-                              (1693270668365398018,'关于我和鬼变成家人的那件事',NULL,NULL,'video/813a2632-df0e-42cf-a8b3-129af4fdc9ea/main.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/fiezao.tiff','许光汉为爱当0，炎亚纶本色出演','这是一个描述，但是我不知道写些什么',0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
-                              (1695811501761363970,'性爱自修室3开头剪辑.mp4',NULL,NULL,'video/0ce3704b-b1ed-4c7d-a63c-960bab5267f5/1080p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/xiaohei.tiff','性爱自修室3丝滑片头欣赏','这是一个视频默认描述',0,0,'2023-08-27 22:54:42','2023-08-27 22:54:42',0,0),
-                              (1695813115452719105,'华尔街之狼-乔丹的启蒙老师.mp4',NULL,NULL,'video/c1b2d0ff-561c-468f-883b-d053ce083339/1080p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/teacher.tiff','华尔街之狼','乔丹初入华尔街的的精神导师',0,0,'2023-08-27 23:14:55','2023-08-27 23:14:55',0,0),
-                              (1705467938741551105,'性爱自修室4-片头',NULL,NULL,'video/46ab56bb-f49e-4f0d-901c-700da442d5e4/1080p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/give-me-yours.tiff','我发了，你呢','梅芙给Otis发胸照，Otis不知道如何回复',0,0,'2023-09-23 14:31:41','2023-09-23 14:31:41',0,0);
+# INSERT INTO `resource` VALUES (1693269599677710338,'关于我和鬼变成家人的那件事-开头剪辑',NULL,NULL,'video/396bbfb6-0e84-4fcd-a2b3-eea5e797b58a/720p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/prettygirl.tiff','许光汉健身房激情撩汉','这是一个描述，但是我不知道写些什么',0,0,'2023-08-20 22:34:45','2023-08-20 22:34:45',0,0),
+#                               (1693270668365398018,'关于我和鬼变成家人的那件事',NULL,NULL,'video/813a2632-df0e-42cf-a8b3-129af4fdc9ea/main.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/fiezao.tiff','许光汉为爱当0，炎亚纶本色出演','这是一个描述，但是我不知道写些什么',0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+#                               (1695811501761363970,'性爱自修室3开头剪辑.mp4',NULL,NULL,'video/0ce3704b-b1ed-4c7d-a63c-960bab5267f5/1080p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/xiaohei.tiff','性爱自修室3丝滑片头欣赏','这是一个视频默认描述',0,0,'2023-08-27 22:54:42','2023-08-27 22:54:42',0,0),
+#                               (1695813115452719105,'华尔街之狼-乔丹的启蒙老师.mp4',NULL,NULL,'video/c1b2d0ff-561c-468f-883b-d053ce083339/1080p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/teacher.tiff','华尔街之狼','乔丹初入华尔街的的精神导师',0,0,'2023-08-27 23:14:55','2023-08-27 23:14:55',0,0),
+#                               (1705467938741551105,'性爱自修室4-片头',NULL,NULL,'video/46ab56bb-f49e-4f0d-901c-700da442d5e4/1080p.m3u8',NULL,'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/give-me-yours.tiff','我发了，你呢','梅芙给Otis发胸照，Otis不知道如何回复',0,0,'2023-09-23 14:31:41','2023-09-23 14:31:41',0,0);

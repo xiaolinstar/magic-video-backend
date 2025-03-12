@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
  */
-@SpringBootApplication(scanBasePackages = {"cn.xiaolin.core", "cn.xiaolin.message", "cn.xiaolin.utils"})
+@SpringBootApplication(scanBasePackages = {"cn.xiaolin.core", "cn.xiaolin.message", "cn.xiaolin.utils", "cn.xiaolin.db"})
 @MapperScan("cn.xiaolin.core.domain.mapper")
 @EnableDubbo
 public class CoreApplication {

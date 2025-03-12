@@ -21,5 +21,4 @@ public interface ResourceService extends IService<Resource> {
 
     Optional<Resource> saveAndReturn(ResourceReqDto dto);
 
-    List<Resource> listResource();
 }

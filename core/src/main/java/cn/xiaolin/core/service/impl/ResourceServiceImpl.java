@@ -25,15 +25,12 @@ import java.util.Optional;
 public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
     implements ResourceService {
 
-    @Value("${core.video.prefix-url}")
-    private String m3u8Prefix;
     @Override
     public Optional<Resource> findItemById(Long id) {
         Resource resource = this.getById(id);
         if (Objects.isNull(resource)) {
             return Optional.empty();
         }
-        resource.setM3u8(URI.create(m3u8Prefix).resolve(resource.getM3u8()).toString());
         return Optional.of(resource);
     }
 
@@ -47,7 +44,7 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
     @Override
     public Optional<Resource> updateAndReturn(ResourceReqDto dto) {
         if (Objects.isNull(dto.getId())) {
-            throw new IllegalArgumentException("Id cannot be null");
+            throw new IllegalArgumentException("id 不允许为 null");
         }
         LambdaUpdateWrapper<Resource> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(Objects.nonNull(dto.getName()), Resource::getName, dto.getName())
@@ -83,16 +80,6 @@ public class ResourceServiceImpl extends ServiceImpl<ResourceMapper, Resource>
             log.error(e.getMessage());
         }
         return saved ? Optional.ofNullable(resource) : Optional.empty();
-    }
-
-    @Override
-    public List<Resource> listResource() {
-        List<Resource> resources = this.list();
-        for (Resource resource : resources) {
-            URI uri = URI.create(m3u8Prefix).resolve(resource.getM3u8());
-            resource.setM3u8(uri.toString());
-        }
-        return resources;
     }
 }
 

@@ -58,7 +58,7 @@ public class ResourceController {
     @Operation(summary = "获取所有视频资源")
     @GetMapping("/resource/all")
     public Result<List<Resource>> listResource() {
-        List<Resource> resources = resourceService.listResource();
+        List<Resource> resources = resourceService.list();
         return Result.ok(resources);
     }
 

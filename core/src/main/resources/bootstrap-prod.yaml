@@ -1,7 +1,3 @@
-core:
-  video:
-    prefix-url: https://vod-videos-xiaolin.oss-cn-beijing.aliyuncs.com/
-
 spring:
   application:
     name: core

@@ -46,10 +46,6 @@ spring:
           max-active: 8
           max-idle: 8
 
-core:
-  video:
-    prefix-url: https://vod-videos-xiaolin.oss-cn-beijing.aliyuncs.com/
-
 dubbo:
   # 将Dubbo注册到Nacos中，这样可供消费者直接使用
   application:

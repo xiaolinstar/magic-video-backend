@@ -41,7 +41,7 @@ public class ImageServiceImpl implements ImageService {
      * 图像上传
      *
      * @param image 图像
-     * @return 图像资源ID
+     * @return 图像资源 Url
      */
     @Override
     public String imageUpload(MultipartFile image) {

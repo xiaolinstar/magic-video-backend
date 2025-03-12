@@ -1,6 +1,5 @@
 package cn.xiaolin.multimedia;
 
-import cn.xiaolin.message.service.consumer.MessageConsumer;
 import cn.xiaolin.multimedia.config.AppConfigProperties;
 import cn.xiaolin.multimedia.enums.VideoTypeEnum;
 import cn.xiaolin.multimedia.service.VideoService;
@@ -44,12 +43,12 @@ public class VideoTest {
         assertNotNull(appConfigProperties.getVideoFileDir());
     }
     /**
-     * 视频分片
+     * 1. 视频分片
      */
     @Test
     public void writeVideoChunks() throws IOException {
         String videoFileDir = Path.of(System.getProperty("user.home"), appConfigProperties.getVideoFileDir()).toString();
-        String md5 = "this-is-md5";
+        String md5 = "Md5-Otis-Ruby";
         String sreFilePath = "/Users/xlxing/IdeaProjects/magic-video-backend/multimedia/Otis & Ruby.mp4";
         byte[] content = Files.readAllBytes(Path.of(sreFilePath));
 
@@ -78,12 +77,12 @@ public class VideoTest {
 
 
     /**
-     * 视频分片合并测试
+     * 2. 视频分片合并
      */
     @Test
     public void videoMergeTest() throws IOException {
         String videoFileDir = Path.of(System.getProperty("user.home"), appConfigProperties.getVideoFileDir()).toString();
-        String md5 = "this-is-md5";
+        String md5 = "Md5-Otis-Ruby";
         videoService.videoChunksMerge(md5, VideoTypeEnum.MP4);
         Path targetPath = Path.of(videoFileDir, md5+".mp4");
         byte[] bytes = Files.readAllBytes(targetPath);
@@ -111,5 +110,11 @@ public class VideoTest {
         assertEquals(3L, nextId);
     }
 
+
+    @Test
+    public void initVideosTest() {
+
+
+    }
 
 }

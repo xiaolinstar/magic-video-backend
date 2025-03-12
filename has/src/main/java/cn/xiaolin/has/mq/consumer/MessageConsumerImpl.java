@@ -28,7 +28,7 @@ public class MessageConsumerImpl implements MessageConsumer {
     @RabbitListener(queues = {MessageQueueConsts.QUEUE_MEDIA_RESOURCE})
     public void pullUrlMessage(URL url) {
         log.info("接收到URL：{}", url);
-        mediaKitService.media2Hls(url.toString());
+        mediaKitService.media2Dash(url.toString());
     }
 }
 
