@@ -9,7 +9,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
  */
-@SpringBootApplication(scanBasePackages = {"cn.xiaolin.auth", "cn.xiaolin.utils"})
+@SpringBootApplication(scanBasePackages = {"cn.xiaolin.auth", "cn.xiaolin.utils", "cn.xiaolin.db"})
 @MapperScan(basePackages = {"cn.xiaolin.auth.domain.mapper"})
 @EnableDubbo
 public class AuthApplication {

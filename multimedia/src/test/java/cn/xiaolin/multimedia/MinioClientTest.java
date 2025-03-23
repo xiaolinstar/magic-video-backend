@@ -1,5 +1,6 @@
 package cn.xiaolin.multimedia;
 
+import cn.xiaolin.multimedia.config.MinioConfigProperties;
 import io.minio.*;
 import io.minio.errors.*;
 import io.minio.http.Method;
@@ -31,6 +32,9 @@ class MinioClientTest {
     // 自动注入Minio客户端实例
     @Autowired
     private MinioClient minioClient;
+
+    @Autowired
+    private MinioConfigProperties minioConfigProperties;
 
     @Test
     public void minioClientConnect() throws ServerException, InsufficientDataException,
@@ -124,6 +128,8 @@ class MinioClientTest {
         System.out.println(url);
     }
 
+
+
     @Test
     public void testDownload() throws ServerException, InsufficientDataException, ErrorResponseException, IOException,
             NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
@@ -148,6 +154,22 @@ class MinioClientTest {
         String path = u.getPath();
         String[] strings = path.split("/");
         List.of(strings).forEach(System.out::println);
+    }
+
+    @Test
+    public void testGetImageUrl() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        String imageName = "Otis & Ruby.jpg";
+        // Bucket桶策略需为公开访问 public
+        GetPresignedObjectUrlArgs objectUrlArgs = GetPresignedObjectUrlArgs.builder()
+                .bucket(minioConfigProperties.getImage().getBucketName())
+                .object(imageName)
+                .method(Method.GET)
+                .build();
+        String url = minioClient.getPresignedObjectUrl(objectUrlArgs);
+        System.out.println(url);
+        assertNotNull(url);
+
+
     }
 
 }

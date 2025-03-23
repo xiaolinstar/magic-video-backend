@@ -2,6 +2,7 @@ package cn.xiaolin.auth.controller;
 
 import cn.xiaolin.auth.domain.dto.SysUserReqDto;
 import cn.xiaolin.auth.domain.entity.SysUser;
+import cn.xiaolin.auth.domain.mapper.SysUserMapper;
 import cn.xiaolin.auth.service.SysUserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,11 +31,6 @@ class SysUserTest {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-
-    @Test
-    public void test() {
-        System.out.println("SysUser Test");
-    }
 
     @Test
     public void updateSysUserPassword() {

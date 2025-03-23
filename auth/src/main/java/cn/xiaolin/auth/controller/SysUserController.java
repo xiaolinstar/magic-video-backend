@@ -36,14 +36,14 @@ public class SysUserController {
         return item.map(Result::ok).orElseGet(Result::notFound);
     }
 
-    @Operation(summary = "新增系统用户")
+    @Operation(summary = "新增系统用户个人资料")
     @PostMapping("/user")
     public Result<SysUser> insertOne(@RequestBody SysUserReqDto dto) {
         Optional<SysUser> item = sysUserService.saveAndReturn(dto);
         return item.map(Result::ok).orElseGet(Result::badRequest);
     }
 
-    @Operation(summary = "更新系统用户")
+    @Operation(summary = "更新用户个人资料")
     @PutMapping("/user")
     public Result<SysUser> updateOne(@RequestBody SysUserReqDto dto) {
         Optional<SysUser> item = sysUserService.updateAndReturn(dto);

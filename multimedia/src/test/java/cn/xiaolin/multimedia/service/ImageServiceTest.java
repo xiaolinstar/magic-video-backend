@@ -28,18 +28,18 @@ class ImageServiceTest {
 
     @Test
     public void testImageUpload() throws IOException {
-        String imageUrl = "/Users/xlxing/IdeaProjects/magic-video-backend/multimedia/Otis&Ruby.jpg";
+        String imageUrl = "/Users/xlxing/Downloads/crazy-max.jpg";
         Path imagePath = Path.of(imageUrl);
         byte[] imageBytes = Files.readAllBytes(imagePath);
         MultipartFile multipartFile = new MockMultipartFile(
-                "Otis & Ruby",
-                "Otis & Ruby.jpg",
+                "疯狂麦克斯",
+                "crazy-max.jpg",
                 "image/jpeg",
                 imageBytes
         );
 
         String url = imageService.imageUpload(multipartFile);
         assertNotNull(url);
-        System.out.printf("Otis & Ruby: %s\n", url);
+        System.out.printf("疯狂麦克斯: %s\n", url);
     }
 }

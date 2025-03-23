@@ -127,9 +127,16 @@ CREATE TABLE `sys_user_role`
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT = '系统用户角色关联表';
 
-insert into `sys_user_role` value(1, 6, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
-insert into `sys_user_role` value(2, 6, 4, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
-insert into `sys_user_role` value(3, 8, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(1, 1, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(2, 2, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(3, 3, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(4, 4, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(5, 5, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(6, 6, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(7, 7, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(8, 8, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(9, 9, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
+insert into `sys_user_role` value(10, 10, 1, 0, false, '2023-9-23 08:10:26', '2023-9-23 08:10:26', 6, 6);
 
 DROP TABLE IF EXISTS `sys_role_permission`;
 CREATE TABLE `sys_role_permission`

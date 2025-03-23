@@ -62,4 +62,19 @@ public class MediaKitServiceTest {
         System.out.println(url);
         assertNotNull(url);
     }
+    @Test
+    public void testGetDashUrl() throws ServerException, InsufficientDataException, ErrorResponseException, IOException, NoSuchAlgorithmException, InvalidKeyException, InvalidResponseException, XmlParserException, InternalException {
+        String videoName = "Md5-Otis-Ruby.mpd";
+        // Bucket桶策略需为公开访问 public
+        GetPresignedObjectUrlArgs objectUrlArgs = GetPresignedObjectUrlArgs.builder()
+                .bucket(minioConfigProperties.getDash().getBucketName())
+                .object(videoName)
+                .method(Method.GET)
+                .build();
+        String url = minioClient.getPresignedObjectUrl(objectUrlArgs);
+        System.out.println(url);
+        assertNotNull(url);
+    }
+
+
 }

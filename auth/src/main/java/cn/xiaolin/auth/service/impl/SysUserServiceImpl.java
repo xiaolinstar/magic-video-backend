@@ -85,10 +85,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
      */
     @Override
     public Optional<SysUser> register(String username, String password) {
-        String encodedPassword = passwordEncoder.encode(password);
         SysUserReqDto dto = SysUserReqDto.builder()
                 .username(username)
-                .password(encodedPassword)
+                .password(password)
                 .admission(Boolean.TRUE)
                 .build();
         return saveAndReturn(dto);

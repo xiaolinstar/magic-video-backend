@@ -63,6 +63,14 @@ spring:
           max-idle: 10
           min-idle: 0
 
+# Sa-Token
+sa-token:
+  token-name: sa-token
+  active-timeout: 2592000
+  dynamic-active-timeout: on
+  is-concurrent: true
+  is-log: true
+
 dubbo:
   application:
     name: dubbo-gateway-consumer

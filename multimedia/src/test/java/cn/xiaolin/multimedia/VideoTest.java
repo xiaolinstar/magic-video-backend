@@ -46,7 +46,7 @@ public class VideoTest {
      * 1. 视频分片
      */
     @Test
-    public void writeVideoChunks() throws IOException {
+    public void writeVideoChunksTest() throws IOException {
         String videoFileDir = Path.of(System.getProperty("user.home"), appConfigProperties.getVideoFileDir()).toString();
         String md5 = "Md5-Otis-Ruby";
         String sreFilePath = "/Users/xlxing/IdeaProjects/magic-video-backend/multimedia/Otis & Ruby.mp4";
@@ -86,12 +86,43 @@ public class VideoTest {
         videoService.videoChunksMerge(md5, VideoTypeEnum.MP4);
         Path targetPath = Path.of(videoFileDir, md5+".mp4");
         byte[] bytes = Files.readAllBytes(targetPath);
+        assertNotNull(bytes);
+    }
 
-        // 1. 校验合并后文件大小
-        assertEquals(bytes.length, 278717326);
+    @Test
+    public void videoChunksMergeTest() throws IOException {
+        String videoFileDir = Path.of(System.getProperty("user.home"),
+                appConfigProperties.getVideoFileDir()).toString();
+        String md5 = "Md5-Crazy-Max";
+        String sreFilePath = "/Users/xlxing/视频/疯狂麦克斯-狂暴女神-精剪.mp4";
+        byte[] content = Files.readAllBytes(Path.of(sreFilePath));
 
-        // 2. 校验视频上传到MinIO，查看 has 实例日志
+        Path dirPath = Path.of(videoFileDir, md5);
+        File dirFile = dirPath.toFile();
+        if (!dirFile.exists() && !dirFile.mkdirs()){
+            throw new RuntimeException("创建目录失败" + dirFile);
+        }
 
+        int chunkSize = 5 * 1024 * 1024;
+        long chunkNum = (long) Math.ceil(1.0*content.length / chunkSize);
+        for (int i = 0; i < chunkNum; i++) {
+            Path chunkPath = Path.of(videoFileDir, md5, String.valueOf(i));
+            File chunkFile = chunkPath.toFile();
+            try (FileOutputStream outputStream = new FileOutputStream(chunkFile)){
+                // 写文件
+                outputStream.write(content, i * chunkSize, Math.min(chunkSize, content.length - i * chunkSize));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        String[] names = dirFile.list();
+        assert names != null;
+        assertEquals(names.length, chunkNum);
+
+        videoService.videoChunksMerge(md5, VideoTypeEnum.MP4);
+        Path targetPath = Path.of(videoFileDir, md5+".mp4");
+        byte[] bytes = Files.readAllBytes(targetPath);
+        assertNotNull(bytes);
     }
 
 

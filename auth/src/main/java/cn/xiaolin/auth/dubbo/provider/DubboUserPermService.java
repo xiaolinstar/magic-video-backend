@@ -5,6 +5,7 @@ import cn.xiaolin.auth.domain.entity.SysRole;
 import cn.xiaolin.auth.service.SysPermissionService;
 import cn.xiaolin.auth.service.SysRoleService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.Set;
  */
 @DubboService
 @RequiredArgsConstructor
+@Slf4j
 public class DubboUserPermService implements cn.xiaolin.api.dubbo.service.UserPermService {
     private final SysPermissionService sysPermissionService;
     private final SysRoleService sysRoleService;
@@ -45,6 +47,7 @@ public class DubboUserPermService implements cn.xiaolin.api.dubbo.service.UserPe
     @Override
     public List<String> getRoleByUserId(Long userId) {
         List<SysRole> roles = sysRoleService.listRolesByUserId(userId);
+        log.info("user id: {} , roles: {}",userId, roles.stream().map(SysRole::getName).toList());
         return roles.stream()
                 .map(SysRole::getName)
                 .toList();
