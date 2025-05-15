@@ -9,6 +9,7 @@ import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
@@ -26,6 +27,7 @@ import java.util.Objects;
  * @create 2023/7/23
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @EnableConfigurationProperties(MinioConfigProperties.class)
 public class ImageServiceImpl implements ImageService {
@@ -47,16 +49,15 @@ public class ImageServiceImpl implements ImageService {
     public String imageUpload(MultipartFile image) {
         if (image.isEmpty()) {
             throw new GlobalException("图像内容为空");
-        } else if (!Objects.equals(image.getContentType(), "image/jpeg")) {
-            throw new GlobalException("图像格式必须为image/jpeg");
         }
+        log.info("Image contentType: {}", image.getContentType());
 
         try (BufferedInputStream inputStream = new BufferedInputStream(image.getInputStream())) {
             PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                     .bucket(getBucketName())
                     .object(image.getOriginalFilename())
                     .stream(inputStream, image.getSize(), -1)
-                    .contentType("image/jpeg")
+                    .contentType(image.getContentType())
                     .build();
             minioClient.putObject(putObjectArgs);
             return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()

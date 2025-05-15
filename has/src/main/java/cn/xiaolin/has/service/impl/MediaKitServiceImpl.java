@@ -10,7 +10,6 @@ import io.minio.PutObjectArgs;
 import io.minio.errors.*;
 import io.minio.http.Method;
 import lombok.extern.slf4j.Slf4j;
-import net.bramp.ffmpeg.FFmpeg;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
@@ -53,7 +52,7 @@ public class MediaKitServiceImpl implements MediaKitService {
     @Override
     public void media2Hls(String videoUrl) {
         log.info("开始转码，mp4 -> hls");
-        String md5 = getUrlMd5(videoUrl);
+        String md5 = getUrlFilename(videoUrl);
 
         log.info("videoUrl: {}", videoUrl);
         log.info("md5: {}", md5);
@@ -105,12 +104,12 @@ public class MediaKitServiceImpl implements MediaKitService {
                 if (exitCode == 0) {
                     log.info("视频转 HLS 成功");
                     // 视频上传到 MinIO
-                    uploadMinio(targetDirPath, hlsBucketName);
+                    uploadFolder2Minio(targetDirPath, hlsBucketName);
                 } else {
                     log.error("视频转 HLS 失败，退出码: {}", exitCode);
                 }
             } catch (IOException e) {
-                log.error("读取视频转HLS失败");
+                log.error("读取视频转 HLS 失败");
             }
         } catch (InterruptedException | IOException e) {
             throw new RuntimeException(e);
@@ -123,7 +122,7 @@ public class MediaKitServiceImpl implements MediaKitService {
                 .build();
         try {
             String m3u8Url = minioClient.getPresignedObjectUrl(args);
-            log.info("HLS访问URL：{}", m3u8Url);
+            log.info("HLS 访问 URL：{}", m3u8Url);
         } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
                  InvalidResponseException | IOException | NoSuchAlgorithmException | XmlParserException |
                  ServerException e) {
@@ -132,11 +131,13 @@ public class MediaKitServiceImpl implements MediaKitService {
     }
 
     /**
-     * 上传文件夹下的内容到minio
+     * 上传文件夹下的内容到 minio
      * @param dirPath 文件夹路径
      */
-    private void uploadMinio(Path dirPath, String bucketName) {
+    @Override
+    public void uploadFolder2Minio(Path dirPath, String bucketName) {
         File dirFile = dirPath.toFile();
+        String folderName = dirFile.getName();
         File[] files = dirFile.listFiles();
         if (Objects.isNull(files)) {
             throw new GlobalException("文件夹为空");
@@ -147,7 +148,7 @@ public class MediaKitServiceImpl implements MediaKitService {
             try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
                 PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                         .bucket(bucketName)
-                        .object(fileName)
+                        .object(folderName + '/' + fileName)
                         .stream(inputStream, file.length(), -1)
                         .contentType(contentType)
                         .build();
@@ -161,7 +162,8 @@ public class MediaKitServiceImpl implements MediaKitService {
         });
     }
 
-    private String getUrlMd5(String urlStr) {
+
+    private String getUrlFilename(String urlStr) {
         try {
             URL url = new URL(urlStr);
             String path = url.getPath();
@@ -176,16 +178,16 @@ public class MediaKitServiceImpl implements MediaKitService {
     @Override
     public void media2Dash(String videoUrl) {
         log.info("开始转码，mp4 -> dash");
-        String md5 = getUrlMd5(videoUrl);
+        String videoName = getUrlFilename(videoUrl);
 
         log.info("videoUrl: {}", videoUrl);
-        log.info("md5: {}", md5);
+        log.info("videoName: {}", videoName);
 
         String homeDir = System.getProperty("user.home");
-        Path hlsDirPath = Path.of(homeDir, dashFileDir);
+        Path dashDirPath = Path.of(homeDir, dashFileDir);
 
-        // 宿主机上的临时文件： /home/xingxiaolin/xx-md5
-        Path targetDirPath = Path.of(hlsDirPath.toString(), md5);
+        // 宿主机上的临时文件： /home/xingxiaolin/xx-videoName
+        Path targetDirPath = Path.of(dashDirPath.toString(), videoName);
         File targetDirFile = targetDirPath.toFile();
         if (!targetDirFile.exists()) {
             if (!targetDirFile.mkdirs()) {
@@ -198,7 +200,7 @@ public class MediaKitServiceImpl implements MediaKitService {
             log.info("文件夹已存在：{}", targetDirPath);
         }
 
-        String mpdName = md5 + ".mpd";
+        String mpdName = videoName + ".mpd";
         String dashName = Path.of(targetDirPath.toString(), mpdName).toString();
         // 创建 ffmpeg 命令，将视频转成 HLS 格式
         ProcessBuilder processBuilder = new ProcessBuilder(
@@ -233,7 +235,7 @@ public class MediaKitServiceImpl implements MediaKitService {
                 if (exitCode == 0) {
                     log.info("视频转 DASH 成功");
                     // 视频上传到 MinIO
-                    uploadMinio(targetDirPath, dashBucketName);
+                    uploadFolder2Minio(targetDirPath, dashBucketName);
                 } else {
                     log.error("视频转 DASH 失败，退出码: {}", exitCode);
                 }

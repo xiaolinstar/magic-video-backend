@@ -1,6 +1,7 @@
 package cn.xiaolin.has.service;
 
 import java.io.File;
+import java.nio.file.Path;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -19,4 +20,6 @@ public interface MediaKitService {
      * @param videoUrl 视频源dash
      */
     void media2Dash(String videoUrl);
+
+    void uploadFolder2Minio(Path dirPath, String bucketName);
 }

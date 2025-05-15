@@ -20,6 +20,7 @@ public interface ImageService {
      */
     String imageUpload(MultipartFile file);
 
+
     /**
      * 字符串加密上传文件
      * @param imageBase64 图像的64位加密

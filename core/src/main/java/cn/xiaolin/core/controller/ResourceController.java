@@ -8,7 +8,7 @@ import cn.xiaolin.core.service.ResourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.util.CollectionUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping(ApiRouterConsts.API_CORE_PREFIX)
 @RequiredArgsConstructor
+@Slf4j
 public class ResourceController {
 
     private final ResourceService resourceService;
@@ -62,4 +63,42 @@ public class ResourceController {
         return Result.ok(resources);
     }
 
+    // TODO 后续完善方法实现
+
+    @Operation(summary = "获取推荐视频资源")
+    @GetMapping("/resource/recommend")
+    public Result<List<Resource>> recommendResource() {
+        List<Resource> resources = resourceService.list();
+        return Result.ok(resources);
+    }
+
+    @Operation(summary = "获取轮播视频资源")
+    @GetMapping("/resource/banner")
+    public Result<List<Resource>> bannerResource() {
+        List<Resource> resources = resourceService.list();
+        return Result.ok(resources);
+    }
+
+    @Operation(summary = "获取最新视频资源")
+    @GetMapping("/resource/latest")
+    public Result<List<Resource>> latestResource() {
+        List<Resource> resources = resourceService.list();
+        return Result.ok(resources);
+    }
+
+    @Operation(summary = "获取经典视频资源")
+    @GetMapping("/resource/classic")
+    public Result<List<Resource>> classicResource() {
+        List<Resource> resources = resourceService.list();
+        return Result.ok(resources);
+    }
+
+    @Operation(summary = "获取精选视频")
+    @GetMapping("/resource/featured")
+    public Result<List<Resource>> featuredResource() {
+        log.info("获取精选视频 /resource/featured");
+        log.debug("<Debug> /resource/featured");
+        List<Resource> resources = resourceService.list();
+        return Result.ok(resources);
+    }
 }

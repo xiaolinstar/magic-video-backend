@@ -27,7 +27,7 @@ public class MessageConsumerImpl implements MessageConsumer {
     @Override
     @RabbitListener(queues = {MessageQueueConsts.QUEUE_MEDIA_RESOURCE})
     public void pullUrlMessage(URL url) {
-        log.info("接收到URL：{}", url);
+        log.info("Received video url ：{}", url);
         mediaKitService.media2Dash(url.toString());
     }
 }

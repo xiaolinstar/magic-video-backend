@@ -83,7 +83,7 @@ public class VideoTest {
     public void videoMergeTest() throws IOException {
         String videoFileDir = Path.of(System.getProperty("user.home"), appConfigProperties.getVideoFileDir()).toString();
         String md5 = "Md5-Otis-Ruby";
-        videoService.videoChunksMerge(md5, VideoTypeEnum.MP4);
+        videoService.videoChunksMerge(md5, VideoTypeEnum.MP4, md5);
         Path targetPath = Path.of(videoFileDir, md5+".mp4");
         byte[] bytes = Files.readAllBytes(targetPath);
         assertNotNull(bytes);
@@ -119,7 +119,7 @@ public class VideoTest {
         assert names != null;
         assertEquals(names.length, chunkNum);
 
-        videoService.videoChunksMerge(md5, VideoTypeEnum.MP4);
+        videoService.videoChunksMerge(md5, VideoTypeEnum.MP4, md5);
         Path targetPath = Path.of(videoFileDir, md5+".mp4");
         byte[] bytes = Files.readAllBytes(targetPath);
         assertNotNull(bytes);
@@ -139,13 +139,6 @@ public class VideoTest {
         MultipartFile multipartFile = new MockMultipartFile("Otis & Ruby.mp4", fileContent);
         Long nextId = videoService.uploadVideoChunk(multipartFile, md5, chunkId, null);
         assertEquals(3L, nextId);
-    }
-
-
-    @Test
-    public void initVideosTest() {
-
-
     }
 
 }

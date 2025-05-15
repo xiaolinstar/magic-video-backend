@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -50,5 +51,12 @@ public class CategoryController {
     public Result<Category> deleteOne(@PathVariable Long id) {
         Optional<Category> item = categoryService.deleteAndReturnById(id);
         return item.map(Result::ok).orElseGet(Result::badRequest);
+    }
+
+    @Operation(summary = "查询所有类别")
+    @GetMapping("/category/all")
+    public Result<List<Category>> listCategory() {
+        List<Category> categories = categoryService.list();
+        return Result.ok(categories);
     }
 }

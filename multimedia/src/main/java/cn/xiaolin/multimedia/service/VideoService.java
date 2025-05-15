@@ -12,13 +12,15 @@ import org.springframework.web.multipart.MultipartFile;
 public interface VideoService {
 
 
-    String uploadVideoMinio(MultipartFile video);
+    String uploadVideoMinio(MultipartFile video, VideoTypeEnum videoType);
 
-    String uploadVideoMinio(String videoName);
+    String uploadVideoMinio(String videoName, VideoTypeEnum videoType);
 
     Long uploadVideoChunk(MultipartFile chunkVideo, String md5, long chunkId, String chunkMd5);
 
     Boolean abortUpload(String md5);
+
+    void videoChunksMerge(String md5, VideoTypeEnum videoType, String fileName);
 
     void videoChunksMerge(String md5, VideoTypeEnum videoType);
 

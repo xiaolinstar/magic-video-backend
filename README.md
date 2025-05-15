@@ -13,6 +13,8 @@
 - 本地环境 local：容器运行
 - 开发环境 dev：宿主机运行
 
+---
+
 2024-10-16 minio 替换 aliyun-oss
 
 - 本地缓存内容过多，导致启动容器失败，定期清理 docker 本地缓存
@@ -217,13 +219,15 @@ docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
 
 依次启动以下微服务
 
-> 微服务间有顺序上的依赖关系
+> 微服务间有顺序上的依赖关系 
 
-1. auth
-2. gateway
-3. core
-4. multimedia
-5. has
+待定，因为微服务还未完全应用。
+
+auth > gateway
+
+core > has
+
+core > multimedia
 
 --- 
 
@@ -256,8 +260,6 @@ docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
 ---
 
 ## 服务介绍
-
-微服务启动顺序：auth gateway core multimedia has
 
 ### Auth 权限微服务
 

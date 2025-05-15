@@ -61,11 +61,9 @@ public class VideoServiceImpl implements VideoService {
      * @return 视频访问 URL
      */
     @Override
-    public String uploadVideoMinio(MultipartFile video) {
+    public String uploadVideoMinio(MultipartFile video, VideoTypeEnum videoType) {
         if (video.isEmpty()) {
             throw new GlobalException("视频内容为空");
-        } else if (!Objects.equals(video.getContentType(), "video/mp4")) {
-            throw new GlobalException("视频格式必须为video/mp4");
         }
 
         try (BufferedInputStream inputStream = new BufferedInputStream(video.getInputStream())) {
@@ -73,7 +71,7 @@ public class VideoServiceImpl implements VideoService {
                     .bucket(videoBucketName)
                     .object(video.getOriginalFilename())
                     .stream(inputStream, video.getSize(), -1)
-                    .contentType("video/mp4")
+                    .contentType(videoType.getContentType())
                     .build();
             minioClient.putObject(putObjectArgs);
 
@@ -91,12 +89,12 @@ public class VideoServiceImpl implements VideoService {
     }
 
     /**
-     * 视频上传到minio
+     * 视频上传到 minio
      * @param videoName 视频标识
      * @return 视频访问 URL
      */
     @Override
-    public String uploadVideoMinio(String videoName) {
+    public String uploadVideoMinio(String videoName, VideoTypeEnum videoType) {
         Path videoPath = Path.of(videoFileDir, videoName);
         File videoFile = videoPath.toFile();
         if (!videoFile.exists()) {
@@ -108,7 +106,7 @@ public class VideoServiceImpl implements VideoService {
                     .bucket(videoBucketName)
                     .object(videoName)
                     .stream(inputStream, videoFile.length(), -1)
-                    .contentType("video/mp4")
+                    .contentType(videoType.getContentType())
                     .build();
             minioClient.putObject(putObjectArgs);
             return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
@@ -185,15 +183,19 @@ public class VideoServiceImpl implements VideoService {
      * @param videoType 视频类型
      */
     @Override
-    public void videoChunksMerge(String md5, VideoTypeEnum videoType) {
+    public void videoChunksMerge(String md5, VideoTypeEnum videoType, String filename) {
+        log.info("Start merge video chunks: {}, type: {}", md5, videoType.getCode());
+
         Path dirPath = Path.of(videoFileDir, md5);
         File dirFile = dirPath.toFile();
         if (!dirFile.exists()) {
             throw new GlobalException("文件目录不存在 " + dirPath);
         }
 
+        String videoName = filename + videoType.getSuffix();
+        log.info("Merge video chunks into file: {}", videoName);
+
         // 创建目标文件：videoFileDir/md5+videoType
-        String videoName = md5 + ".mp4";
         Path targetPath = Path.of(videoFileDir, videoName);
         File targetFile = targetPath.toFile();
         if (!targetFile.exists()) {
@@ -213,10 +215,13 @@ public class VideoServiceImpl implements VideoService {
                 });
 
                 // 2. 上传视频到minio
-                String videoUrl = uploadVideoMinio(targetFile.getName());
+                log.info("Upload merged video to MinIO: {}", targetFile.getName());
+
+                String videoUrl = uploadVideoMinio(targetFile.getName(), videoType);
 
                 // 3. 消息生产，并发送到消息队列
                 try {
+                    log.info("Video has been uploaded to minio, async send videoUrl: {}", videoUrl);
                     messageProducer.sendVideoMessage(new URL(videoUrl));
                 } catch (MalformedURLException e) {
                     log.error("发送视频URL失败：{}", e.getMessage());
@@ -226,6 +231,11 @@ public class VideoServiceImpl implements VideoService {
                 throw new GlobalException("合并分片失败：" + e.getMessage());
             }
         }
+    }
+
+    @Override
+    public void videoChunksMerge(String md5, VideoTypeEnum videoType) {
+        this.videoChunksMerge(md5, videoType, md5);
     }
 
 
