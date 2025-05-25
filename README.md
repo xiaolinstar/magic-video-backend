@@ -58,6 +58,8 @@
 - [ ]  将视频存储在 minio，替代 aliyun-oss
 - [ ]  开发环境编排顺序，一键启动各微服务
 - [ ]  定义清楚微服务启动上的拓扑依赖关系
+- [ ]  配置可观测性能力，Prometheus 和 Loki，存在 mount 挂载问题
+- [ ]  可观测性容器promtail loki prometheus的健康检查
 
 ---
 

@@ -1,20 +1,20 @@
 # 开发环境：使用docker-compose启动依赖中间件，在IDEA中启动微服务
 # 创建网桥
 networks:
-  magic-dev-network:
+  magic-network:
     external: false
 
 services:
   magic-nacos:
     image: nacos/nacos-server:v2.4.0
-    container_name: magic-dev-nacos
-    hostname: magic-dev-nacos
+    container_name: magic-nacos
+    hostname: magic-nacos
     ports:
       - "8848:8848"
       - "9848:9848" # 服务需要通过localhost访问到9848 9849
       - "9849:9849"
     networks:
-      - magic-dev-network
+      - magic-network
     restart: no
     environment:
       MODE: standalone
@@ -23,12 +23,12 @@ services:
   magic-mysql:
     # 业务数据库
     image: mysql:8.4
-    container_name: magic-dev-mysql
-    hostname: magic-dev-mysql
+    container_name: magic-mysql
+    hostname: magic-mysql
     ports:
       - "3306:3306"
     networks:
-      - magic-dev-network
+      - magic-network
     environment:
       LANG: C.UTF-8 # 中文乱码-1
       # 数据库密码
@@ -43,39 +43,39 @@ services:
   magic-auth-redis:
     # 鉴权中间件redis
     image: redis:7.4-alpine
-    container_name: magic-dev-auth-redis
-    hostname: magic-dev-auth-redis
+    container_name: magic-auth-redis
+    hostname: magic-auth-redis
     restart: no
     ports:
       - "6379:6379"
     networks:
-      - magic-dev-network
+      - magic-network
     environment:
       TZ: Asia/Shanghai
 
   magic-redis:
     # 鉴权中间件redis
     image: redis:7.4-alpine
-    container_name: magic-dev-redis
-    hostname: magic-dev-redis
+    container_name: magic-redis
+    hostname: magic-redis
     restart: no
     ports:
       - "6389:6379"
     networks:
-      - magic-dev-network
+      - magic-network
     environment:
       TZ: Asia/Shanghai
 
   magic-rabbitmq:
     image: rabbitmq:3-management
-    container_name: magic-dev-rabbitmq
-    hostname: magic-dev-rabbitmq
+    container_name: magic-rabbitmq
+    hostname: magic-rabbitmq
     restart: no
     ports:
       - "5672:5672"
       - "15672:15672"
     networks:
-      - magic-dev-network
+      - magic-network
     environment:
       TZ: Asia/Shanghai
       RABBITMQ_DEFAULT_USER: xiaolin
@@ -84,12 +84,12 @@ services:
 
   magic-multimedia-minio:
     image: minio/minio
-    container_name: magic-dev-multimedia-minio
+    container_name: magic-multimedia-minio
     ports:
       - "9010:9000"
       - "9011:9001"
     networks:
-      - magic-dev-network
+      - magic-network
     volumes:
       - $MULTIMEDIA_MINIO_DATA:/data
     environment:
@@ -100,12 +100,12 @@ services:
 
   magic-has-minio:
     image: minio/minio
-    container_name: magic-dev-has-minio
+    container_name: magic-has-minio
     ports:
       - "9020:9000"
       - "9021:9001"
     networks:
-      - magic-dev-network
+      - magic-network
     volumes:
       - $HAS_MINIO_DATA:/data
     environment:
@@ -113,3 +113,69 @@ services:
       MINIO_ROOT_USER: minio
       MINIO_ROOT_PASSWORD: xiaolin123minio
     command: server /data --console-address ":9001"
+
+# 可观测性
+
+  # Grafana
+  # 默认端口 3000
+  magic-grafana:
+    image: grafana/grafana:11.3.2-ubuntu
+    container_name: magic-grafana
+    networks:
+      - magic-network
+    ports:
+      - "19000:3000"
+    volumes:
+      - ./volume/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./volume/grafana/provisioning/etc/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./volume/grafana/provisioning/etc/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./volume/grafana/provisioning/var/dashboards:/var/lib/grafana/dashboards:ro
+    environment:
+      # 中国时区、匿名登陆
+      TZ: Asia/Shanghai
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_USERS_ALLOW_SIGN_UP: false
+
+  # Prometheus
+  magic-prometheus:
+    image: prom/prometheus:v2.53.3
+    container_name: magic-prometheus
+    volumes:
+      # 设置目录挂载
+      - ./volume/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - magic-network
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml" # prometheus配置文件
+      - "--storage.tsdb.path=/prometheus" # prometheus数据存储路径
+
+  magic-promtail:
+    image: grafana/promtail:3.4
+    container_name: magic-promtail
+    volumes:
+      # 设置目录挂载
+      - ./volume/promtail/promtail.yaml:/etc/promtail/promtail.yaml:ro
+      - ./logs:/var/log
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - magic-network
+    command:
+      - "--config.file=/etc/promtail/promtail.yaml" # promtail配置文件
+    depends_on:
+      - magic-loki
+
+  magic-loki:
+    image: grafana/loki:3.4
+    container_name: magic-loki
+    volumes:
+      - ./volume/loki/loki-local-config.yaml:/etc/loki/local-config.yaml:ro
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - magic-network
+    command:
+      - "--config.file=/etc/loki/local-config.yaml"

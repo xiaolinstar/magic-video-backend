@@ -37,4 +37,6 @@ multimedia/Dockerfile-backup
 static/nacos/
 static/mysql-backup/
 
-volume/
+volume/mysql/data
+volume/minio/has/data
+volume/minio/multimedia/data

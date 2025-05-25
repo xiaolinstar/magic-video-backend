@@ -6,7 +6,7 @@ spring:
   cloud:
     nacos:
       # Nacos服务地址，开发环境本地启动
-      server-addr: magic-local-nacos:8848
+      server-addr: magic-nacos:8848
      # 服务发现
       discovery:
         cluster-name: NANJING
@@ -54,7 +54,7 @@ spring:
     redis:
       client-type: lettuce
       database: 0
-      host: magic-local-auth-redis
+      host: magic-auth-redis
       port: 6379
       lettuce:
         pool:
@@ -78,5 +78,5 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: nacos://magic-local-nacos:8848
+    address: nacos://magic-nacos:8848
     group: LOCAL_DUBBO_GROUP

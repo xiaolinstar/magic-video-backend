@@ -5,7 +5,7 @@ spring:
   cloud:
     nacos:
       # Nacos服务地址
-      server-addr: magic-local-nacos:8848
+      server-addr: magic-nacos:8848
       # Nacos服务发现
       discovery:
         cluster-name: NANJING
@@ -22,11 +22,11 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: 123456
-    url: jdbc:mysql://magic-local-mysql:3306/local_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
+    url: jdbc:mysql://magic-mysql:3306/local_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 
   # 消息队列
   rabbitmq:
-    host: magic-local-rabbitmq
+    host: magic-rabbitmq
     port: 5672
     username: xiaolin
     password: 123456rabbit
@@ -38,7 +38,7 @@ spring:
     redis:
       client-type: lettuce
       database: 0
-      host: magic-local-redis
+      host: magic-redis
       port: 6379
       lettuce:
         pool:
@@ -54,5 +54,5 @@ dubbo:
     name: dubbo
     port: -1
   registry:
-    address: nacos://magic-local-nacos:8848
+    address: nacos://magic-nacos:8848
     group: LOCAL_DUBBO_GROUP
