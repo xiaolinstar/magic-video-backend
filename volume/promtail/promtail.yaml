@@ -2,6 +2,7 @@ server:
   http_listen_port: 9080
   grpc_listen_port: 0
 
+# 记录日志文件读取位置
 positions:
   filename: /tmp/positions.yaml
 
@@ -15,36 +16,31 @@ scrape_configs:
       - targets:
           - localhost
         labels:
-          job: core-log
-          service: magic-core
+          job: magic-core
           __path__: /var/log/core/*.log
 
       - targets:
           - localhost
         labels:
-          job: auth-log
-          service: magic-auth
+          job: magic-auth
           __path__: /var/log/auth/*.log
 
       - targets:
           - localhost
         labels:
-          job: gateway-log
-          service: magic-gateway
+          job: magic-gateway
           __path__: /var/log/gateway/*.log
 
       - targets:
           - localhost
         labels:
-          job: multimedia-log
-          service: magic-multimedia
+          job: magic-multimedia
           __path__: /var/log/multimedia/*.log
 
       - targets:
           - localhost
         labels:
-          job: has-log
-          service: magic-has
+          job: magic-has
           __path__: /var/log/has/*.log
 
     pipeline_stages:
