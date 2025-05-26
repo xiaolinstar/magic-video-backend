@@ -18,12 +18,34 @@ scrape_configs:
           job: core-log
           service: magic-core
           __path__: /var/log/core/*.log
+
       - targets:
           - localhost
         labels:
           job: auth-log
           service: magic-auth
           __path__: /var/log/auth/*.log
+
+      - targets:
+          - localhost
+        labels:
+          job: gateway-log
+          service: magic-gateway
+          __path__: /var/log/gateway/*.log
+
+      - targets:
+          - localhost
+        labels:
+          job: multimedia-log
+          service: magic-multimedia
+          __path__: /var/log/multimedia/*.log
+
+      - targets:
+          - localhost
+        labels:
+          job: has-log
+          service: magic-has
+          __path__: /var/log/has/*.log
 
     pipeline_stages:
       - regex:
