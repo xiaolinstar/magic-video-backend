@@ -60,6 +60,8 @@
 - [ ]  定义清楚微服务启动上的拓扑依赖关系
 - [ ]  配置可观测性能力，Prometheus 和 Loki，存在 mount 挂载问题
 - [ ]  可观测性容器promtail loki prometheus的健康检查
+- [ ]  使用 腾讯云 媒体处理 转码工具，支持 DASH 格式
+- [ ]  使用 K8S 部署容器集群
 
 ---
 
