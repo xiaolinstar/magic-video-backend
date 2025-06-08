@@ -1,0 +1,70 @@
+// Grafana Alloy configuration for log collection
+// Migrated from Promtail configuration
+
+logging {
+	level  = "info"
+	format = "logfmt"
+}
+
+// Loki client configuration
+loki.write "default" {
+	endpoint {
+		url = "http://magic-loki:3100/loki/api/v1/push"
+	}
+}
+
+// File discovery for all Spring Boot application logs
+// *prefix: local.file_match
+local.file_match "spring_logs" {
+     path_targets = [
+        {
+            "__path__" = "/var/log/core/*.log",
+            "job"      = "magic-core",
+        },
+        {
+            __path__ = "/var/log/auth/*.log",
+            job      = "magic-auth",
+        },
+        {
+            __path__ = "/var/log/gateway/*.log",
+            job      = "magic-gateway",
+        },
+        {
+            __path__ = "/var/log/multimedia/*.log",
+            job      = "magic-multimedia",
+        },
+        {
+            __path__ = "/var/log/has/*.log",
+            job      = "magic-has",
+        },
+     ]
+     sync_period = "5s"
+}
+
+// Log processing for all Spring Boot applications
+loki.source.file "spring_applications" {
+	targets    = local.file_match.spring_logs.targets
+	forward_to = [loki.process.spring_logs.receiver]
+}
+
+// Log processing pipeline for Spring Boot logs
+loki.process "spring_logs" {
+	forward_to = [loki.write.default.receiver]
+
+	stage.regex {
+		expression = "^(?P<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}) \\[(?P<thread>[^\\]]+)\\] (?P<level>\\w+) (?P<logger>[^ ]+) (?P<line_dup>\\d+) (?P<method>[^ ]+) - (?P<message>.+)$"
+	}
+
+	stage.labels {
+		values = {
+			level  = "",
+			thread = "",
+			logger = "",
+			method = "",
+		}
+	}
+
+	stage.output {
+		source = "message"
+	}
+}

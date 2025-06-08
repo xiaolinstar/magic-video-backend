@@ -168,20 +168,22 @@ services:
       - "--config.file=/etc/prometheus/prometheus.yml" # prometheus配置文件
       - "--storage.tsdb.path=/prometheus" # prometheus数据存储路径
 
-  #  日志收集代理 Promtail
-  magic-promtail:
-    image: grafana/promtail:3.4
-    container_name: magic-promtail
+  # Grafana Alloy - 替代 Promtail
+  magic-alloy:
+    image: grafana/alloy:latest
+    container_name: magic-alloy
     volumes:
       # 设置目录挂载
-      - ./volume/promtail/promtail.yaml:/etc/promtail/promtail.yaml:ro
+      - ./volume/alloy/config.alloy:/etc/alloy/config.alloy:ro
       - ./logs:/var/log
     environment:
       TZ: Asia/Shanghai
     networks:
       - magic-network
     command:
-      - "--config.file=/etc/promtail/promtail.yaml" # promtail配置文件
+      - "run"
+      - "/etc/alloy/config.alloy"
+      - "--server.http.listen-addr=0.0.0.0:12345"
     depends_on:
       - magic-loki
 
