@@ -2,7 +2,6 @@ package cn.xiaolin.core.domain.mapper;
 
 import cn.xiaolin.core.domain.entity.Video;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com

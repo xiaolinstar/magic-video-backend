@@ -2,22 +2,18 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cn.xiaolin.core.domain.mapper.VideoMapper">
+<mapper namespace="cn.xiaolin.core.domain.mapper.SeasonMapper">
 
-    <resultMap id="BaseResultMap" type="cn.xiaolin.core.domain.entity.Video">
+    <resultMap id="BaseResultMap" type="cn.xiaolin.core.domain.entity.Season">
             <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="collectionId" column="collection_id" jdbcType="BIGINT"/>
+            <result property="seasonNumber" column="season_number" jdbcType="INTEGER"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
-            <result property="originalTitle" column="original_title" jdbcType="VARCHAR"/>
             <result property="description" column="description" jdbcType="VARCHAR"/>
             <result property="coverImage" column="cover_image" jdbcType="VARCHAR"/>
-            <result property="type" column="type" jdbcType="VARCHAR"/>
             <result property="releaseDate" column="release_date" jdbcType="TIMESTAMP"/>
-            <result property="duration" column="duration" jdbcType="INTEGER"/>
-            <result property="rating" column="rating" jdbcType="DECIMAL"/>
-            <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
-            <result property="videoOrder" column="video_order" jdbcType="BIGINT"/>
-            <result property="deleted" column="deleted" jdbcType="TINYINT"/>
             <result property="revision" column="revision" jdbcType="INTEGER"/>
+            <result property="deleted" column="deleted" jdbcType="TINYINT"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
             <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
             <result property="createdByUserId" column="created_by_user_id" jdbcType="BIGINT"/>
@@ -25,11 +21,10 @@
     </resultMap>
 
     <sql id="Base_Column_List">
-        id,title,original_title,
-        description,cover_image,type,
-        release_date,duration,rating,
-        parent_id,video_order,deleted,
-        revision,create_time,update_time,
-        created_by_user_id,updated_by_user_id
+        id,collection_id,season_number,
+        title,description,cover_image,
+        release_date,revision,deleted,
+        create_time,update_time,created_by_user_id,
+        updated_by_user_id
     </sql>
 </mapper>

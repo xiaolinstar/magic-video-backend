@@ -14,7 +14,7 @@
 - [ ]  DASH 视频编码
 - [ ]  HLS 和 DASH 编码支持动态参数
 - [ ]  CleanupServiceImpl 类优化，使用自动关闭机制
-- [ ]  定时任务扫描 resource 数据库，转 hls 和 dash
+- [ ]  定时任务扫描 videoResource 数据库，转 hls 和 dash
 - [ ]  从网络上下载资源，并存储到 minio 库
 - [X]  multimedia 不需要连接 mysql，删除相关依赖和配置
 

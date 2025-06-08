@@ -7,10 +7,6 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.databind.deser.std.NumberDeserializers;
-import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,56 +16,33 @@ import lombok.NoArgsConstructor;
  * 视频资源
  * @author xingxiaolin xing.xiaolin@foxmail.com
  */
-@TableName(value ="resource")
+@TableName(value ="video_resource")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Resource implements Serializable {
+public class VideoSource implements Serializable {
     /**
      * 主键;雪花算法生成，Jackson序列化时转string
      */
     @TableId
     private Long id;
 
-    /**
-     * 资源名称
-     */
-    private String name;
+    private Long videoId;
 
     /**
-     * 摘要算法md5值;判断数据库中是否已经存在，避免重复上传
+     * 资源地址
      */
-    private String md5;
+    private String src;
 
     /**
-     * MP4资源地址
+     * 类型
      */
-    private String mp4;
+    private String type;
 
-    /**
-     * HLS资源
-     */
-    private String m3u8;
+    private Integer resolution;
 
-    /**
-     * DASH资源
-     */
-    private String mpd;
-
-    /**
-     * 封面图
-     */
-    private String avatar;
-
-    /**
-     * 标题
-     */
-    private String title;
-    /**
-     * 介绍
-     */
-    private String description;
+    private Integer bitrate;
 
 
     /**

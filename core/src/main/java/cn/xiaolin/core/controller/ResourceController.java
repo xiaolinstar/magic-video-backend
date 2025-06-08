@@ -1,18 +1,17 @@
 package cn.xiaolin.core.controller;
 
+import cn.xiaolin.core.domain.entity.VideoSource;
 import cn.xiaolin.utils.constant.ApiRouterConsts;
 import cn.xiaolin.utils.resp.Result;
-import cn.xiaolin.core.domain.dto.ResourceReqDto;
-import cn.xiaolin.core.domain.entity.Resource;
-import cn.xiaolin.core.service.ResourceService;
+import cn.xiaolin.core.service.VideoSourceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -26,79 +25,75 @@ import java.util.Optional;
 @Slf4j
 public class ResourceController {
 
-    private final ResourceService resourceService;
+    private final VideoSourceService resourceService;
 
     @Operation(summary = "查询资源")
     @GetMapping("/resource/{id}")
-    public Result<Resource> one(@PathVariable Long id) {
-        Optional<Resource> item = resourceService.findItemById(id);
-        return item.map(Result::ok).orElseGet(Result::notFound);
+    public Result<VideoSource> one(@PathVariable Long id) {
+        throw new NotImplementedException();
     }
 
     @Operation(summary = "新增资源")
     @PostMapping("/resource")
-    public Result<Resource> insertOne(@RequestBody ResourceReqDto dto) {
-        Optional<Resource> item = resourceService.saveAndReturn(dto);
-        return item.map(Result::ok).orElseGet(Result::badRequest);
+    public Result<VideoSource> insertOne() {
+        throw new NotImplementedException();
     }
 
     @Operation(summary = "更新资源")
     @PutMapping("/resource")
-    public Result<Resource> updateOne(@RequestBody ResourceReqDto dto) {
-        Optional<Resource> item = resourceService.updateAndReturn(dto);
-        return item.map(Result::ok).orElseGet(Result::badRequest);
+    public Result<VideoSource> updateOne() {
+        throw new NotImplementedException();
     }
 
     @Operation(summary = "删除资源")
     @DeleteMapping("/resource/{id}")
-    public Result<Resource> deleteOne(@PathVariable Long id) {
-        Optional<Resource> item = resourceService.deleteAndReturnById(id);
-        return item.map(Result::ok).orElseGet(Result::badRequest);
+    public Result<VideoSource> deleteOne(@PathVariable Long id) {
+        throw new NotImplementedException();
     }
 
     @Operation(summary = "获取所有视频资源")
     @GetMapping("/resource/all")
-    public Result<List<Resource>> listResource() {
-        List<Resource> resources = resourceService.list();
-        return Result.ok(resources);
+    public Result<List<VideoSource>> listResource() {
+        List<VideoSource> videoSources = resourceService.list();
+        return Result.ok(videoSources);
     }
 
     // TODO 后续完善方法实现
 
     @Operation(summary = "获取推荐视频资源")
     @GetMapping("/resource/recommend")
-    public Result<List<Resource>> recommendResource() {
-        List<Resource> resources = resourceService.list();
-        return Result.ok(resources);
+    public Result<List<VideoSource>> recommendResource() {
+        List<VideoSource> videoSources = resourceService.list();
+        return Result.ok(videoSources);
     }
 
     @Operation(summary = "获取轮播视频资源")
     @GetMapping("/resource/banner")
-    public Result<List<Resource>> bannerResource() {
-        List<Resource> resources = resourceService.list();
-        return Result.ok(resources);
+    public Result<List<VideoSource>> bannerResource() {
+        List<VideoSource> videoSources = resourceService.list();
+        return Result.ok(videoSources);
     }
 
     @Operation(summary = "获取最新视频资源")
     @GetMapping("/resource/latest")
-    public Result<List<Resource>> latestResource() {
-        List<Resource> resources = resourceService.list();
-        return Result.ok(resources);
+    public Result<List<VideoSource>> latestResource() {
+        List<VideoSource> videoSources = resourceService.list();
+        return Result.ok(videoSources);
     }
 
     @Operation(summary = "获取经典视频资源")
     @GetMapping("/resource/classic")
-    public Result<List<Resource>> classicResource() {
-        List<Resource> resources = resourceService.list();
-        return Result.ok(resources);
+    public Result<List<VideoSource>> classicResource() {
+        List<VideoSource> videoSources = resourceService.list();
+        return Result.ok(videoSources);
     }
 
     @Operation(summary = "获取精选视频")
     @GetMapping("/resource/featured")
-    public Result<List<Resource>> featuredResource() {
+    public Result<List<VideoSource>> featuredResource() {
         log.info("获取精选视频 /resource/featured");
         log.debug("<Debug> /resource/featured");
-        List<Resource> resources = resourceService.list();
-        return Result.ok(resources);
+        List<VideoSource> videoSources = resourceService.list();
+        return Result.ok(videoSources);
     }
 }

@@ -1,30 +1,33 @@
 package cn.xiaolin.core.domain.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-
-import java.io.Serial;
-import java.io.Serializable;
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
- * 视频
  * @author xingxiaolin xing.xiaolin@foxmail.com
+ * @Description 集合
+ * @create 2025/6/8
  */
-@Tag(name = "视频", description = "视频信息实体类")
-@TableName(value ="video")
+
+@Tag(name = "集合", description = "视频集合实体类")
+@TableName(value ="collection")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Video implements Serializable {
+public class Collection implements Serializable {
+
     /**
      * 主键id
      */
@@ -37,12 +40,12 @@ public class Video implements Serializable {
     private String title;
 
     /**
-     * 原标题
+     * 类型
      */
-    private String originalTitle;
+    private String type;
 
     /**
-     * 剧情摘要
+     * 描述
      */
     private String description;
 
@@ -51,23 +54,7 @@ public class Video implements Serializable {
      */
     private String coverImage;
 
-    /**
-     * 类型 movie episode clip
-     */
-    private String type;
 
-    private LocalDateTime releaseDate;
-
-    private int duration;
-
-    /**
-     * 评分
-     */
-    private BigDecimal rating;
-
-    private Long parentId;
-
-    private Integer videoOrder; // 部或集数（排序）
 
     /**
      * 逻辑删除
@@ -114,5 +101,4 @@ public class Video implements Serializable {
     @Serial
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
-
 }

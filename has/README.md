@@ -29,12 +29,12 @@ sequenceDiagram
     multimedia微服务 ->> multimedia微服务: 1.2 md5 校验，视频存储到 Minio
     multimedia微服务 ->> 前端服务: 1.3 成功，返回资源 url；失败，返回错误信息
     前端服务 ->> core微服务: 2.1 新增或更新视频资源
-    core微服务 ->> core微服务: 2.2 视频存储到 Minio，写 resource 表
+    core微服务 ->> core微服务: 2.2 视频存储到 Minio，写 videoResource 表
     core微服务 ->> 前端服务: 2.3 返回视频上传状态：成功or失败
     core微服务 ->> MQ消息队列: 2.4 生成转码待办消息 Producer
     MQ消息队列 ->> has微服务: 2.5 消费待办消息 Consumer
     has微服务 ->> has微服务: 2.6 根据 url 获取视频资源，并使用 ffmpeg 编码为 hls 或 dash
-    has微服务 ->> core微服务: 2.7 rpc 调用 core 微服务写 resource 表
+    has微服务 ->> core微服务: 2.7 rpc 调用 core 微服务写 videoResource 表
 ```
 
 待思考的问题：
