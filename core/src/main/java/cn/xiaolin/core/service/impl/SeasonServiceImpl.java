@@ -27,7 +27,9 @@ public class SeasonServiceImpl extends ServiceImpl<SeasonMapper, Season>
     @Override
     public List<SeasonVO> getSeasonList() {
         List<Season> seasonList = this.list();
-        List<SeasonVO> seasonVOList = seasonList.stream().map(SeasonVO::new)
+        List<SeasonVO> seasonVOList = seasonList
+                .stream()
+                .map(SeasonVO::new)
                 .toList();
 
         List<Video> videoList = videoService.list();
@@ -40,7 +42,7 @@ public class SeasonServiceImpl extends ServiceImpl<SeasonMapper, Season>
         for (SeasonVO seasonVO : seasonVOList) {
             Long seasonId = seasonVO.getId();
             List<Video> episodeList = episodeListMap.get(seasonId);
-            episodeList.sort(Comparator.comparingInt(Video::getVideoOrder));
+            episodeList.sort(Comparator.comparingInt(Video::getSortOrder));
 
             List<SeasonVO.Episode> episodes = getEpisodes(episodeList);
 
@@ -59,7 +61,7 @@ public class SeasonServiceImpl extends ServiceImpl<SeasonMapper, Season>
 
             episode.setId(video.getId());
             episode.setSeasonId(video.getParentId());
-            episode.setEpisodeNumber(video.getVideoOrder());
+            episode.setEpisodeNumber(video.getSortOrder());
             episode.setTitle(video.getTitle());
             episode.setDuration(video.getDuration());
 

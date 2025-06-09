@@ -1,6 +1,7 @@
 package cn.xiaolin.core.controller;
 
 import cn.xiaolin.core.domain.entity.VideoSource;
+import cn.xiaolin.core.domain.vo.VideoVO;
 import cn.xiaolin.utils.constant.ApiRouterConsts;
 import cn.xiaolin.utils.resp.Result;
 import cn.xiaolin.core.domain.dto.VideoReqDto;
@@ -30,7 +31,8 @@ public class VideoController {
 
     @Operation(summary = "查询视频资源")
     @GetMapping("/video/list")
-    public Result<List<Video>> all() {
-        return Result.ok(videoService.list());
+    public Result<List<VideoVO>> all() {
+        List<VideoVO> videoList = videoService.getVideoList();
+        return Result.ok(videoList);
     }
 }

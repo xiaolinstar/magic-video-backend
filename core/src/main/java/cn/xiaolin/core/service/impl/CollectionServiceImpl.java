@@ -61,7 +61,7 @@ public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collect
                 items.add(VideoItem.builder()
                         .type(video.getType())
                         .id(video.getId())
-                        .order(video.getVideoOrder())
+                        .order(video.getSortOrder())
                         .build());
             }
 

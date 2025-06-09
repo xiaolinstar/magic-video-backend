@@ -1,8 +1,10 @@
 package cn.xiaolin.core.service;
 
 import cn.xiaolin.core.domain.entity.Video;
+import cn.xiaolin.core.domain.vo.VideoVO;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -11,4 +13,6 @@ import java.util.Optional;
  * @create 2023-07-30 17:10:49
  */
 public interface VideoService extends IService<Video> {
+
+    List<VideoVO> getVideoList();
 }

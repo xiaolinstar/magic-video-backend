@@ -15,7 +15,7 @@
             <result property="duration" column="duration" jdbcType="INTEGER"/>
             <result property="rating" column="rating" jdbcType="DECIMAL"/>
             <result property="parentId" column="parent_id" jdbcType="BIGINT"/>
-            <result property="videoOrder" column="video_order" jdbcType="BIGINT"/>
+            <result property="sortOrder" column="sort_order" jdbcType="BIGINT"/>
             <result property="deleted" column="deleted" jdbcType="TINYINT"/>
             <result property="revision" column="revision" jdbcType="INTEGER"/>
             <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -28,7 +28,7 @@
         id,title,original_title,
         description,cover_image,type,
         release_date,duration,rating,
-        parent_id,video_order,deleted,
+        parent_id,sort_order,deleted,
         revision,create_time,update_time,
         created_by_user_id,updated_by_user_id
     </sql>

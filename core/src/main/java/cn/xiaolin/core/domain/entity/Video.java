@@ -65,9 +65,9 @@ public class Video implements Serializable {
      */
     private BigDecimal rating;
 
-    private Long parentId;
+    private Long parentId;  // collectionId seasonId
 
-    private Integer videoOrder; // 部或集数（排序）
+    private Integer sortOrder; // 部或集数（排序）
 
     /**
      * 逻辑删除
