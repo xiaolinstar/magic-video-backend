@@ -23,7 +23,8 @@ CREATE TABLE collection
 insert into collection values   (1001, '疯狂的麦克斯系列电影', 'movie-series', '影片讲述了复仇女神弗瑞奥萨（安雅·泰勒-乔伊 Anya Taylor-Joy 饰）惊心动魄的成长史。', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/crazy-max.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (1005, '寂静之海', 'tv-series', '韩国科幻惊悚剧集，讲述2075年地球水资源危机背景下的月球探险故事', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/SeaLuna.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (1004, '性爱自修室', 'tv-series', '英国青春喜剧剧集，探讨青少年性教育话题', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/Otis%26Ruby.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
-                                (1008, '弥留之国的爱丽丝', 'tv-series', '日本科幻悬疑剧集，改编自同名漫画', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0);
+                                (1008, '弥留之国的爱丽丝', 'tv-series', '日本科幻悬疑剧集，改编自同名漫画', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (1009, '鱿鱼游戏', 'tv-series', '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0);
 
 DROP TABLE IF EXISTS season;
 CREATE TABLE season
@@ -46,7 +47,9 @@ CREATE TABLE season
    DEFAULT CHARSET = utf8mb4 COMMENT = '季';
 
 insert into season values   (10051, 1005, 1, '寂静之海 第1季', '月球基地的神秘事件调查', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/silent-sea.jpg', '2021-12-24', 0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
-                            (10081, 1008, 1, '弥留之国的爱丽丝 第1季', '弥留之国的生存游戏', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', '2021-12-24', 0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0);
+                            (10081, 1008, 1, '弥留之国的爱丽丝 第1季', '弥留之国的生存游戏', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', '2021-12-24', 0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                            (10091, 1009, 1, '鱿鱼游戏 第1季', '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', '2021-12-24', 0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0);
+#                             (10092, 1009, 2, '鱿鱼游戏 第2季', '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', '2024-08-24', 0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0);
 
 DROP TABLE IF EXISTS video;
 CREATE TABLE video
@@ -83,10 +86,29 @@ insert into video values (10011, '疯狂的麦克斯：狂暴之路', null, '待
                          (100506, '寂静之海 第6集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/SeaLuna.jpg', 'episode', '2024-05-24', 3600, null, 10051, 6,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                          (100507, '寂静之海 第7集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/SeaLuna.jpg', 'episode', '2024-05-24', 3600, null, 10051, 7,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                          (100508, '寂静之海 第8集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/SeaLuna.jpg', 'episode', '2024-05-24', 3600, null, 10051, 8,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
-                         (100801, '弥留之国的爱丽丝 第1集', null, '有栖良平（山崎贤人 饰）拥有一位非常优秀的哥哥，在哥哥的衬托之下，毫无建树的他显得更加的废柴。', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 'episode', '2024-05-24', 3000, 8.4, 10081, 1,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0);
+                         (100801, '弥留之国的爱丽丝 第1集', null, '有栖良平（山崎贤人 饰）拥有一位非常优秀的哥哥，在哥哥的衬托之下，毫无建树的他显得更加的废柴。', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 'episode', '2024-05-24', 3000, 8.4, 10081, 1,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100802, '弥留之国的爱丽丝 第2集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 'episode', '2024-05-24', 3000, 8.4, 10081, 2,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100803, '弥留之国的爱丽丝 第3集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 'episode', '2024-05-24', 3000, 8.4, 10081, 3,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100804, '弥留之国的爱丽丝 第4集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 'episode', '2024-05-24', 3000, 8.4, 10081, 4,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100805, '弥留之国的爱丽丝 第5集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 'episode', '2024-05-24', 3000, 8.4, 10081, 5,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100806, '弥留之国的爱丽丝 第6集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 'episode', '2024-05-24', 3000, 8.4, 10081, 6,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100807, '弥留之国的爱丽丝 第7集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 'episode', '2024-05-24', 3000, 8.4, 10081, 7,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100808, '弥留之国的爱丽丝 第8集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 'episode', '2024-05-24', 3000, 8.4, 10081, 8,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100901, '鱿鱼游戏 第1集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 'episode', '2024-05-24', 3000, 8.4, 10091, 1,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100902, '鱿鱼游戏 第2集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 'episode', '2024-05-24', 3100, 8.4, 10091, 2,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100903, '鱿鱼游戏 第3集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 'episode', '2024-05-24', 3000, 8.4, 10091, 3,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100904, '鱿鱼游戏 第4集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 'episode', '2024-05-24', 3000, 8.4, 10091, 4,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100905, '鱿鱼游戏 第5集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 'episode', '2024-05-24', 3000, 8.4, 10091, 5,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100906, '鱿鱼游戏 第6集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 'episode', '2024-05-24', 3000, 8.4, 10091, 6,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100907, '鱿鱼游戏 第7集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 'episode', '2024-05-24', 3000, 8.4, 10091, 7,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100908, '鱿鱼游戏 第8集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 'episode', '2024-05-24', 3000, 8.4, 10091, 8,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                         (100909, '鱿鱼游戏 第9集', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/squid-game.jpg', 'episode', '2024-05-24', 3000, 8.4, 10091, 9,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0);
 
 
-DROP TABLE IF EXISTS video_source;
+
+
+
+    DROP TABLE IF EXISTS video_source;
 CREATE TABLE video_source
 (
     `id` BIGINT NOT NULL   COMMENT '主键;雪花算法生成，Jackson序列化时转string' ,
@@ -107,6 +129,8 @@ CREATE TABLE video_source
 
 insert into video_source values (10011001, 10011, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Md5-Crazy-Max/Md5-Crazy-Max.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (10041001, 10041, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Md5-Otis-Ruby/Md5-Otis-Ruby.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+
+                                # 寂静之海
                                 (100501001, 100501, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/TheSilentSea/01/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (100502001, 100502, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/TheSilentSea/02/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (100503001, 100503, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/TheSilentSea/03/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
@@ -115,7 +139,18 @@ insert into video_source values (10011001, 10011, 'https://magic-video-bucket.os
                                 (100506001, 100506, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/TheSilentSea/06/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (100507001, 100507, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/TheSilentSea/07/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (100508001, 100508, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/TheSilentSea/08/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
-                                (100801001, 100801, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/01/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0);
+                                (100801001, 100801, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/01/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+
+                                # 鱿鱼游戏 第一季
+                                (100901001, 100901, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/01/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100902001, 100902, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/02/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100903001, 100903, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/03/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100904001, 100904, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/04/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100905001, 100905, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/05/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100906001, 100906, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/06/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100907001, 100907, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/07/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100908001, 100908, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/08/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100909001, 100909, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/09/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0);
 
 
 # 视频分类
