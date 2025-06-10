@@ -1,11 +1,10 @@
 package cn.xiaolin.core.controller;
 
-import cn.xiaolin.core.domain.entity.VideoSource;
+import cn.xiaolin.core.domain.entity.Video;
+import cn.xiaolin.core.domain.vo.SlideVO;
 import cn.xiaolin.core.domain.vo.VideoVO;
 import cn.xiaolin.utils.constant.ApiRouterConsts;
 import cn.xiaolin.utils.resp.Result;
-import cn.xiaolin.core.domain.dto.VideoReqDto;
-import cn.xiaolin.core.domain.entity.Video;
 import cn.xiaolin.core.service.VideoService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,5 +33,12 @@ public class VideoController {
     public Result<List<VideoVO>> all() {
         List<VideoVO> videoList = videoService.getVideoList();
         return Result.ok(videoList);
+    }
+
+    @Operation(summary = "根据 id 查询视频")
+    @GetMapping("/video/{id}")
+    public Result<VideoVO> one(@PathVariable Long id) {
+        Optional<VideoVO> optVideoVO = videoService.getVideoById(id);
+        return optVideoVO.map(Result::ok).orElse(Result.notFound());
     }
 }

@@ -5,10 +5,11 @@ import cn.xiaolin.core.domain.entity.Collection;
 import cn.xiaolin.core.domain.entity.Season;
 import cn.xiaolin.core.domain.entity.Video;
 import cn.xiaolin.core.domain.mapper.CollectionMapper;
-import cn.xiaolin.core.domain.vo.CollectionVO;
+import cn.xiaolin.core.domain.vo.*;
 import cn.xiaolin.core.service.CollectionService;
 import cn.xiaolin.core.service.SeasonService;
 import cn.xiaolin.core.service.VideoService;
+import cn.xiaolin.core.service.VideoSourceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -25,6 +26,7 @@ public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collect
 
     private final VideoService videoService;
     private final SeasonService seasonService;
+    private final VideoSourceService videoSourceService;
 
     @Override
     public List<CollectionVO> getCollectionList() {
@@ -46,7 +48,7 @@ public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collect
             items.add(VideoItem.builder()
                     .type("season")
                     .id(season.getId())
-                    .order(season.getSeasonNumber())
+                    .sortOrder(season.getSeasonNumber())
                     .build());
         }
 
@@ -61,7 +63,7 @@ public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collect
                 items.add(VideoItem.builder()
                         .type(video.getType())
                         .id(video.getId())
-                        .order(video.getSortOrder())
+                        .sortOrder(video.getSortOrder())
                         .build());
             }
 
@@ -77,6 +79,28 @@ public class CollectionServiceImpl extends ServiceImpl<CollectionMapper, Collect
         }
 
         return collectionVOList;
+    }
+
+    @Override
+    public VideoSetVO getVideoSet() {
+        List<CollectionVO> collections = this.getCollectionList();
+        List<SeasonVO> seasons = seasonService.getSeasonList();
+        List<VideoVO> videos = videoService.getVideoList();
+        List<PlaybackSourceVO> playbackSources = videoSourceService.getPlaybackSourceList();
+        return new VideoSetVO(collections, seasons, videos, playbackSources);
+    }
+
+
+    /**
+     * 获取轮播图, TODO 待优化，去重复
+     * @return 轮播图
+     */
+    @Override
+    public List<SlideVO> getSlideList() {
+        List<Video> videoList = videoService.list();
+        int videoSize = videoList.size();
+        List<Video> videos = videoList.subList(0, Math.min(videoSize, 5));
+        return videos.stream().map(SlideVO::new).toList();
     }
 }
 

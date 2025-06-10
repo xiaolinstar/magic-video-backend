@@ -10,10 +10,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -32,5 +34,12 @@ public class SeasonController {
     @GetMapping("/season/list")
     public Result<List<SeasonVO>> all() {
         return Result.ok(seasonService.getSeasonList());
+    }
+
+    @Operation(summary = "根据 id 查询剧集")
+    @GetMapping("/season/{id}")
+    public Result<SeasonVO> oneSeason(@PathVariable Long id) {
+        Optional<SeasonVO> vo = seasonService.getSeasonById(id);
+        return vo.map(Result::ok).orElseGet(Result::notFound);
     }
 }

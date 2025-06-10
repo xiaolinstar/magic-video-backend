@@ -1,9 +1,8 @@
 package cn.xiaolin.core.service.impl;
 
-import cn.xiaolin.core.domain.dto.VideoReqDto;
+import cn.xiaolin.core.domain.vo.SlideVO;
 import cn.xiaolin.core.domain.vo.VideoVO;
 import cn.xiaolin.core.service.VideoService;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.xiaolin.core.domain.entity.Video;
 import cn.xiaolin.core.domain.mapper.VideoMapper;
@@ -30,18 +29,33 @@ public class VideoServiceImpl extends ServiceImpl<VideoMapper, Video>
         List<Video> videoList = this.list();
         List<VideoVO> videoVOList = new ArrayList<>();
         for (Video video : videoList) {
-            VideoVO videoVO = new VideoVO(video);
-
-            if (Objects.equals(video.getType(), "episode")) {
-                videoVO.setSeasonId(video.getParentId());
-            } else {
-                videoVO.setCollectionId(video.getParentId());
-            }
-            videoVO.setVideoNumber(video.getSortOrder());
+            VideoVO videoVO = getVideoVO(video);
             videoVOList.add(videoVO);
         }
-
         return videoVOList;
+    }
+
+    @Override
+    public Optional<VideoVO> getVideoById(Long id) {
+        Video video = this.getById(id);
+        if (Objects.isNull(video)) {
+            return Optional.empty();
+        } else {
+            VideoVO videoVO = getVideoVO(video);
+            return Optional.of(videoVO);
+        }
+    }
+
+    private VideoVO getVideoVO(Video video) {
+        VideoVO videoVO = new VideoVO(video);
+
+        if (Objects.equals(video.getType(), "episode")) {
+            videoVO.setSeasonId(video.getParentId());
+        } else {
+            videoVO.setCollectionId(video.getParentId());
+        }
+        videoVO.setVideoNumber(video.getSortOrder());
+        return videoVO;
     }
 }
 

@@ -17,6 +17,6 @@ import lombok.NoArgsConstructor;
 public class VideoItem {
     String type;
     Long id;
-    Integer order;
+    Integer sortOrder;
     String title;
 }

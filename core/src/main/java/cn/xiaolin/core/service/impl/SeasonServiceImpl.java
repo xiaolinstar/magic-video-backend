@@ -4,6 +4,8 @@ import cn.xiaolin.core.domain.entity.Season;
 import cn.xiaolin.core.domain.entity.Video;
 import cn.xiaolin.core.domain.vo.SeasonVO;
 import cn.xiaolin.core.service.VideoService;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.xiaolin.core.service.SeasonService;
 import cn.xiaolin.core.domain.mapper.SeasonMapper;
@@ -50,6 +52,26 @@ public class SeasonServiceImpl extends ServiceImpl<SeasonMapper, Season>
         }
 
         return seasonVOList;
+    }
+
+    @Override
+    public Optional<SeasonVO> getSeasonById(Long id) {
+        Season season = this.getById(id);
+        if (season == null) {
+            return Optional.empty();
+        } else {
+            LambdaQueryWrapper<Video> wrapper = new LambdaQueryWrapper<>();
+            wrapper.eq(Video::getType, "episode")
+                    .eq(Video::getParentId, id);
+            List<Video> episodeList = videoService.list(wrapper);
+            episodeList.sort(Comparator.comparingInt(Video::getSortOrder));
+
+            List<SeasonVO.Episode> episodes = getEpisodes(episodeList);
+
+            SeasonVO vo = new SeasonVO(season);
+            vo.setEpisodes(episodes);
+            return Optional.of(vo);
+        }
     }
 
     @NotNull
