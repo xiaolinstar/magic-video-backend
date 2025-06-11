@@ -5,12 +5,10 @@ import cn.xiaolin.core.domain.entity.Video;
 import cn.xiaolin.core.domain.vo.SeasonVO;
 import cn.xiaolin.core.service.VideoService;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.xiaolin.core.service.SeasonService;
 import cn.xiaolin.core.domain.mapper.SeasonMapper;
 import lombok.RequiredArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -74,8 +72,7 @@ public class SeasonServiceImpl extends ServiceImpl<SeasonMapper, Season>
         }
     }
 
-    @NotNull
-    private static List<SeasonVO.Episode> getEpisodes(List<Video> episodeList) {
+    private List<SeasonVO.Episode> getEpisodes(List<Video> episodeList) {
         List<SeasonVO.Episode> episodes = new ArrayList<>();
 
         for (Video video : episodeList) {
