@@ -20,7 +20,7 @@ CREATE TABLE collection
 )  ENGINE = InnoDB
    DEFAULT CHARSET = utf8mb4 COMMENT = '视频合集';
 
-insert into collection values   (1001, '疯狂的麦克斯系列电影', 'movie-series', '影片讲述了复仇女神弗瑞奥萨（安雅·泰勒-乔伊 Anya Taylor-Joy 饰）惊心动魄的成长史。', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/crazy-max.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+insert into collection values   (1001, '疯狂的麦克斯系列电影', 'movie-series', '影片讲述了复仇女神弗瑞奥萨（安雅·泰勒-乔伊 Anya Taylor-Joy 饰）惊心动魄的成长史。', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/crazt-max-v8.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (1005, '寂静之海', 'tv-series', '韩国科幻惊悚剧集，讲述2075年地球水资源危机背景下的月球探险故事', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/SeaLuna.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (1004, '性爱自修室', 'tv-series', '英国青春喜剧剧集，探讨青少年性教育话题', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/Otis%26Ruby.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (1008, '弥留之国的爱丽丝', 'tv-series', '日本科幻悬疑剧集，改编自同名漫画', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/alice-poke.jpg', 0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
@@ -75,7 +75,7 @@ CREATE TABLE video
 )  ENGINE = InnoDB
    DEFAULT CHARSET = utf8mb4 COMMENT = '视频';
 
-insert into video values (10011, '疯狂的麦克斯：狂暴之路', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/crazy-max.jpg', 'movie', '2024-05-24', 8400, 8.4, 1001, 1,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+insert into video values (10011, '疯狂的麦克斯：狂暴女神', null, '影片讲述了复仇女神弗瑞奥萨（安雅·泰勒-乔伊 Anya Taylor-Joy 饰）惊心动魄的成长史。', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/crazt-max-v8.jpg', 'movie', '2024-05-24', 8400, 8.4, 1001, 1,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                          (10041, '性爱自修室', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/Otis%26Ruby.jpg', 'clip', '2024-05-24', 3600, null, 1004, 1,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                          (10042, 'Sex Education: Otis & Ruby', null, '待补充...', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/Otis%26Ruby.jpg', 'clip', '2024-05-24', 3120, null, 1004, 2,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                          (100501, '寂静之海 第1集', null, '在未来，地球资源枯竭，人类面临生存危机。韩国政府决定重启“寂静之海”计划，派遣一支精英团队前往月球上废弃的赫密斯基地。团队成员包括队长韩太锡（郑雨盛饰）、生物学家宋智安（韩孝周饰）、工程师尹泰宇（李准饰）等。他们乘坐宇宙飞船抵达月球，发现基地已被废弃多年，但内部设施仍然完好。团队的主要任务是回收一种名为“露西”的神秘植物样本，这种植物被认为能在地球上种植并解决粮食危机。然而，基地内隐藏着许多未知的危险，团队成员们很快意识到他们的任务并不简单。', 'https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/SeaLuna.jpg', 'episode', '2024-05-24', 3600, null, 10051, 1,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
@@ -127,7 +127,7 @@ CREATE TABLE video_source
 )  ENGINE = InnoDB
    DEFAULT CHARSET = utf8mb4 COMMENT = '视频源';
 
-insert into video_source values (10011001, 10011, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Md5-Crazy-Max/Md5-Crazy-Max.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+insert into video_source values (10011001, 10011, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/crazy-max/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (10041001, 10041, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Md5-Otis-Ruby/Md5-Otis-Ruby.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
 
                                 # 寂静之海
