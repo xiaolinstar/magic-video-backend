@@ -1,0 +1,292 @@
+# 本地环境，使用docker-compose快速启动服务
+# 创建网桥
+networks:
+  magic-backend-network:
+    external: false
+
+services:
+  magic-nacos:
+    image: nacos/nacos-server:v2.4.0
+    container_name: magic-nacos
+    hostname: magic-nacos
+#    ports:
+#      - "8848:8848"
+#      - "9848:9848" # 必须添加，否则无法正常使用
+#      - "9849:9849"
+    networks:
+      - magic-backend-network
+
+    restart: no
+    environment:
+      MODE: standalone
+      TZ: Asia/Shanghai
+    healthcheck:
+      # 此命令在容器内执行，而不是宿主机
+      test: [ "CMD", "curl", "-f", "http://localhost:8848/nacos/v2/console/health/readiness" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+
+  magic-mysql:
+    # 业务数据库
+    image: mysql:8.4
+    container_name: magic-mysql
+    hostname: magic-mysql
+#    ports:
+#      - "3306:3306"
+    networks:
+      - magic-backend-network
+
+    environment:
+      LANG: C.UTF-8 # 中文乱码-1
+      # 数据库密码
+      MYSQL_ROOT_PASSWORD: 123456
+      TZ: Asia/Shanghai
+    volumes:
+      - $MYSQL_INIT:/docker-entrypoint-initdb.d/
+    # 中文乱码-2
+    command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
+
+    healthcheck:
+      # 此命令在容器内执行，而不是宿主机
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  magic-auth-redis:
+    # 鉴权中间件redis
+    image: redis:7.4-alpine
+    container_name: magic-auth-redis
+    hostname: magic-auth-redis
+    restart: no
+#    ports:
+#      - "6379:6379"
+    networks:
+      - magic-backend-network
+
+    environment:
+      TZ: Asia/Shanghai
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  magic-redis:
+    # 鉴权中间件redis
+    image: redis:7.4-alpine
+    container_name: magic-redis
+    hostname: magic-redis
+    restart: no
+#    ports:
+#      # 注意端口号是6389
+#      - "6389:6379"
+    networks:
+      - magic-backend-network
+
+    environment:
+      TZ: Asia/Shanghai
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  magic-rabbitmq:
+    image: rabbitmq:3-management
+    container_name: magic-rabbitmq
+    hostname: magic-rabbitmq
+    restart: no
+    environment:
+      TZ: Asia/Shanghai
+      RABBITMQ_DEFAULT_USER: xiaolin
+      RABBITMQ_DEFAULT_PASS: 123456rabbit
+      RABBITMQ_DEFAULT_VHOST: /local-media
+#    ports:
+#      - "5672:5672"
+#      - "15672:15672"
+    networks:
+      - magic-backend-network
+
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  magic-auth:
+    image: xxl1997/magic-auth:0.0.1-SNAPSHOT
+    build:
+      context: auth/.
+    container_name: magic-auth
+    hostname: magic-auth
+    restart: no
+#    ports:
+#      - "8999:8999"
+    networks:
+      - magic-backend-network
+
+    environment:
+      TZ: Asia/Shanghai
+    depends_on:
+      magic-nacos:
+        condition: service_healthy
+      magic-mysql:
+        condition: service_healthy
+      magic-rabbitmq:
+        condition: service_healthy
+      magic-auth-redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8999/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  magic-gateway:
+    image: xxl1997/magic-gateway:0.0.1-SNAPSHOT
+    build:
+      context: gateway/.
+    container_name: magic-gateway
+    hostname: magic-gateway
+    restart: no
+    ports:
+      - "9000:9000"
+    networks:
+      - magic-backend-network
+
+    environment:
+      TZ: Asia/Shanghai
+    depends_on:
+      magic-auth:
+        # magic-auth是magic-gateway的provider
+        condition: service_healthy
+
+  magic-core:
+    image: xxl1997/magic-core:0.0.1-SNAPSHOT
+    build:
+      context: core/.
+    container_name: magic-core
+    hostname: magic-core
+    restart: no
+#    ports:
+#      - "9001:9001"
+    networks:
+      - magic-backend-network
+
+    environment:
+      TZ: Asia/Shanghai
+    depends_on:
+      magic-gateway:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9001/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+  # 可观测性
+
+  # Grafana
+  # 默认端口 3000，映射到 19000
+  magic-grafana:
+    image: grafana/grafana:11.3.2-ubuntu
+    container_name: magic-grafana
+    networks:
+      - magic-backend-network
+    ports:
+      - "19000:3000"
+    volumes:
+      - ./volume/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./volume/grafana/provisioning/etc/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./volume/grafana/provisioning/etc/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./volume/grafana/provisioning/var/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      magic-prometheus:
+        condition: service_started
+      magic-alloy:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      # 中国时区、匿名登陆
+      TZ: Asia/Shanghai
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_USERS_ALLOW_SIGN_UP: false
+
+  # Prometheus
+  magic-prometheus:
+    image: prom/prometheus:v2.53.3
+    container_name: magic-prometheus
+    volumes:
+      # 设置目录挂载
+      - ./volume/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - magic-backend-network
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml" # prometheus配置文件
+      - "--storage.tsdb.path=/prometheus" # prometheus数据存储路径
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:9090/-/ready" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 40s
+
+  # Grafana Alloy - 替代 Promtail
+  magic-alloy:
+    image: grafana/alloy:latest
+    container_name: magic-alloy
+    volumes:
+      # 设置目录挂载
+      - ./volume/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - ./logs:/var/log
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - magic-backend-network
+    command:
+      - "run"
+      - "/etc/alloy/config.alloy"
+      - "--server.http.listen-addr=0.0.0.0:12345"
+    depends_on:
+      - magic-loki
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:12345/-/healthy" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+  magic-loki:
+    image: grafana/loki:3.4
+    container_name: magic-loki
+    volumes:
+      - ./volume/loki/loki-local-config.yaml:/etc/loki/local-config.yaml:ro
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - magic-backend-network
+    command:
+      - "--config.file=/etc/loki/local-config.yaml"
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:3100/ready" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#      start_period: 40s
