@@ -4,4 +4,4 @@ spring:
     web-application-type: reactive
   # 默认启动开发环境的配置
   profiles:
-    active: local
+    active: prod

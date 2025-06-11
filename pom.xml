@@ -40,11 +40,8 @@
     <!--子项目的引入的包都要在父项目中注册版本-->
     <modules>
         <module>common</module>
-        <module>multimedia</module>
         <module>core</module>
-        <module>auth</module>
         <module>gateway</module>
-        <module>has</module>
 
     </modules>
 

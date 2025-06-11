@@ -1,4 +1,0 @@
-# 默认启动开发环境的配置
-spring:
-  profiles:
-    active: local

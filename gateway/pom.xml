@@ -41,20 +41,6 @@
 			<artifactId>commons-pool2</artifactId>
 		</dependency>
 
-		<!-- Sa-Token 权限认证（Reactor响应式集成）, 在线文档：https://sa-token.cc -->
-		<dependency>
-			<groupId>cn.dev33</groupId>
-			<artifactId>sa-token-reactor-spring-boot3-starter</artifactId>
-			<version>1.37.0</version>
-		</dependency>
-
-		<!-- Sa-Token 整合 Redis （使用 jackson 序列化方式） -->
-		<dependency>
-			<groupId>cn.dev33</groupId>
-			<artifactId>sa-token-redis-jackson</artifactId>
-			<version>1.35.0.RC</version>
-		</dependency>
-
 		<!--Ribbon做负载均衡时添加的loadbalancer依赖-->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>

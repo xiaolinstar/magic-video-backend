@@ -10,6 +10,3 @@ logging:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty.http.client: DEBUG
 
-dubbo:
-  application:
-    qos-enable: false

@@ -44,7 +44,7 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
       TZ: Asia/Shanghai
     volumes:
-      - $MYSQL_INIT:/docker-entrypoint-initdb.d/
+      - ./static/mysql/prod:/docker-entrypoint-initdb.d/
     # 中文乱码-2
     command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
 
@@ -56,25 +56,6 @@ services:
       retries: 3
       start_period: 40s
 
-  magic-auth-redis:
-    # 鉴权中间件redis
-    image: redis:7.4-alpine
-    container_name: magic-auth-redis
-    hostname: magic-auth-redis
-    restart: no
-#    ports:
-#      - "6379:6379"
-    networks:
-      - magic-backend-network
-
-    environment:
-      TZ: Asia/Shanghai
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   magic-redis:
     # 鉴权中间件redis
@@ -97,58 +78,6 @@ services:
       retries: 3
       start_period: 40s
 
-  magic-rabbitmq:
-    image: rabbitmq:3-management
-    container_name: magic-rabbitmq
-    hostname: magic-rabbitmq
-    restart: no
-    environment:
-      TZ: Asia/Shanghai
-      RABBITMQ_DEFAULT_USER: xiaolin
-      RABBITMQ_DEFAULT_PASS: 123456rabbit
-      RABBITMQ_DEFAULT_VHOST: /local-media
-#    ports:
-#      - "5672:5672"
-#      - "15672:15672"
-    networks:
-      - magic-backend-network
-
-    healthcheck:
-      test: ["CMD", "rabbitmqctl", "status"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
-  magic-auth:
-    image: xxl1997/magic-auth:0.0.1-SNAPSHOT
-    build:
-      context: auth/.
-    container_name: magic-auth
-    hostname: magic-auth
-    restart: no
-#    ports:
-#      - "8999:8999"
-    networks:
-      - magic-backend-network
-
-    environment:
-      TZ: Asia/Shanghai
-    depends_on:
-      magic-nacos:
-        condition: service_healthy
-      magic-mysql:
-        condition: service_healthy
-      magic-rabbitmq:
-        condition: service_healthy
-      magic-auth-redis:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8999/actuator/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
 
   magic-gateway:
     image: xxl1997/magic-gateway:0.0.1-SNAPSHOT
@@ -161,13 +90,16 @@ services:
       - "9000:9000"
     networks:
       - magic-backend-network
+    depends_on:
+      magic-nacos:
+        condition: service_healthy
+      magic-mysql:
+        condition: service_healthy
+      magic-redis:
+        condition: service_healthy
 
     environment:
       TZ: Asia/Shanghai
-    depends_on:
-      magic-auth:
-        # magic-auth是magic-gateway的provider
-        condition: service_healthy
 
   magic-core:
     image: xxl1997/magic-core:0.0.1-SNAPSHOT

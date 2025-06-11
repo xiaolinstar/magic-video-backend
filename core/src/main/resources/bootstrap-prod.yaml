@@ -5,13 +5,34 @@ spring:
   cloud:
     nacos:
       # Nacos服务地址
-      server-addr: www.xingxiaolin.cn:8848
+      server-addr: magic-nacos:8848
+      # Nacos服务发现
+      discovery:
+        cluster-name: NANJING
+        # 设置为非临时实例
+        ephemeral: true
+
       config:
+        enabled: false
         file-extension: yaml # 文件后缀名
         group: DEFAULT_GROUP
 
-      # Nacos服务发现
-      discovery:
-        cluster-name: BEIJING
-        # 设置为非临时实例
-        ephemeral: true
+  # 本地MySQL容器，scheme名称：local_magic_video
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: 123456
+    url: jdbc:mysql://magic-mysql:3306/magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
+
+  data:
+    # 数据库缓存，Redis 端口号6379
+    redis:
+      client-type: lettuce
+      database: 0
+      host: magic-redis
+      port: 6379
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 8
+          max-idle: 8

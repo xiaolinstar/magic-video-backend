@@ -22,20 +22,8 @@ local.file_match "spring_logs" {
             "job"      = "magic-core",
         },
         {
-            __path__ = "/var/log/auth/*.log",
-            job      = "magic-auth",
-        },
-        {
             __path__ = "/var/log/gateway/*.log",
             job      = "magic-gateway",
-        },
-        {
-            __path__ = "/var/log/multimedia/*.log",
-            job      = "magic-multimedia",
-        },
-        {
-            __path__ = "/var/log/has/*.log",
-            job      = "magic-has",
         },
      ]
      sync_period = "5s"

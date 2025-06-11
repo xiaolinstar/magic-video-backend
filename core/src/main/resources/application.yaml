@@ -6,6 +6,3 @@ spring:
         name: core
     cache:
         type: redis
-dubbo:
-    application:
-        qos-enable: false
