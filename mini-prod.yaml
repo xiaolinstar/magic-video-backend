@@ -5,6 +5,28 @@ networks:
     external: false
 
 services:
+  # 软负载
+  magic-nginx:
+    image: nginx:alpine3.20-perl
+    container_name: magic-nginx
+    ports:
+      - "8081:8081"
+    networks:
+      - magic-backend-network
+    volumes:
+      # 设置目录挂载
+      - ./volume/nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      magic-gateway:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8081" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
   magic-nacos:
     image: nacos/nacos-server:v2.4.0
     container_name: magic-nacos
@@ -86,8 +108,6 @@ services:
     container_name: magic-gateway
     hostname: magic-gateway
     restart: no
-    ports:
-      - "9000:9000"
     networks:
       - magic-backend-network
     depends_on:
@@ -134,7 +154,7 @@ services:
     networks:
       - magic-backend-network
     ports:
-      - "19000:3000"
+      - "9000:3000"
     volumes:
       - ./volume/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
       - ./volume/grafana/provisioning/etc/datasources:/etc/grafana/provisioning/datasources:ro
