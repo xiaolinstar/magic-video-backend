@@ -9,8 +9,8 @@ ENV JAR_VERSION=0.0.1-SNAPSHOT
 # 拷贝文件到Docker容器目录中
 COPY target/gateway-${JAR_VERSION}.jar /app/gateway-${JAR_VERSION}.jar
 
-# 暴露9001端口
-EXPOSE 9001
+# 暴露9000端口
+EXPOSE 9000
 
 # 生产环境
 ENTRYPOINT ["java", "-jar", "/app/gateway-0.0.1-SNAPSHOT.jar"]

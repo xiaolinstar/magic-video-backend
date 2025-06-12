@@ -9,8 +9,8 @@ ENV JAR_VERSION=0.0.1-SNAPSHOT
 # 拷贝文件到Docker容器目录中
 COPY target/core-${JAR_VERSION}.jar /app/core-${JAR_VERSION}.jar
 
-# 暴露9000端口
-EXPOSE 9000
+# 暴露9001端口
+EXPOSE 9001
 
 # 生产环境
 ENTRYPOINT ["java", "-jar", "/app/core-0.0.1-SNAPSHOT.jar"]
