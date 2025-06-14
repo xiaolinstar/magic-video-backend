@@ -108,6 +108,8 @@ services:
     container_name: magic-gateway
     hostname: magic-gateway
     restart: no
+    volumes:
+      - "./logs/gateway:/logs/gateway"
     networks:
       - magic-backend-network
     depends_on:
@@ -128,8 +130,8 @@ services:
     container_name: magic-core
     hostname: magic-core
     restart: no
-#    ports:
-#      - "9001:9001"
+    volumes:
+      - "./logs/core:/logs/core"
     networks:
       - magic-backend-network
 
