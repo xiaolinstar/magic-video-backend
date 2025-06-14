@@ -140,7 +140,16 @@ insert into video_source values (10011001, 10011, 'https://magic-video-bucket.os
                                 (100506001, 100506, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/TheSilentSea/06/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (100507001, 100507, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/TheSilentSea/07/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
                                 (100508001, 100508, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/TheSilentSea/08/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+
+                                # 弥留之国的爱丽丝
                                 (100801001, 100801, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/01/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100802001, 100802, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/02/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100803001, 100803, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/03/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100804001, 100804, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/04/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100805001, 100805, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/05/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100806001, 100806, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/06/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100807001, 100807, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/07/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
+                                (100808001, 100808, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Alice/08/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
 
                                 # 鱿鱼游戏 第一季
                                 (100901001, 100901, 'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/squid-game/S01/01/main.mpd', 'dash', 1080, null,0,0, '2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
