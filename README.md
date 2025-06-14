@@ -62,6 +62,8 @@
 - [ ]  可观测性容器promtail loki prometheus的健康检查
 - [ ]  使用 腾讯云 媒体处理 转码工具，支持 DASH 格式
 - [ ]  使用 K8S 部署容器集群
+- [ ]  docker上实现health check 健康检查
+- [ ]  将dash协议迁移到hls协议
 
 ---
 
