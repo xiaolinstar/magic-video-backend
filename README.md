@@ -48,24 +48,28 @@
 - [ ]  各组件如 Redis、MySQL、RabbitMQ 连通性单元测试
 - [X]  minio 使用非9000、9001 端口无法启动
 - [ ]  单元测试依赖其他配置，如 MySQL、Redis、RabbitMQ 等
-- [ ]  部署 Prometheus 监控 Nginx 流量
+- [X]  部署 Prometheus 监控 Nginx 流量
 - [ ]  docker-compose-local 中容器名变更
 - [ ]  支持 K8s 容器编排和管理
-- [ ]  快速启动文档更新，local 和 dev 模式两种启动方式
+- [X]  快速启动文档更新，local 和 dev 模式两种启动方式
 - [ ]  容器镜像依赖 tag，全部更新为确定版本，而不要使用默认 latest
 - [ ]  项目微服务关系架构图展示
 - [X]  重新安排 pom 依赖，应满足最小依赖原则
-- [ ]  将视频存储在 minio，替代 aliyun-oss
-- [ ]  开发环境编排顺序，一键启动各微服务
-- [ ]  定义清楚微服务启动上的拓扑依赖关系
-- [ ]  配置可观测性能力，Prometheus 和 Loki，存在 mount 挂载问题
-- [ ]  可观测性容器promtail loki prometheus的健康检查
-- [ ]  使用 腾讯云 媒体处理 转码工具，支持 DASH 格式
+- [X]  将视频存储在 minio，替代 aliyun-oss：替换已完成，但实际生产环境阿里云 OSS 更适合
+- [X]  开发环境编排顺序，一键启动各微服务
+- [X]  定义清楚微服务启动上的拓扑依赖关系：当前还简单
+- [X]  配置可观测性能力，Prometheus 和 Loki，存在 mount 挂载问题
+- [ ]  可观测性容器 Promtail Loki Prometheus 的健康检查
+- [X]  使用 腾讯云 媒体处理 转码工具，支持 DASH 格式：审核不通过，自定义 Python 脚本实现
 - [ ]  使用 K8S 部署容器集群
-- [ ]  docker上实现health check 健康检查
-- [ ]  将dash协议迁移到hls协议
+- [ ]  流媒体 dash 协议扩展 hls 协议
+- [ ]  可观测性能力与业务能力相分离
 
 ---
+
+## 更新日志
+
+
 
 ## Java服务端开发基础知识
 
