@@ -8,6 +8,38 @@
 
 ## 更新日志
 
+2025-06-17：生产服务与可观测性服务分离。
+
+待办：探讨可观测性服务与生产服务的部署方式，如何解耦合。
+
+项目中包含两个 `docker-compose` 配置文件，包括 `mini-prod.yaml` 和 `mini-obvervability.yaml`
+
+执行方式（单点）：
+
+首次需要创建网络 magic-backend-network，如果没创建会报错
+```shell
+docker network create magic-backend-network
+```
+
+依次启动 2 个服务集群
+
+```shell
+docker compose -p prod -f mini-prod.yaml up -d
+
+docker compose -p obvervability -f obvervability.yaml up -d
+```
+
+
+容器集群卸载：
+
+```shell
+docker compose -p obvervability -f obvervability.yaml down
+
+docker compose -p prod -f mini-prod.yaml down
+```
+
+
+
 2024-09-22 构建 docker-compose 运行脚本
 
 - 本地环境 local：容器运行
@@ -64,6 +96,7 @@
 - [ ]  使用 K8S 部署容器集群
 - [ ]  流媒体 dash 协议扩展 hls 协议
 - [ ]  可观测性能力与业务能力相分离
+- [ ]  日志打印统一格式，日志级别统一
 
 ---
 

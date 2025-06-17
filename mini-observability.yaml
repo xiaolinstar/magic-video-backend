@@ -1,0 +1,103 @@
+
+networks:
+  magic-backend-network:
+    external: true
+
+# 可观测性
+services:
+  # Grafana
+  # 默认端口 3000，映射到 19000
+  magic-grafana:
+    image: grafana/grafana:11.3.2-ubuntu
+    container_name: magic-grafana
+    networks:
+      - magic-backend-network
+    ports:
+      - "9000:3000"
+    volumes:
+      - ./volume/grafana/grafana.ini:/etc/grafana/grafana.ini:ro
+      - ./volume/grafana/provisioning/etc/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./volume/grafana/provisioning/etc/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./volume/grafana/provisioning/var/dashboards:/var/lib/grafana/dashboards:ro
+    depends_on:
+      magic-prometheus:
+        condition: service_started
+      magic-alloy:
+        condition: service_started
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:3000/api/health" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    environment:
+      # 中国时区、匿名登陆
+      TZ: Asia/Shanghai
+      GF_AUTH_ANONYMOUS_ENABLED: true
+      GF_AUTH_ANONYMOUS_ORG_ROLE: Admin
+      GF_USERS_ALLOW_SIGN_UP: false
+
+  # Prometheus
+  magic-prometheus:
+    image: prom/prometheus:v2.53.3
+    container_name: magic-prometheus
+    volumes:
+      # 设置目录挂载
+      - ./volume/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - magic-backend-network
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml" # prometheus配置文件
+      - "--storage.tsdb.path=/prometheus" # prometheus数据存储路径
+  #    healthcheck:
+  #      test: [ "CMD", "curl", "-f", "http://localhost:9090/-/ready" ]
+  #      interval: 30s
+  #      timeout: 10s
+  #      retries: 3
+  #      start_period: 40s
+
+  # Grafana Alloy - 替代 Promtail
+  magic-alloy:
+    image: grafana/alloy:latest
+    container_name: magic-alloy
+    volumes:
+      # 设置目录挂载
+      - ./volume/alloy/config.alloy:/etc/alloy/config.alloy:ro
+      - ./logs:/var/log
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - magic-backend-network
+    command:
+      - "run"
+      - "/etc/alloy/config.alloy"
+      - "--server.http.listen-addr=0.0.0.0:12345"
+    depends_on:
+      - magic-loki
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:12345/-/healthy" ]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+  magic-loki:
+    image: grafana/loki:3.4
+    container_name: magic-loki
+    volumes:
+      - ./volume/loki/loki-local-config.yaml:/etc/loki/local-config.yaml:ro
+    environment:
+      TZ: Asia/Shanghai
+    networks:
+      - magic-backend-network
+    command:
+      - "--config.file=/etc/loki/local-config.yaml"
+  #    healthcheck:
+  #      test: [ "CMD", "curl", "-f", "http://localhost:3100/ready" ]
+  #      interval: 30s
+  #      timeout: 10s
+  #      retries: 3
+  #      start_period: 40s
