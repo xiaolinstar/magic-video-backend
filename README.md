@@ -156,69 +156,44 @@ git clone git@github.com:xiaolinstar/magic-video-backend.git
 cd magic-video-backend
 ```
 
-### 本地模式体验 local
+本项目提供三种启动方式，适用于不同的使用场景：
+
+### 方式一：本地体验模式 (Local)
+
+> **适用场景**：快速体验项目功能，所有组件和微服务全部容器化运行
+> 
+> **特点**：无需任何配置，一键启动，适合初次体验
 
 #### 快速启动
 
-> 组件和微服务全部容器化，使用 docker-compose 编排，无需任何配置。
->
-> 配置环境设置为 local
+**重要：首先修改根目录下 `.local.env` 中的地址配置**
 
 注意：DockerHub 仓库中镜像支持 amd64 架构，如使用其他架构，需要手动构建镜像
 
-**docker compose 启动**
-
-修改本地参数
-
-**重要：根目录下 `.local.dev` 中地址修改**
-
-在终端中输入
-
-> docker compose 启动
-> 
-> 指定当前目录下的 -f docker-compose-local.yaml 文件（默认：docker-compose.yaml 时可以不指定）
-> 
-> 指定环境变量文件 --env-file .local.env
-> 
-> 启动 up，以后台方式运行 -d
-> 
-
 ```shell
+# 启动所有服务（微服务 + 中间件）
 docker compose -f docker-compose-local.yaml --env-file .local.env up -d
 ```
 
-容器卸载
-
-> 不再使用的时候记得执行该指令关闭所有容器
-> 
-> 注意不能使用 docker compose down，而是与启动命令相反
-> 
+**停止服务**
 
 ```shell
-docker compose -f docker-compose-local.yaml --env-file .local.env down 
+# 停止并删除所有容器
+docker compose -f docker-compose-local.yaml --env-file .local.env down
 ```
 
-#### 手动编译镜像启动
+#### 手动编译镜像启动（可选）
 
-> docker 容器的迁移性与处理器体系架构有关，如 linux/arm64 linux/amd64
-> 
-> 如果 dockerhub 没有所需镜像，或镜像不是所需版本，可在本地自行构建
-> 
+> 如果 DockerHub 没有适合你架构的镜像，可以本地构建
 
-**编译项目(本地打包)**
-
-> 本项目包含项目级 maven ，但下述在终端执行的命令需本地用户级 maven
+**编译项目**
 
 ```shell
 # 跳过单元测试
 mvn clean package -Dmaven.test.skip=true 
 ```
 
-本项目中包含多个微服务，编译后生成的 `jar` 包，在每个微服务的 `target` 目录中。
-
 **构建容器镜像**
-
-> 基于本地源代码构建镜像，会自动匹配宿主机 CPU 架构
 
 ```shell
 docker build -t xxl1997/magic-auth:0.0.1-SNAPSHOT auth/.
@@ -228,49 +203,81 @@ docker build -t xxl1997/magic-core:0.0.1-SNAPSHOT core/.
 docker build -t xxl1997/magic-has:0.0.1-SNAPSHOT has/.
 ```
 
-**启动容器集群（本地开发环境）**
+### 方式二：开发调试模式 (Dev)
 
-创建并启动
+> **适用场景**：本地开发调试，需要频繁修改代码
+> 
+> **特点**：中间件容器化运行，微服务在 IDE 中启动，便于调试
 
-```shell
-docker compose -f docker-compose-local.yaml --env-file .local.env up -d
-```
+#### 启动步骤
 
-容器卸载
+**1. 启动中间件服务**
 
-```shell
-docker compose -f docker-compose-local.yaml --env-file .local.env down
-```
-
-### 开发模式启动 dev
-
-> docker-compose 启动所依赖的中间件，本地 IDEA 启动微服务，将容器端口映射到宿主机
-
-**docker compose 启动 dev 环境**
-
-修改 `.dev.env` 中环境变量
-
-`docker-compose.yaml` 中只包含中间件
+修改 `.dev.env` 中环境变量，然后启动中间件：
 
 ```shell
+# 只启动中间件（MySQL、Redis、Nacos等）
 docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
 ```
 
-在IDEA中设置所有微服务启动参数 `dev`
+**2. 在 IDE 中启动微服务**
+
+在 IDEA 中设置所有微服务启动参数为 `dev`：
 
 ![ActiveProfile](assets/idea_active_profile.png)
 
-依次启动以下微服务
+按以下顺序启动微服务：
 
-> 微服务间有顺序上的依赖关系 
+1. auth（鉴权微服务）
+2. gateway（网关微服务）
+3. core（核心微服务）
+4. has（视频编码微服务）
+5. multimedia（多媒体微服务）
 
-待定，因为微服务还未完全应用。
+**停止服务**
 
-auth > gateway
+```shell
+# 停止中间件
+docker compose -f docker-compose-dev.yaml --env-file .dev.env down
+# 在 IDE 中手动停止微服务
+```
 
-core > has
+### 方式三：生产部署模式 (Production)
 
-core > multimedia
+> **适用场景**：生产环境部署，服务与可观测性分离
+> 
+> **特点**：生产服务与监控服务分离部署，便于运维管理
+
+#### 启动步骤
+
+**1. 创建网络**
+
+```shell
+# 首次部署需要创建网络
+docker network create magic-backend-network
+```
+
+**2. 启动生产服务**
+
+```shell
+# 启动生产服务集群
+docker compose -p prod -f mini-local.yaml up -d
+```
+
+**3. 启动可观测性服务**
+
+```shell
+# 启动监控和日志服务
+docker compose -p observability -f mini-observability.yaml up -d
+```
+
+**停止服务**
+
+```shell
+# 按相反顺序停止
+docker compose -p observability -f mini-observability.yaml down
+docker compose -p prod -f mini-local.yaml down
+```
 
 --- 
 
