@@ -8,6 +8,18 @@
 
 ## 更新日志
 
+2025-07-21：上传代码到腾讯云 cnb 报错。
+
+报错内容：
+
+fatal: the remote end hung up unexpectedly
+
+修复手段：
+
+git config --global http.postBuffer 524288000
+
+---
+
 2025-06-17：生产服务与可观测性服务分离。
 
 待办：探讨可观测性服务与生产服务的部署方式，如何解耦合。
