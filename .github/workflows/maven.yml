@@ -46,5 +46,5 @@ jobs:
           TAG=$(git rev-list --count HEAD)
           DOCKER_USER=${{ secrets.DOCKERHUB_USERNAME }}
           
-          docker buildx build --platform linux/arm64,linux/amd64 -t $DOCKER_USER/magic-core:v0.$TAG core/. --push
-          docker buildx build --platform linux/arm64,linux/amd64 -t $DOCKER_USER/magic-gateway:v0.$TAG gateway/. --push
+          docker build -t $DOCKER_USER/magic-core:v0.$TAG core/. --push
+          docker build -t $DOCKER_USER/magic-gateway:v0.$TAG gateway/. --push
