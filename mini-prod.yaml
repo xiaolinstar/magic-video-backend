@@ -102,7 +102,7 @@ services:
 
 
   magic-gateway:
-    image: xxl1997/magic-gateway:0.0.1-SNAPSHOT
+    image: xiaolinstar/magic-gateway:v0.1
     build:
       context: gateway/.
     container_name: magic-gateway
@@ -124,7 +124,7 @@ services:
       TZ: Asia/Shanghai
 
   magic-core:
-    image: xxl1997/magic-core:0.0.1-SNAPSHOT
+    image: xiaolinstar/magic-core:v0.1
     build:
       context: core/.
     container_name: magic-core

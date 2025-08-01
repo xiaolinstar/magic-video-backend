@@ -1,8 +1,6 @@
-name: Maven Package
+name: Java Maven Package
 
 on:
-#  release:
-#    types: [created]
   push:
     branches: ["prod"]
   # 手动触发
@@ -47,10 +45,10 @@ jobs:
           password: ${{secrets.DOCKERHUB_TOKEN}}
 
       # 5. 构建并推送各微服务镜像
-      - name: Build and push Docker images
+      - name: Build Images and Push to DockerHub
         run: |
-          TAG=$(git rev-list --count HEAD)
+          TAG=v0.1
           DOCKER_USER=${{ vars.DOCKERHUB_USERNAME }}
           
-          docker build -t $DOCKER_USER/magic-core:v0.$TAG core/. --push
-          docker build -t $DOCKER_USER/magic-gateway:v0.$TAG gateway/. --push
+          docker build -t $DOCKER_USER/magic-core:$TAG core/. --push
+          docker build -t $DOCKER_USER/magic-gateway:$TAG gateway/. --push

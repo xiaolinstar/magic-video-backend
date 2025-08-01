@@ -155,7 +155,7 @@ services:
     command: server /data --console-address ":9001"
 
   magic-auth:
-    image: xxl1997/magic-auth:0.0.1-SNAPSHOT
+    image: xiaolinstar/magic-auth:v0.1
     build:
       context: auth/.
     container_name: magic-auth
@@ -185,7 +185,7 @@ services:
       start_period: 40s
 
   magic-gateway:
-    image: xxl1997/magic-gateway:0.0.1-SNAPSHOT
+    image: xiaolinstar/magic-gateway:v0.1
     build:
       context: gateway/.
     container_name: magic-gateway
@@ -204,7 +204,7 @@ services:
         condition: service_healthy
 
   magic-core:
-    image: xxl1997/magic-core:0.0.1-SNAPSHOT
+    image: xiaolinstar/magic-core:v0.1
     build:
       context: core/.
     container_name: magic-core
@@ -228,7 +228,7 @@ services:
       start_period: 40s
 
   magic-multimedia:
-    image: xxl1997/magic-multimedia:0.0.1-SNAPSHOT
+    image: xiaolinstar/magic-multimedia:v0.1
     build:
       context: multimedia/.
     container_name: magic-multimedia
@@ -252,7 +252,7 @@ services:
       start_period: 40s
 
   magic-has:
-    image: xxl1997/magic-has:0.0.1-SNAPSHOT
+    image: xiaolinstar/magic-has:v0.1
     build:
       context: has/.
     container_name: magic-has
