@@ -3,11 +3,17 @@ name: Maven Package
 on:
 #  release:
 #    types: [created]
-  # 手动触发
   push:
     branches: ["prod"]
+  # 手动触发
   workflow_dispatch:
-
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
+      tags:
+        description: 'SpringCloud 微服务'
 
 jobs:
   build:
