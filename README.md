@@ -2,7 +2,7 @@
 
 > 个人搭建企业级微服务项目：微服务架构设计，DevOps 实践，可观测性实践，CI/CD 实践，K8s 容器编排与管理实践。
 
-本项目全面涉及到了 Java 技术栈的主流技术组件，包括但不限于 SpringBoot MySQL Redis MybatisPlus Nacos Dubbo RocketMQ Minio 等。
+本项目全面涉及到了 Java 技术栈的主流技术组件，包括但不限于 SpringCloud MySQL Redis MybatisPlus Nacos Dubbo RocketMQ Minio 等。
 
 ---
 
@@ -22,13 +22,14 @@ git config --global http.postBuffer 524288000
 
 2025-06-17：生产服务与可观测性服务分离。
 
-待办：探讨可观测性服务与生产服务的部署方式，如何解耦合。
+- [ ] 探讨可观测性服务与生产服务的部署方式，如何完全解耦。
 
-项目中包含两个 `docker-compose` 配置文件，包括 `mini-prod.yaml` 和 `mini-obvervability.yaml`
+项目中包含两个 `docker-compose` 配置文件： `mini-prod.yaml` 和 `mini-obvervability.yaml`
 
 执行方式（单点）：
 
 首次需要创建网络 magic-backend-network，如果没创建会报错
+
 ```shell
 docker network create magic-backend-network
 ```
@@ -49,8 +50,6 @@ docker compose -p obvervability -f obvervability.yaml down
 
 docker compose -p prod -f mini-prod.yaml down
 ```
-
-
 
 2024-09-22 构建 docker-compose 运行脚本
 
@@ -82,15 +81,13 @@ docker compose -p prod -f mini-prod.yaml down
 
 ## 待办Todos
 
-- [ ]  搭建 Maven 私有仓库 Nexus
-- [ ]  搭建私有代码托管仓库 GitLab
+- [ ]  搭建 Maven 私有仓库 Nexus、 搭建私有代码托管仓库 GitLab
 - [ ]  配置文件与微服务解耦，密钥相关专门存储，包括数据库、Redis、RabbitMQ等
-- [ ]  本地自动构建、自动运行脚本
 - [ ]  开发环境关闭权限校验，完善代码灵活性
 - [X]  SpringCloudGateway 及其他微服务组件 healthcheck
 - [X]  关闭 docker-compose-local 中暴露的本地端口，只支持容器内通信
 - [ ]  各组件如 Redis、MySQL、RabbitMQ 连通性单元测试
-- [X]  minio 使用非9000、9001 端口无法启动
+- [X]  minio 使用非 9000、9001 端口无法启动
 - [ ]  单元测试依赖其他配置，如 MySQL、Redis、RabbitMQ 等
 - [X]  部署 Prometheus 监控 Nginx 流量
 - [ ]  docker-compose-local 中容器名变更
@@ -114,8 +111,6 @@ docker compose -p prod -f mini-prod.yaml down
 
 ## 更新日志
 
-
-
 ## Java服务端开发基础知识
 
 > 本项目使用Java技术栈，想要参与到本项目的开发工作，需要具备以下基础知识
@@ -126,9 +121,9 @@ Java 基础知识：面相对象编程、集合、线程池
 
 计算机基础知识：计算机网络、操作系统、Linux 基础
 
-版本管理：Git GitHub
+版本管理：Git GitHub Gitee
 
-容器化：Docker & Docker-Compose
+容器化：Docker
 
 ### 进阶能力
 
@@ -148,8 +143,8 @@ Java 基础知识：Java IO、JVM、锁
 
 CI/CD：
 
-- 持续集成：Jenkins
-- 容器编排：docker-compose、k8s
+- 持续集成：Jenkins、Gitee Go、GitHub Actions
+- 容器编排：docker-compose、Kubernetes
 
 ---
 
@@ -187,10 +182,9 @@ cd magic-video-backend
 docker compose -f docker-compose-local.yaml --env-file .local.env up -d
 ```
 
-**停止服务**
+**服务卸载**
 
 ```shell
-# 停止并删除所有容器
 docker compose -f docker-compose-local.yaml --env-file .local.env down
 ```
 
