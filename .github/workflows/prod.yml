@@ -13,9 +13,14 @@ on:
       tags:
         description: 'SpringCloud 微服务'
 
+# 限制 workflow 默认权限为只读，最小权限原则
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-22.04
+    # 仅授予本任务实际需要的权限
     permissions:
       contents: read
       packages: write
@@ -33,9 +38,10 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      # 3. 基于 Maven 构建项目
+      # 3. 基于 Maven 构建项目（限制构建时间、隐藏传输进度）
       - name: Build with Maven
-        run: mvn clean package -Dmaven.test.skip=true
+        run: mvn clean package -Dmaven.test.skip=true --no-transfer-progress
+        timeout-minutes: 30
 
       # 4. 配置 DockerHub Token 认证
       - name: Login in DockerHub
@@ -49,6 +55,7 @@ jobs:
         run: |
           TAG=v0.1
           DOCKER_USER=${{ vars.DOCKERHUB_USERNAME }}
-          
+
           docker build -t $DOCKER_USER/magic-core:$TAG core/. --push
           docker build -t $DOCKER_USER/magic-gateway:$TAG gateway/. --push
+        timeout-minutes: 30

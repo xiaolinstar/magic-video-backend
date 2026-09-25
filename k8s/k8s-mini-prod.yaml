@@ -1,0 +1,170 @@
+# 生产环境命名空间
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mini-prod
+
+---
+
+## 部署核心微服务
+apiVersion: v1
+kind: Service
+metadata:
+  name: core-svc
+  namespace: prod
+spec:
+  selector:
+    app: core-deploy
+  type: NodePort
+  ports:
+    - port: 9000
+      targetPort: 9000
+      nodePort: 31120
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: core-deploy
+  labels:
+    app: core-deploy
+  namespace: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: core-pod
+  template:
+    metadata:
+      labels:
+        app: core-pod
+    spec:
+      # 强制以非root用户运行，禁用特权升级
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: my-core
+          imagePullPolicy: Always
+          image: xxl1997/magic-video:core-0.0.1-SNAPSHOT
+          # 容器级别安全上下文：禁止特权模式、只读根文件系统、限制能力
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 9000
+          # 资源限制，防止资源耗尽攻击
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          # 健康检查
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9000
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+---
+
+## 部署微服务网关
+apiVersion: v1
+kind: Service
+metadata:
+  name: gateway-svc
+  namespace: prod
+spec:
+  selector:
+    app: gateway-deploy
+  type: NodePort
+  ports:
+    - port: 9001
+      targetPort: 9001
+      nodePort: 31121
+
+---
+# 无状态部署 Gateway 微服务
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gateway-deploy
+  labels:
+    app: gateway-deploy
+  namespace: prod
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: gateway-pod
+  template:
+    metadata:
+      labels:
+        app: gateway-pod
+    spec:
+      # 强制以非root用户运行，禁用特权升级
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: my-gateway
+          imagePullPolicy: Always
+          image: xxl1997/magic-video:gateway-0.0.1-SNAPSHOT
+          # 容器级别安全上下文：禁止特权模式、限制能力
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          ports:
+            - containerPort: 9001
+          # 资源限制
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+          # 健康检查
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 9001
+            initialDelaySeconds: 60
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 9001
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
