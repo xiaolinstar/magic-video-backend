@@ -9,3 +9,18 @@ spring:
 dubbo:
     application:
         qos-enable: false
+
+# Spring Boot Actuator 安全配置
+# 缓解 CVE-2026-22733 (CloudFoundry Actuator 端点认证绕过)
+management:
+    endpoints:
+        web:
+            exposure:
+                # 仅暴露健康检查等基础端点，排除 cloudfoundry 端点
+                include: health,info
+                exclude: cloudfoundry
+    endpoint:
+        health:
+            show-details: when-authorized
+            probes:
+                enabled: true
