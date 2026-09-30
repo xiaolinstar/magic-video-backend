@@ -25,7 +25,7 @@
         select r.id, r.name
         from dev_auth.sys_role r
         join dev_auth.sys_user_role ur on r.id = ur.sys_role_id
-        where sys_user_id = ${user_id}
+        where sys_user_id = #{user_id}
     </select>
 
     <select id="listRolesByPermId" resultType="cn.xiaolin.auth.domain.entity.SysRole">

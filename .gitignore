@@ -41,3 +41,9 @@ volume/mysql/data
 volume/minio/has/data
 volume/minio/multimedia/data
 volume/minio/loki/data
+
+# Local secrets / env files
+.env
+.env.local
+.env.*.local
+*.env.local

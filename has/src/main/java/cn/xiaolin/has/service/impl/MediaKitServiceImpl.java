@@ -19,17 +19,34 @@ import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 
 /**
+ * Video transcoding service (mp4 -> HLS / DASH) using ffmpeg.
+ *
  * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description 视频转hls dash，成功后rcp写数据库表resource
  * @create 2024/11/11
  */
 @Slf4j
 @Service
 public class MediaKitServiceImpl implements MediaKitService {
+
+    /**
+     * Filename portion of a URL must look like an MD5 digest (32 hex chars, optional extension).
+     * This prevents path-traversal payloads such as "../../etc/passwd" from escaping
+     * the configured working directory.
+     */
+    private static final Pattern SAFE_FILENAME = Pattern.compile("^[a-fA-F0-9]{32}$");
+
+    /**
+     * Only http and https URLs are accepted as input sources. This blocks file://, gopher://
+     * and other schemes that could lead to SSRF or local file disclosure via ffmpeg.
+     */
+    private static final String[] ALLOWED_SCHEMES = {"http", "https"};
+
     private final String hlsFileDir;
     private final String hlsBucketName;
     private final String dashFileDir;
@@ -53,6 +70,8 @@ public class MediaKitServiceImpl implements MediaKitService {
     public void media2Hls(String videoUrl) {
         log.info("开始转码，mp4 -> hls");
         String md5 = getUrlFilename(videoUrl);
+        validateVideoUrl(videoUrl);
+        validateFilename(md5);
 
         log.info("videoUrl: {}", videoUrl);
         log.info("md5: {}", md5);
@@ -175,10 +194,48 @@ public class MediaKitServiceImpl implements MediaKitService {
         }
     }
 
+    /**
+     * Ensure the input URL uses an allowed scheme. This restricts ffmpeg from
+     * accessing local files (file://) or non-HTTP schemes that could be abused
+     * for SSRF / local file disclosure.
+     */
+    private void validateVideoUrl(String videoUrl) {
+        if (videoUrl == null || videoUrl.isBlank()) {
+            throw new GlobalException("视频 URL 不能为空");
+        }
+        try {
+            URL url = new URL(videoUrl);
+            String scheme = url.getProtocol();
+            if (scheme == null) {
+                throw new GlobalException("视频 URL 协议不合法");
+            }
+            boolean ok = Arrays.stream(ALLOWED_SCHEMES)
+                    .anyMatch(s -> s.equalsIgnoreCase(scheme));
+            if (!ok) {
+                throw new GlobalException("视频 URL 协议不被允许");
+            }
+        } catch (MalformedURLException e) {
+            throw new GlobalException("视频 URL 格式不合法");
+        }
+    }
+
+    /**
+     * Ensure the filename portion of the URL is a 32-char hex string, blocking
+     * path-traversal sequences and other shell-meaningful characters from
+     * reaching the filesystem or ffmpeg arguments.
+     */
+    private void validateFilename(String filename) {
+        if (filename == null || !SAFE_FILENAME.matcher(filename.toLowerCase(Locale.ROOT)).matches()) {
+            throw new GlobalException("视频文件名不合法");
+        }
+    }
+
     @Override
     public void media2Dash(String videoUrl) {
         log.info("开始转码，mp4 -> dash");
+        validateVideoUrl(videoUrl);
         String videoName = getUrlFilename(videoUrl);
+        validateFilename(videoName);
 
         log.info("videoUrl: {}", videoUrl);
         log.info("videoName: {}", videoName);

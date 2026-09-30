@@ -1,6 +1,7 @@
 package cn.xiaolin.message.config;
 
 import cn.xiaolin.message.constant.MessageQueueConsts;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
@@ -13,20 +14,37 @@ import org.springframework.context.annotation.Configuration;
 
 
 /**
+ * RabbitMQ configuration.
+ *
  * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description 消息队列配置
  * @create 2023/7/23
  */
 @Configuration
 public class RabbitMQConfig {
 
     /**
-     * RabbitMQ 消息转换器，使用Jackson消息转换器
-     * @return Jackson消息转换器
+     * Trusted Java packages that may appear in the {@code __TypeId__} header.
+     * Restricting this prevents attackers from pushing a payload that triggers
+     * Jackson default-typing into arbitrary classes on the consumer side.
+     */
+    private static final String[] TRUSTED_PACKAGES = {
+            "cn.xiaolin.message.entity",
+            "cn.xiaolin.message.dto"
+    };
+
+    /**
+     * Jackson-based message converter with restricted {@code __TypeId__} packages.
+     * Default Spring behavior trusts every package, which is unsafe if the broker
+     * is reachable from untrusted producers.
+     *
+     * @param objectMapper shared Jackson ObjectMapper bean
+     * @return message converter
      */
     @Bean
-    public MessageConverter messageConverter() {
-        return new Jackson2JsonMessageConverter();
+    public MessageConverter messageConverter(ObjectMapper objectMapper) {
+        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter(objectMapper);
+        converter.setTrustedPackages(TRUSTED_PACKAGES);
+        return converter;
     }
 
     /**
@@ -50,7 +68,7 @@ public class RabbitMQConfig {
     /**
      * 绑定交换机和队列
      * @param queue 消息队列
-     * @param fanoutExchange 交换机
+     * @param fanoutExchange 消息队列交换机
      * @return 绑定关系
      */
     @Bean

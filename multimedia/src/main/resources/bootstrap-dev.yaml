@@ -21,15 +21,15 @@ spring:
 
   rabbitmq:
     host: localhost
-    username: xiaolin
-    password: 123456rabbit
-    virtual-host: /dev-media
+    username: ${RABBITMQ_DEFAULT_USER:xiaolin}
+    password: ${RABBITMQ_DEFAULT_PASS:123456rabbit}
+    virtual-host: ${RABBITMQ_DEFAULT_VHOST:/dev-media}
     connection-timeout: 15000
 
 minio:
   endpoint: http://localhost:9010/
-  access-key: RzQywv1gIcgXeSSMMeNz
-  secret-key: 3bD0LUxmD4JhqUCcPMs9QkpCSfTCaG8whZWcSv69
+  access-key: ${MINIO_ACCESS_KEY:RzQywv1gIcgXeSSMMeNz}
+  secret-key: ${MINIO_SECRET_KEY:3bD0LUxmD4JhqUCcPMs9QkpCSfTCaG8whZWcSv69}
 
   image:
     bucket-name: magic-image

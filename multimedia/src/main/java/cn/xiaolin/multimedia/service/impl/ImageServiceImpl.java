@@ -19,11 +19,11 @@ import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.Objects;
+import java.util.UUID;
+import java.util.regex.Pattern;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description
  * @create 2023/7/23
  */
 @Service
@@ -31,6 +31,12 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @EnableConfigurationProperties(MinioConfigProperties.class)
 public class ImageServiceImpl implements ImageService {
+
+    /**
+     * Allowed object-key suffixes. Anything else is rejected so that user-supplied
+     * filenames cannot inject path separators or overwrite sibling objects in MinIO.
+     */
+    private static final Pattern SAFE_SUFFIX = Pattern.compile("^[a-zA-Z0-9]{1,8}$");
 
     private final MinioClient minioClient;
     private final MinioConfigProperties minioConfigProperties;
@@ -52,10 +58,15 @@ public class ImageServiceImpl implements ImageService {
         }
         log.info("Image contentType: {}", image.getContentType());
 
+        // Derive an object key from a UUID plus a sanitized extension. We never use
+        // the user-controlled originalFilename as the MinIO object key — that would
+        // let an attacker inject "/" or "../" segments and overwrite sibling objects.
+        String safeObjectKey = buildSafeObjectKey(image.getOriginalFilename());
+
         try (BufferedInputStream inputStream = new BufferedInputStream(image.getInputStream())) {
             PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                     .bucket(getBucketName())
-                    .object(image.getOriginalFilename())
+                    .object(safeObjectKey)
                     .stream(inputStream, image.getSize(), -1)
                     .contentType(image.getContentType())
                     .build();
@@ -63,7 +74,7 @@ public class ImageServiceImpl implements ImageService {
             return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
                     .bucket(getBucketName())
                     .method(Method.GET)
-                    .object(image.getOriginalFilename())
+                    .object(safeObjectKey)
                     .build()
             );
         } catch (IOException | ErrorResponseException | InsufficientDataException | InternalException |
@@ -84,5 +95,32 @@ public class ImageServiceImpl implements ImageService {
         throw new NotImplementedException();
     }
 
-
+    /**
+     * Build a deterministic, sanitized MinIO object key from the original filename.
+     * Only the alphanumeric portion of the extension is preserved; everything else
+     * (path, special characters, leading dots) is stripped.
+     */
+    private String buildSafeObjectKey(String originalFilename) {
+        String suffix = "";
+        if (originalFilename != null) {
+            int dot = originalFilename.lastIndexOf('.');
+            if (dot >= 0 && dot < originalFilename.length() - 1) {
+                String ext = originalFilename.substring(dot + 1);
+                // strip everything after the first non-alphanumeric character
+                StringBuilder clean = new StringBuilder();
+                for (int i = 0; i < ext.length() && clean.length() < 8; i++) {
+                    char c = ext.charAt(i);
+                    if (Character.isLetterOrDigit(c)) {
+                        clean.append(Character.toLowerCase(c));
+                    } else {
+                        break;
+                    }
+                }
+                if (clean.length() > 0 && SAFE_SUFFIX.matcher(clean).matches()) {
+                    suffix = "." + clean;
+                }
+            }
+        }
+        return UUID.randomUUID().toString().replace("-", "") + suffix;
+    }
 }

@@ -2,6 +2,7 @@ package cn.xiaolin.auth.service.impl;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.xiaolin.auth.domain.dto.SysUserReqDto;
+import cn.xiaolin.utils.exception.GlobalException;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import cn.xiaolin.auth.domain.entity.SysUser;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -24,6 +26,17 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     implements SysUserService{
+
+    /**
+     * Username must be 4-32 chars, letters / digits / underscores / hyphens only.
+     */
+    private static final Pattern USERNAME_PATTERN = Pattern.compile("^[A-Za-z0-9_-]{4,32}$");
+
+    /**
+     * Password must be at least 8 chars and contain at least three of:
+     * lower, upper, digit, symbol.
+     */
+    private static final int MIN_PASSWORD_LEN = 8;
 
     private final SysUserMapper sysUserMapper;
 
@@ -47,6 +60,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
         if (Objects.isNull(dto.getId())) {
             throw new IllegalArgumentException("Id cannot be null");
         }
+        if (dto.getPassword() != null) {
+            validatePasswordStrength(dto.getPassword());
+        }
         LambdaUpdateWrapper<SysUser> updateWrapper = new LambdaUpdateWrapper<>();
         updateWrapper.set(Objects.nonNull(dto.getAdmission()), SysUser::getAdmission, dto.getAdmission())
                 .set(Objects.nonNull(dto.getEmail()), SysUser::getEmail, dto.getEmail())
@@ -60,6 +76,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
 
     @Override
     public Optional<SysUser> saveAndReturn(SysUserReqDto dto) {
+        validateUsername(dto.getUsername());
+        validatePasswordStrength(dto.getPassword());
         SysUser sysUser = SysUser.builder()
                 .id(dto.getId())
                 .username(dto.getUsername())
@@ -153,6 +171,26 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     @Override
     public List<SysUser> listUsersWithRoleByPermId(Long permId) {
         return sysUserMapper.listUsersWithRoleByPermId(permId);
+    }
+
+    private void validateUsername(String username) {
+        if (username == null || !USERNAME_PATTERN.matcher(username).matches()) {
+            throw new GlobalException("用户名必须为 4-32 位字母/数字/下划线/连字符");
+        }
+    }
+
+    private void validatePasswordStrength(String password) {
+        if (password == null || password.length() < MIN_PASSWORD_LEN) {
+            throw new GlobalException("密码长度至少 " + MIN_PASSWORD_LEN + " 位");
+        }
+        int categories = 0;
+        if (password.chars().anyMatch(Character::isLowerCase)) categories++;
+        if (password.chars().anyMatch(Character::isUpperCase)) categories++;
+        if (password.chars().anyMatch(Character::isDigit)) categories++;
+        if (password.chars().anyMatch(c -> !Character.isLetterOrDigit(c))) categories++;
+        if (categories < 3) {
+            throw new GlobalException("密码必须包含大写字母、小写字母、数字、符号中至少三类");
+        }
     }
 }
 

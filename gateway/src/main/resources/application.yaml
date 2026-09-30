@@ -20,9 +20,9 @@ management:
   endpoints:
     web:
       exposure:
-        # 仅暴露健康检查等基础端点，排除 cloudfoundry 端点
-        include: health,info,gateway
-        exclude: cloudfoundry
+        # 仅暴露健康检查等基础端点，排除 cloudfoundry 端点以及可被滥用的 gateway 端点
+        include: health,info
+        exclude: cloudfoundry,gateway
   endpoint:
     health:
       show-details: when-authorized

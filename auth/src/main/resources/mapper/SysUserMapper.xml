@@ -29,14 +29,14 @@
         select u.id, u.username, u.email, u.phone, u.password, u.admission
         from dev_auth.sys_user u
         join dev_auth.sys_user_role ur on u.id = ur.sys_user_id
-        where ur.sys_role_id = ${role_id}
+        where ur.sys_role_id = #{role_id}
     </select>
 
     <select id="listUsersByPermId" resultType="cn.xiaolin.auth.domain.entity.SysUser">
         select u.id, u.username, u.email, u.phone, u.password, u.admission
         from dev_auth.sys_user u
         join dev_auth.sys_user_permission up on u.id = up.sys_user_id
-        where up.sys_permission_id = ${perm_id}
+        where up.sys_permission_id = #{perm_id}
     </select>
 
     <select id="listUsersWithRoleByPermId" resultType="cn.xiaolin.auth.domain.entity.SysUser">
@@ -45,13 +45,12 @@
         join dev_auth.sys_user_permission up on u.id = up.sys_user_id
         join dev_auth.sys_user_role ur on u.id = ur.sys_user_id
         join dev_auth.sys_role_permission rp on ur.sys_role_id = rp.sys_role_id
-        where up.sys_permission_id = ${perm_id}
+        where up.sys_permission_id = #{perm_id}
     </select>
 
-    <!--字符串应该使用引号标注，否则会触发sql异常-->
     <select id="getUserByUsername" resultType="cn.xiaolin.auth.domain.entity.SysUser">
         select id, username, email, phone, password, admission
         from dev_auth.sys_user
-        where username = '${username}'
+        where username = #{username}
     </select>
 </mapper>

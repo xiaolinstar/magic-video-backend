@@ -26,8 +26,8 @@ WORKDIR /app
 # 拷贝文件到Docker容器目录中
 COPY --chown=magic:magic target/has-${JAR_VERSION}.jar /app/has-${JAR_VERSION}.jar
 
-# 暴露9001端口
-EXPOSE 9001
+# 暴露9003端口
+EXPOSE 9003
 
 # 切换到非root用户
 USER magic

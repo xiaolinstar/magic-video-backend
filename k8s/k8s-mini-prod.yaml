@@ -15,11 +15,10 @@ metadata:
 spec:
   selector:
     app: core-deploy
-  type: NodePort
+  type: ClusterIP
   ports:
     - port: 9000
       targetPort: 9000
-      nodePort: 31120
 
 ---
 apiVersion: apps/v1
@@ -97,6 +96,7 @@ metadata:
 spec:
   selector:
     app: gateway-deploy
+  # gateway is the only externally-reachable service
   type: NodePort
   ports:
     - port: 9001

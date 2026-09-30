@@ -20,17 +20,18 @@ spring:
   # 本地MySQL容器，scheme名称：local_magic_video
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: 123456
+    username: ${MYSQL_USERNAME:root}
+    # Override via MYSQL_PASSWORD env var; default is the local docker-compose dev password.
+    password: ${MYSQL_PASSWORD:123456}
     url: jdbc:mysql://magic-mysql:3306/local_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 
   # 消息队列
   rabbitmq:
     host: magic-rabbitmq
     port: 5672
-    username: xiaolin
-    password: 123456rabbit
-    virtual-host: /local-media
+    username: ${RABBITMQ_DEFAULT_USER:xiaolin}
+    password: ${RABBITMQ_DEFAULT_PASS:123456rabbit}
+    virtual-host: ${RABBITMQ_DEFAULT_VHOST:/local-media}
     connection-timeout: 15000
 
   data:
