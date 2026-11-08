@@ -10,16 +10,8 @@ spring:
     virtual-host: ${RABBITMQ_DEFAULT_VHOST:/local-media}
     connection-timeout: 15000
 
-dubbo:
-  application:
-    name: dubbo-has-consumer
-  protocol:
-    name: dubbo
-    port: 20883
-  # 直连 core 的资源写入服务（不使用注册中心）
-  core:
-    host: magic-core
-    port: 20881
+core:
+  base-url: http://magic-core:9001
 
 minio:
   endpoint: http://magic-has-minio:9000

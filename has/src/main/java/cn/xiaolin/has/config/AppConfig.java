@@ -26,7 +26,7 @@ import java.util.List;
  */
 @Slf4j
 @Configuration
-@EnableConfigurationProperties({MinioConfigProperties.class, AppConfigProperties.class})
+@EnableConfigurationProperties({MinioConfigProperties.class, AppConfigProperties.class, CoreClientProperties.class})
 @RequiredArgsConstructor
 public class AppConfig implements CommandLineRunner {
 

@@ -1,7 +1,7 @@
 package cn.xiaolin.has.mq.consumer;
 
-import cn.xiaolin.api.domain.dto.ResourceDto;
-import cn.xiaolin.has.dubbo.comsumer.DubboResourceClient;
+import cn.xiaolin.has.client.CoreResourceClient;
+import cn.xiaolin.has.dto.ResourceDto;
 import cn.xiaolin.has.service.MediaKitService;
 import cn.xiaolin.message.constant.MessageQueueConsts;
 import cn.xiaolin.message.entity.TranscodeMessage;
@@ -31,7 +31,7 @@ import java.io.IOException;
 public class MessageConsumerImpl implements MessageConsumer {
 
     private final MediaKitService mediaKitService;
-    private final DubboResourceClient dubboResourceClient;
+    private final CoreResourceClient coreResourceClient;
 
     @Override
     @RabbitListener(
@@ -69,7 +69,7 @@ public class MessageConsumerImpl implements MessageConsumer {
                     .m3u8(m3u8Url)
                     .mpd(mpdUrl)
                     .build();
-            dubboResourceClient.saveResource(resourceDto);
+            coreResourceClient.saveResource(resourceDto);
 
             channel.basicAck(deliveryTag, false);
             log.info("转码任务完成：videoId={}, m3u8={}, mpd={}",
