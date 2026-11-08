@@ -8,9 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.http.client.JdkClientHttpRequestFactory;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClientException;
 
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.util.function.Supplier;
 
 /**
@@ -20,6 +23,9 @@ import java.util.function.Supplier;
  */
 @Component
 public class CoreResourceClient {
+
+    static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(3);
+    static final Duration READ_TIMEOUT = Duration.ofSeconds(30);
 
     private static final ParameterizedTypeReference<Result<Void>> VOID_RESULT =
             new ParameterizedTypeReference<>() {
@@ -37,11 +43,27 @@ public class CoreResourceClient {
     }
 
     public CoreResourceClient(RestClient.Builder builder, String baseUrl) {
+        this(builder, baseUrl, CONNECT_TIMEOUT, READ_TIMEOUT);
+    }
+
+    CoreResourceClient(
+            RestClient.Builder builder, String baseUrl, Duration connectTimeout, Duration readTimeout) {
         if (baseUrl == null || baseUrl.isBlank()) {
             throw new IllegalStateException("core.base-url is required");
         }
         String normalized = baseUrl.endsWith("/") ? baseUrl.substring(0, baseUrl.length() - 1) : baseUrl;
-        this.restClient = builder.baseUrl(normalized).build();
+        this.restClient = builder
+                .baseUrl(normalized)
+                .requestFactory(jdkRequestFactory(connectTimeout, readTimeout))
+                .build();
+    }
+
+    private static JdkClientHttpRequestFactory jdkRequestFactory(Duration connectTimeout, Duration readTimeout) {
+        HttpClient httpClient =
+                HttpClient.newBuilder().connectTimeout(connectTimeout).build();
+        JdkClientHttpRequestFactory factory = new JdkClientHttpRequestFactory(httpClient);
+        factory.setReadTimeout(readTimeout);
+        return factory;
     }
 
     public void saveResource(ResourceDto dto) {

@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
+import okhttp3.mockwebserver.SocketPolicy;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.web.client.RestClient;
 
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -91,6 +93,25 @@ class CoreResourceClientTest {
     @Test
     void constructor_whenBaseUrlBlank_throws() {
         assertThrows(IllegalStateException.class, () -> new CoreResourceClient(RestClient.builder(), " "));
+    }
+
+    @Test
+    void defaultTimeouts_matchDesign() {
+        assertEquals(Duration.ofSeconds(3), CoreResourceClient.CONNECT_TIMEOUT);
+        assertEquals(Duration.ofSeconds(30), CoreResourceClient.READ_TIMEOUT);
+    }
+
+    @Test
+    void saveResource_whenReadTimeoutExceeded_throws() {
+        mockWebServer.enqueue(new MockResponse().setSocketPolicy(SocketPolicy.NO_RESPONSE));
+
+        CoreResourceClient resourceClient = new CoreResourceClient(
+                RestClient.builder(), baseUrl(), Duration.ofSeconds(1), Duration.ofMillis(300));
+
+        long start = System.nanoTime();
+        assertThrows(CoreUnavailableException.class, () -> resourceClient.saveResource(sample()));
+        long elapsedMs = TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - start);
+        assertTrue(elapsedMs < 2_000, "expected failure near read timeout, took " + elapsedMs + "ms");
     }
 
     @Test
