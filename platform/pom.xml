@@ -1,0 +1,13 @@
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>cn.xiaolin</groupId>
+    <artifactId>magic-video-backend</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>platform</artifactId>
+  <packaging>pom</packaging>
+  <modules>
+    <module>platform-web</module>
+  </modules>
+</project>

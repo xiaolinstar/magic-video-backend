@@ -4,17 +4,23 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>cn.xiaolin</groupId>
-        <artifactId>common</artifactId>
+        <artifactId>platform</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <packaging>jar</packaging>
-    <artifactId>common-utils</artifactId>
+    <artifactId>platform-web</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>common-utils</name>
     <description>common-utils</description>
 
     <dependencies>
+        <!-- Preserve the web APIs previously inherited from the common parent. -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+
         <!--Spring AOP-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

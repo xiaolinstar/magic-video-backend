@@ -26,7 +26,7 @@
 		</dependency>
 		<dependency>
 			<groupId>cn.xiaolin</groupId>
-			<artifactId>common-utils</artifactId>
+			<artifactId>platform-web</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 		<dependency>
