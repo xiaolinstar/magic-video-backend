@@ -34,7 +34,7 @@
           注意：这里曾声明 spring-cloud-config-server 与 spring-cloud-starter-config。
           本项目已彻底移除配置中心（配置随 jar 走，见 ADR-0008），
           留着 config client 只会让它在每次启动时去连默认的 http://localhost:8888。
-          bootstrap 上下文由 common-utils 的 spring-cloud-starter-bootstrap 提供，删掉这两个不影响。
+          bootstrap 上下文由 platform-web 的 spring-cloud-starter-bootstrap 提供，删掉这两个不影响。
         -->
 
         <!--Apache工具类-->

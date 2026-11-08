@@ -11,8 +11,8 @@
     <packaging>jar</packaging>
     <artifactId>platform-web</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>common-utils</name>
-    <description>common-utils</description>
+    <name>platform-web</name>
+    <description>Platform web utilities and shared Spring Web stack</description>
 
     <dependencies>
         <!-- Preserve the web APIs previously inherited from the common parent. -->
@@ -25,6 +25,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-aop</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>3.18.0</version>
         </dependency>
 
         <!--验证校验-->
