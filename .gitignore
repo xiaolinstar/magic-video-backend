@@ -47,3 +47,9 @@ volume/minio/loki/data
 .env.local
 .env.*.local
 *.env.local
+
+# Git worktrees (local isolation)
+.worktrees/
+
+# SDD scratch (progress ledger, briefs, reports)
+.superpowers/
