@@ -31,11 +31,3 @@ sa-token:
   dynamic-active-timeout: on
   is-concurrent: true
   is-log: true
-
-dubbo:
-  application:
-    name: dubbo-auth-provider
-  protocol:
-    name: dubbo
-    # 服务提供端口号
-    port: 20880

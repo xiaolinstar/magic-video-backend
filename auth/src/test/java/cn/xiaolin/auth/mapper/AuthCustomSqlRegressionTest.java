@@ -32,14 +32,11 @@ import static org.junit.jupiter.api.Assertions.*;
  * <p>注意：本测试直接连 dev 库（{@code @ActiveProfiles("dev")}），
  * 用例会临时改 {@code deleted} 标记，并在 finally 中恢复。
  *
- * <p>用随机 HTTP 端口 + 独立的 Dubbo 端口，避免与本机正在运行的
- * auth 实例抢占 8999 / 20880。
+ * <p>用随机 HTTP 端口，避免与本机正在运行的 auth 实例抢占 8999。
  *
  * @author xingxiaolin xing.xiaolin@foxmail.com
  */
-@SpringBootTest(
-        webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-        properties = {"dubbo.protocol.port=28080"})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("dev")
 class AuthCustomSqlRegressionTest {
 

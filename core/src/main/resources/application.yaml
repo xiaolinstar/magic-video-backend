@@ -6,9 +6,6 @@ spring:
         name: core
     cache:
         type: redis
-dubbo:
-    application:
-        qos-enable: false
 
 # Spring Boot Actuator 安全配置
 # 缓解 CVE-2026-22733 (CloudFoundry Actuator 端点认证绕过)

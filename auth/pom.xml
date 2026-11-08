@@ -22,12 +22,6 @@
 
         <dependency>
             <groupId>cn.xiaolin</groupId>
-            <artifactId>common-api</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>cn.xiaolin</groupId>
             <artifactId>common-db</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>

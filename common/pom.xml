@@ -16,7 +16,6 @@
     <description>公共子模块</description>
 
     <modules>
-        <module>common-api</module>
         <module>common-message</module>
         <module>common-db</module>
     </modules>

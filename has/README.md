@@ -19,7 +19,7 @@
 
 - RabbitMQ：消费 `video.resource` 队列（手动 ack + 死信队列）
 - MinIO：存放 HLS / DASH 转码产物
-- core：通过 Dubbo **直连**落库（`dubbo://<host>:20881`）
+- core：通过内部 HTTP 落库（`core.base-url`，默认 `http://magic-core:9001`）
 
 > **没有 Nacos**：本项目已彻底移除注册中心与配置中心，地址写在 `bootstrap-{profile}.yaml` 里。
 > 详见 [ADR-0008](../docs/adr/0008-remove-nacos.md)。
@@ -45,7 +45,7 @@ sequenceDiagram
     multimedia微服务 ->> MQ消息队列: 3.1 发布 TranscodeMessage（sourceUrl/videoId/resourceKey）
     MQ消息队列 ->> has微服务: 3.2 消费转码消息（并发 2，手动 ack）
     has微服务 ->> MinIO: 3.3 ffmpeg 编码为 hls / dash 并上传产物
-    has微服务 ->> core微服务: 3.4 Dubbo 直连落库 video_source 表
+    has微服务 ->> core微服务: 3.4 HTTP 调用内部资源接口，落库 video_source 表
     has微服务 ->> MQ消息队列: 3.5 ack；失败则 nack 进死信队列
 ```
 

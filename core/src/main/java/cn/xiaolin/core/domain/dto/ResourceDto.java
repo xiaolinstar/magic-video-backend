@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 对内资源传输对象，字段与 OpenAPI {@code ResourceDto} 及 common-api 副本一致。
+ * 对内资源传输对象，字段与 OpenAPI {@code ResourceDto} 一致。
  */
 @Data
 @NoArgsConstructor

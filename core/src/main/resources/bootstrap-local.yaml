@@ -31,10 +31,3 @@ spring:
           enabled: true
           max-active: 8
           max-idle: 8
-
-dubbo:
-  application:
-    name: dubbo-core-provider
-  protocol:
-    name: dubbo
-    port: 20881
