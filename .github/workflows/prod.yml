@@ -51,11 +51,17 @@ jobs:
           password: ${{secrets.DOCKERHUB_TOKEN}}
 
       # 5. 构建并推送各微服务镜像
-      # 镜像名与 docker-compose / mini-local 一致：xiaolinstar/magic-<module>:v0.1
+      # 仓库前缀与上面的 docker login 使用同一个 DOCKERHUB_USERNAME
       - name: Build Images and Push to DockerHub
+        env:
+          DOCKER_USER: ${{ vars.DOCKERHUB_USERNAME }}
         run: |
           TAG=v0.1
-          IMAGE_PREFIX=xiaolinstar
+          IMAGE_PREFIX="${DOCKER_USER}"
+          if [ -z "${IMAGE_PREFIX}" ]; then
+            echo "DOCKERHUB_USERNAME is required to push magic-*:${TAG}" >&2
+            exit 1
+          fi
           for module in gateway auth core multimedia has; do
             docker build -t "${IMAGE_PREFIX}/magic-${module}:${TAG}" "${module}/." --push
           done

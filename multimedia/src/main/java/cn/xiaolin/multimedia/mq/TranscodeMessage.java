@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TranscodeMessage {
 
-    /** 源视频访问地址（mp4），供 ffmpeg 拉取 */
+    /** 源视频公开对象 URL（endpoint/bucket/key，无查询串），供 ffmpeg 拉取并作为 mp4 播放源落库 */
     private String sourceUrl;
 
     /**

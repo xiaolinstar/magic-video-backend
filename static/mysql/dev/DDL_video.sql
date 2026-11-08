@@ -133,7 +133,7 @@ CREATE TABLE video_source
 (
     `id` BIGINT NOT NULL   COMMENT '主键;雪花算法生成，Jackson序列化时转string' ,
     `video_id` BIGINT NOT NULL   COMMENT '视频id' ,
-    `src` VARCHAR(255) NOT NULL   COMMENT '资源地址url' ,
+    `src` VARCHAR(2048) NOT NULL   COMMENT '稳定播放地址：公开对象URL（endpoint/bucket/key），不含预签名查询串' ,
     `type` VARCHAR(32) NOT NULL DEFAULT 'hls'  COMMENT '资源类型' ,
     `resolution` INT NOT NULL DEFAULT 1080 COMMENT '分辨率' ,
     `bitrate` INT    COMMENT '码率kbps' ,

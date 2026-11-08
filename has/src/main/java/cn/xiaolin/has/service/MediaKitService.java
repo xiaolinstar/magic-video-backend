@@ -14,7 +14,7 @@ public interface MediaKitService {
      *
      * @param videoUrl    视频源 url
      * @param resourceKey 资源标识，同时作为幂等键：产物已存在时跳过转码直接复用
-     * @return 生成的 m3u8 播放地址（MinIO 预签名 URL）
+     * @return 生成的 m3u8 播放地址（公开对象 URL，不含预签名查询串）
      */
     String media2Hls(String videoUrl, String resourceKey);
 
@@ -23,7 +23,7 @@ public interface MediaKitService {
      *
      * @param videoUrl    视频源 url
      * @param resourceKey 资源标识，同时作为幂等键：产物已存在时跳过转码直接复用
-     * @return 生成的 mpd 播放地址（MinIO 预签名 URL）
+     * @return 生成的 mpd 播放地址（公开对象 URL，不含预签名查询串）
      */
     String media2Dash(String videoUrl, String resourceKey);
 

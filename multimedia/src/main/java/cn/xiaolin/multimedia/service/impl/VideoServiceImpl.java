@@ -5,7 +5,6 @@ import cn.xiaolin.multimedia.mq.TranscodeMessage;
 import cn.xiaolin.multimedia.enums.VideoTypeEnum;
 import cn.xiaolin.multimedia.service.VideoService;
 import cn.xiaolin.utils.exception.GlobalException;
-import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.errors.ErrorResponseException;
@@ -14,7 +13,6 @@ import io.minio.errors.InternalException;
 import io.minio.errors.InvalidResponseException;
 import io.minio.errors.ServerException;
 import io.minio.errors.XmlParserException;
-import io.minio.http.Method;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +64,10 @@ public class VideoServiceImpl implements VideoService {
     @Value("${minio.video.bucket-name}")
     private String videoBucketName;
 
+    /** MinIO 对外 endpoint，与 bucket、对象 key 拼成长期播放地址。 */
+    @Value("${minio.endpoint}")
+    private String minioEndpoint;
+
     /**
      * 视频本地目录配置值（相对用户 home 目录），对应配置项 app.video-file-dir
      */
@@ -91,7 +93,7 @@ public class VideoServiceImpl implements VideoService {
      * @param video     视频文件
      * @param videoType 视频类型
      * @param videoId   关联的影视 id
-     * @return 视频访问 URL
+     * @return 稳定播放地址（公开对象 URL，不含预签名查询串）
      */
     @Override
     public String uploadVideoMinio(MultipartFile video, VideoTypeEnum videoType, Long videoId) {
@@ -117,7 +119,7 @@ public class VideoServiceImpl implements VideoService {
             throw new GlobalException("上传视频失败：" + e.getMessage());
         }
 
-        String videoUrl = presignedUrl(objectKey);
+        String videoUrl = playbackUrl(objectKey);
         publishTranscodeTask(videoUrl, resourceKey, videoId);
         return videoUrl;
     }
@@ -235,7 +237,7 @@ public class VideoServiceImpl implements VideoService {
         String resourceKey = newResourceKey();
         String objectKey = buildObjectKey(resourceKey, safeSuffix(videoName, videoType));
         uploadFile2Minio(targetFile, objectKey, videoType);
-        String videoUrl = presignedUrl(objectKey);
+        String videoUrl = playbackUrl(objectKey);
 
         // 步骤 3：投递转码任务（失败向上抛，由调用方重试，不再静默吞掉）
         publishTranscodeTask(videoUrl, resourceKey, videoId);
@@ -292,6 +294,9 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * 投递转码任务。发送失败直接抛出，由调用方感知并重试。
+     *
+     * <p>消息字段仍是 {@code sourceUrl}、{@code videoId}、{@code resourceKey}。
+     * {@code sourceUrl} 为公开对象 URL，ffmpeg 直接拉取，回写时也不带过期签名。
      */
     private void publishTranscodeTask(String videoUrl, String resourceKey, Long videoId) {
         log.info("视频已上传，投递转码任务：videoId={}, resourceKey={}", videoId, resourceKey);
@@ -309,20 +314,26 @@ public class VideoServiceImpl implements VideoService {
     }
 
     /**
-     * 生成预签名访问 URL。
+     * 长期播放地址：{@code endpoint/bucket/key}，不含预签名查询串。
      */
-    private String presignedUrl(String objectKey) {
-        try {
-            return minioClient.getPresignedObjectUrl(GetPresignedObjectUrlArgs.builder()
-                    .bucket(videoBucketName)
-                    .method(Method.GET)
-                    .object(objectKey)
-                    .build());
-        } catch (ErrorResponseException | InsufficientDataException | InternalException |
-                 InvalidKeyException | InvalidResponseException | NoSuchAlgorithmException | ServerException |
-                 XmlParserException | IOException e) {
-            throw new GlobalException("生成访问地址失败：" + e.getMessage());
+    private String playbackUrl(String objectKey) {
+        return publicObjectUrl(minioEndpoint, videoBucketName, objectKey);
+    }
+
+    static String publicObjectUrl(String endpoint, String bucket, String objectKey) {
+        if (endpoint == null || endpoint.isBlank() || bucket == null || bucket.isBlank()
+                || objectKey == null || objectKey.isBlank()) {
+            throw new GlobalException("无法生成播放地址");
         }
+        String base = endpoint.trim();
+        while (base.endsWith("/")) {
+            base = base.substring(0, base.length() - 1);
+        }
+        String key = objectKey.trim();
+        while (key.startsWith("/")) {
+            key = key.substring(1);
+        }
+        return base + "/" + bucket + "/" + key;
     }
 
     private List<Path> getChunkFiles(File dirFile) {

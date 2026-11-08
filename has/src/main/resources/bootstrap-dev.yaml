@@ -11,7 +11,7 @@ spring:
     connection-timeout: 15000
 
 core:
-  base-url: http://magic-core:9001
+  base-url: http://localhost:9001
 
 minio:
   endpoint: http://localhost:9010

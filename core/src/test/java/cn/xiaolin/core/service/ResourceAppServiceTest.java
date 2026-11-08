@@ -18,10 +18,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -89,6 +91,40 @@ class ResourceAppServiceTest {
         assertEquals("b", loaded.getM3u8());
         assertEquals("c", loaded.getMpd());
         assertNull(loaded.getMd5());
+    }
+
+    @Test
+    void saveResource_storesPublicPathAndDropsPresignedQuery() {
+        when(videoSourceService.exists(any())).thenReturn(false);
+        String stable = "http://localhost:9010/transcoded/hls/"
+                + "0123456789abcdef0123456789abcdef/0123456789abcdef0123456789abcdef.m3u8";
+        String presigned = "  " + stable + "?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Signature="
+                + "a".repeat(2500) + "#frag";
+        assertTrue(presigned.length() > 2048);
+        assertTrue(stable.length() <= 2048);
+
+        service.saveResource(ResourceDto.builder().id(9L).mp4(presigned).m3u8(stable).build());
+
+        ArgumentCaptor<VideoSource> captor = ArgumentCaptor.forClass(VideoSource.class);
+        verify(videoSourceService, times(2)).save(captor.capture());
+        VideoSource mp4 = captor.getAllValues().stream()
+                .filter(s -> "mp4".equals(s.getType())).findFirst().orElseThrow();
+        VideoSource hls = captor.getAllValues().stream()
+                .filter(s -> "hls".equals(s.getType())).findFirst().orElseThrow();
+        assertEquals(stable, mp4.getSrc());
+        assertEquals(stable, hls.getSrc());
+        assertFalse(mp4.getSrc().contains("?"));
+        assertFalse(mp4.getSrc().contains("X-Amz-"));
+        assertTrue(mp4.getSrc().startsWith("http://localhost:9010/transcoded/"));
+    }
+
+    @Test
+    void saveResource_rejectsPlaybackUrlLongerThanColumn() {
+        String tooLong = "http://localhost:9010/raw/" + "k".repeat(2048);
+        assertTrue(tooLong.length() > 2048);
+        assertThrows(IllegalArgumentException.class,
+                () -> service.saveResource(ResourceDto.builder().id(3L).mp4(tooLong).build()));
+        verify(videoSourceService, never()).save(any());
     }
 
     @Test

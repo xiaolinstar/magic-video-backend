@@ -60,7 +60,8 @@ public class MessageConsumerImpl implements MessageConsumer {
             String m3u8Url = mediaKitService.media2Hls(message.getSourceUrl(), message.getResourceKey());
             String mpdUrl = mediaKitService.media2Dash(message.getSourceUrl(), message.getResourceKey());
 
-            // 回写 core：把播放源落到 video_source 表
+            // 回写 core：播放源是稳定公开地址。MQ 字段仍是 sourceUrl / videoId / resourceKey；
+            // 若历史消息的 sourceUrl 仍带预签名查询串，core 落库时会去掉。
             ResourceDto resourceDto = ResourceDto.builder()
                     .id(message.getVideoId())
                     .md5(message.getResourceKey())

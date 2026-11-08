@@ -18,7 +18,7 @@ public interface VideoService {
      * @param video     视频文件
      * @param videoType 视频类型
      * @param videoId   关联的影视 id（对应 {@code video_source.video_id}），不可为空
-     * @return 视频访问 URL
+     * @return 稳定播放地址（公开对象 URL，不含预签名查询串）
      */
     String uploadVideoMinio(MultipartFile video, VideoTypeEnum videoType, Long videoId);
 

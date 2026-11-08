@@ -4,13 +4,12 @@ import cn.xiaolin.has.config.AppConfigProperties;
 import cn.xiaolin.has.config.MinioConfigProperties;
 import cn.xiaolin.has.service.MediaKitService;
 import cn.xiaolin.utils.exception.GlobalException;
-import io.minio.GetPresignedObjectUrlArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import io.minio.StatObjectArgs;
 import io.minio.errors.*;
-import io.minio.http.Method;
 import lombok.extern.slf4j.Slf4j;
+import net.bramp.ffmpeg.FFmpeg;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +20,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -65,6 +65,9 @@ public class MediaKitServiceImpl implements MediaKitService {
     private final String dashFileDir;
     private final String dashBucketName;
     private final MinioClient minioClient;
+    private final FFmpeg ffmpeg;
+    /** MinIO 对外 endpoint，用于拼公开对象 URL，不含签名。 */
+    private final String minioEndpoint;
 
     /**
      * ffmpeg 单次转码的最长执行时间。超过后强制结束进程，
@@ -75,12 +78,15 @@ public class MediaKitServiceImpl implements MediaKitService {
     public MediaKitServiceImpl(AppConfigProperties appConfigProperties,
                                MinioConfigProperties minioConfigProperties,
                                MinioClient minioClient,
+                               FFmpeg ffmpeg,
                                @Value("${app.transcode-timeout-minutes:120}") long transcodeTimeoutMinutes) {
         this.hlsFileDir = appConfigProperties.getHlsFileDir();
         this.hlsBucketName = minioConfigProperties.getHls().getBucketName();
         this.dashFileDir = appConfigProperties.getDashFileDir();
         this.dashBucketName = minioConfigProperties.getDash().getBucketName();
         this.minioClient = minioClient;
+        this.ffmpeg = ffmpeg;
+        this.minioEndpoint = minioConfigProperties.getEndpoint();
         this.transcodeTimeoutMinutes = transcodeTimeoutMinutes;
     }
 
@@ -96,7 +102,7 @@ public class MediaKitServiceImpl implements MediaKitService {
         // 幂等：产物已存在则直接复用，不再重复转码（避免重复投递造成重复计算与覆盖）
         if (objectExists(hlsBucketName, objectKey)) {
             log.info("HLS 产物已存在，跳过转码：{}", objectKey);
-            return presignedUrl(hlsBucketName, objectKey);
+            return publicObjectUrl(minioEndpoint, hlsBucketName, objectKey);
         }
 
         Path targetDirPath = prepareWorkDir(hlsFileDir, resourceKey);
@@ -124,7 +130,7 @@ public class MediaKitServiceImpl implements MediaKitService {
             cleanupWorkDir(targetDirPath);
         }
 
-        String m3u8Url = presignedUrl(hlsBucketName, objectKey);
+        String m3u8Url = publicObjectUrl(minioEndpoint, hlsBucketName, objectKey);
         log.info("HLS 访问 URL：{}", m3u8Url);
         return m3u8Url;
     }
@@ -140,7 +146,7 @@ public class MediaKitServiceImpl implements MediaKitService {
 
         if (objectExists(dashBucketName, objectKey)) {
             log.info("DASH 产物已存在，跳过转码：{}", objectKey);
-            return presignedUrl(dashBucketName, objectKey);
+            return publicObjectUrl(minioEndpoint, dashBucketName, objectKey);
         }
 
         Path targetDirPath = prepareWorkDir(dashFileDir, resourceKey);
@@ -173,7 +179,7 @@ public class MediaKitServiceImpl implements MediaKitService {
             cleanupWorkDir(targetDirPath);
         }
 
-        String mpdUrl = presignedUrl(dashBucketName, objectKey);
+        String mpdUrl = publicObjectUrl(minioEndpoint, dashBucketName, objectKey);
         log.info("DASH 访问 URL：{}", mpdUrl);
         return mpdUrl;
     }
@@ -232,7 +238,8 @@ public class MediaKitServiceImpl implements MediaKitService {
      *
      * @return ffmpeg 退出码
      */
-    private int runFfmpeg(List<String> command, String format) {
+    private int runFfmpeg(List<String> args, String format) {
+        List<String> command = ffmpegCommand(ffmpeg.getPath(), args);
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         processBuilder.redirectErrorStream(true);
         Process process = null;
@@ -331,21 +338,39 @@ public class MediaKitServiceImpl implements MediaKitService {
     }
 
     /**
-     * 生成对象的预签名访问 URL。
+     * 长期播放地址：{@code endpoint/bucket/key}，不含预签名查询串。
+     * bucket 启动时已设为公共可读。
      */
-    private String presignedUrl(String bucketName, String objectKey) {
-        GetPresignedObjectUrlArgs args = GetPresignedObjectUrlArgs.builder()
-                .bucket(bucketName)
-                .object(objectKey)
-                .method(Method.GET)
-                .build();
-        try {
-            return minioClient.getPresignedObjectUrl(args);
-        } catch (ErrorResponseException | InsufficientDataException | InternalException | InvalidKeyException |
-                 InvalidResponseException | IOException | NoSuchAlgorithmException | XmlParserException |
-                 ServerException e) {
-            throw new GlobalException(e.getMessage());
+    static String publicObjectUrl(String endpoint, String bucket, String objectKey) {
+        if (endpoint == null || endpoint.isBlank() || bucket == null || bucket.isBlank()
+                || objectKey == null || objectKey.isBlank()) {
+            throw new GlobalException("无法生成播放地址");
         }
+        String base = endpoint.trim();
+        while (base.endsWith("/")) {
+            base = base.substring(0, base.length() - 1);
+        }
+        String key = objectKey.trim();
+        while (key.startsWith("/")) {
+            key = key.substring(1);
+        }
+        return base + "/" + bucket + "/" + key;
+    }
+
+    /**
+     * argv 第一项必须是 ffmpeg 可执行文件（配置的 FFmpeg bean 路径，或 PATH 上的 {@code ffmpeg}）。
+     */
+    static List<String> ffmpegCommand(String ffmpegBinary, List<String> args) {
+        if (ffmpegBinary == null || ffmpegBinary.isBlank()) {
+            throw new GlobalException("未找到 ffmpeg 可执行文件");
+        }
+        if (args == null || args.isEmpty()) {
+            throw new GlobalException("ffmpeg 参数不能为空");
+        }
+        List<String> command = new ArrayList<>(args.size() + 1);
+        command.add(ffmpegBinary);
+        command.addAll(args);
+        return List.copyOf(command);
     }
 
     /**
