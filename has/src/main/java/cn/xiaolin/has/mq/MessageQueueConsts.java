@@ -1,10 +1,7 @@
-package cn.xiaolin.message.constant;
+package cn.xiaolin.has.mq;
 
 /**
- * 消息队列常量
- *
- * @author xingxiaolin xing.xiaolin@foxmail.com
- * @create 2023/8/6
+ * 转码队列常量。字符串值与 {@code contracts/asyncapi/transcode.v1.yaml}、multimedia 侧同名常量一致。
  */
 public class MessageQueueConsts {
 
@@ -23,5 +20,4 @@ public class MessageQueueConsts {
     private MessageQueueConsts() throws NoSuchMethodException {
         throw new NoSuchMethodException("常量类不允许实例化");
     }
-
 }

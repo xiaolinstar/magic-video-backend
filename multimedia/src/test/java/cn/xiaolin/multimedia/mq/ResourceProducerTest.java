@@ -1,26 +1,19 @@
-package cn.xiaolin.has.mq.consumer;
+package cn.xiaolin.multimedia.mq;
 
-import cn.xiaolin.message.entity.ResourceMessage;
-import cn.xiaolin.message.entity.TranscodeMessage;
-import cn.xiaolin.message.service.producer.MessageProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 /**
- * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description
- * @create 2024/11/13
+ * 手工向开发环境 broker 投递消息。需要已启动的 RabbitMQ 与 dev profile。
  */
-
 @SpringBootTest
 @ActiveProfiles("dev")
 class ResourceProducerTest {
 
     @Autowired
     private MessageProducer resourceProducer;
-
 
     @Test
     public void publishResourceTest() {
@@ -33,7 +26,6 @@ class ResourceProducerTest {
         resourceProducer.publish(resourceMessage);
     }
 
-
     @Test
     public void publishUrlTest() {
         TranscodeMessage message = TranscodeMessage.builder()
@@ -44,5 +36,4 @@ class ResourceProducerTest {
 
         resourceProducer.sendTranscodeMessage(message);
     }
-
 }

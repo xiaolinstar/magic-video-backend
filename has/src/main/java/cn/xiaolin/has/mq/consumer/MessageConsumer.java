@@ -1,15 +1,13 @@
-package cn.xiaolin.message.service.consumer;
+package cn.xiaolin.has.mq.consumer;
 
-import cn.xiaolin.message.entity.TranscodeMessage;
+import cn.xiaolin.has.mq.TranscodeMessage;
 import com.rabbitmq.client.Channel;
 import org.springframework.amqp.core.Message;
 
 import java.io.IOException;
 
 /**
- * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description
- * @create 2024/11/13
+ * 转码消息消费者。
  */
 public interface MessageConsumer {
 

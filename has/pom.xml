@@ -21,9 +21,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>cn.xiaolin</groupId>
-			<artifactId>common-message</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
 		<!--ffmpeg工具包-->

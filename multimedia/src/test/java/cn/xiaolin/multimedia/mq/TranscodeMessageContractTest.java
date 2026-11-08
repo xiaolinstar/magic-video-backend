@@ -1,8 +1,5 @@
-package cn.xiaolin.message;
+package cn.xiaolin.multimedia.mq;
 
-import cn.xiaolin.message.constant.MessageQueueConsts;
-import cn.xiaolin.message.entity.TranscodeMessage;
-import cn.xiaolin.message.service.producer.MessageProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,20 +11,30 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * 转码消息契约的**真实 broker** 往返测试。
+ * 转码消息契约的真实 broker 往返测试。
  *
- * <p>这条链路此前是断的：生产端发送 {@code java.net.URL} 对象，
- * 消费端因 Jackson 可信包白名单校验失败而抛
- * {@code IllegalArgumentException: The class 'java.net.URL' is not in the trusted packages}，
- * 消息永远无法被消费，最终在队列里变成无限重投的毒消息。
- *
- * <p>本测试用真实 RabbitMQ + 真实 {@code Jackson2JsonMessageConverter}
- * （由 {@code RabbitMQConfig} 提供，带可信包白名单）验证消息能被正确投递并还原。
+ * <p>只加载 MQ 配置，避免拉起 MinIO。连接参数与原 common-message 测试一致。
  */
-@SpringBootTest
+@SpringBootTest(
+        classes = {
+                RabbitMQConfig.class,
+                MessageProducerImpl.class,
+                TranscodeMessageContractTest.ContractConfig.class
+        },
+        webEnvironment = SpringBootTest.WebEnvironment.NONE,
+        properties = {
+                "spring.rabbitmq.host=localhost",
+                "spring.rabbitmq.port=5672",
+                "spring.rabbitmq.username=${RABBITMQ_DEFAULT_USER:xiaolin}",
+                "spring.rabbitmq.password=${RABBITMQ_DEFAULT_PASS:123456rabbit}",
+                "spring.rabbitmq.virtual-host=${RABBITMQ_DEFAULT_VHOST:/dev-media}",
+                "spring.rabbitmq.connection-timeout=15000"
+        }
+)
 class TranscodeMessageContractTest {
 
     /** 捕获到的消息 */
@@ -39,9 +46,6 @@ class TranscodeMessageContractTest {
     /**
      * 监听器单独放成 Bean：{@code @SpringBootTest} 不会把测试类本身注册为 Bean，
      * 而 {@code @RabbitListener} 需要容器能发现它。
-     *
-     * <p>队列与交换机由应用自身的 {@code RabbitMQConfig} 声明（含死信交换机参数），
-     * 这里不再重复声明，避免参数不等价导致声明失败。
      */
     @TestConfiguration
     static class ContractConfig {

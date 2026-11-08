@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
  */
-@SpringBootApplication(scanBasePackages = {"cn.xiaolin.multimedia", "cn.xiaolin.utils", "cn.xiaolin.message"})
+@SpringBootApplication(scanBasePackages = {"cn.xiaolin.multimedia", "cn.xiaolin.utils"})
 public class MultimediaApplication {
 
 	public static void main(String[] args) {

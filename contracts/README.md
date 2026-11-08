@@ -20,9 +20,9 @@
 
 ## AsyncAPI
 
-- Broker：RabbitMQ；交换机/队列常量见 `common-message` 的 `MessageQueueConsts`（与 YAML 中名称一致）。
-- 主路径载荷：`TranscodeMessage`（`sourceUrl`、`videoId`、`resourceKey`）；`ResourceMessage`（`id`、`md5`、`mp4`、`m3u8`、`mpd`）在同一拓扑上作为补充形态文档化。
-- 往返行为：`common-message` 中 `TranscodeMessageContractTest` 对真实 broker + Jackson 可信包白名单做契约测试，修改 YAML 时请同步审视该测试与实体字段。
+- Broker：RabbitMQ；交换机/队列常量见 `multimedia` 与 `has` 的 `MessageQueueConsts`（与 YAML 中名称一致）。
+- 主路径载荷：`TranscodeMessage`（`sourceUrl`、`videoId`、`resourceKey`）；`ResourceMessage`（`id`、`md5`、`mp4`、`m3u8`、`mpd`）在同一拓扑上作为补充形态文档化。两端各持一份 JSON 字段相同的 DTO。
+- 往返行为：`multimedia` 中 `TranscodeMessageContractTest` 对真实 broker + Jackson 可信包白名单做契约测试，修改 YAML 时请同步审视该测试与实体字段。
 
 ## 修改流程
 

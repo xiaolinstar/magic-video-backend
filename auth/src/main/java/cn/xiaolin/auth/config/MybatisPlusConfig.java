@@ -1,4 +1,4 @@
-package cn.xiaolin.db.config;
+package cn.xiaolin.auth.config;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
@@ -7,18 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 /**
- * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description MybatisPlus配置类
- * @create 2023/7/23
+ * MybatisPlus 分页与乐观锁。从 common-db 内联，仅服务 auth。
  */
-
 @Configuration
 public class MybatisPlusConfig {
 
-    /**
-     * 乐观锁和分页插件
-     * @return MybatisPlus Bean
-     */
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor mybatisPlusInterceptor = new MybatisPlusInterceptor();
@@ -26,5 +19,4 @@ public class MybatisPlusConfig {
         mybatisPlusInterceptor.addInnerInterceptor(new PaginationInnerInterceptor());
         return mybatisPlusInterceptor;
     }
-
 }

@@ -1,19 +1,12 @@
-package cn.xiaolin.message.service.producer;
+package cn.xiaolin.multimedia.mq;
 
-import cn.xiaolin.message.constant.MessageQueueConsts;
-import cn.xiaolin.message.entity.ResourceMessage;
-import cn.xiaolin.message.entity.TranscodeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Component;
 
 /**
- * 发送异步消息，消息生产者
- *
- * @author xingxiaolin xing.xiaolin@foxmail.com
- * @Description
- * @create 2024/11/13
+ * 发送异步消息，消息生产者。
  */
 @Slf4j
 @Component
@@ -48,5 +41,4 @@ public class MessageProducerImpl implements MessageProducer {
         log.info("投递转码任务：videoId={}, resourceKey={}", message.getVideoId(), message.getResourceKey());
         rabbitTemplate.convertAndSend(MessageQueueConsts.EXCHANGE_MEDIA_RESOURCE, DEFAULT_ROUTING_KEY, message);
     }
-
 }

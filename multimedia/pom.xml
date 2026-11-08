@@ -19,9 +19,8 @@
 		</dependency>
 
 		<dependency>
-			<groupId>cn.xiaolin</groupId>
-			<artifactId>common-message</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
 		</dependency>
 
 		<!-- 文件存储minio（版本由父项目 dependencyManagement 统一管理） -->

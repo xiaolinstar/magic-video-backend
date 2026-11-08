@@ -1,7 +1,7 @@
 package cn.xiaolin.multimedia.service.impl;
 
-import cn.xiaolin.message.entity.TranscodeMessage;
-import cn.xiaolin.message.service.producer.MessageProducer;
+import cn.xiaolin.multimedia.mq.MessageProducer;
+import cn.xiaolin.multimedia.mq.TranscodeMessage;
 import cn.xiaolin.multimedia.enums.VideoTypeEnum;
 import cn.xiaolin.multimedia.service.VideoService;
 import cn.xiaolin.utils.exception.GlobalException;

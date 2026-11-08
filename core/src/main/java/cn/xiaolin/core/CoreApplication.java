@@ -8,7 +8,7 @@ import org.springframework.cache.annotation.EnableCaching;
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
  */
-@SpringBootApplication(scanBasePackages = {"cn.xiaolin.core", "cn.xiaolin.message", "cn.xiaolin.utils", "cn.xiaolin.db"})
+@SpringBootApplication(scanBasePackages = {"cn.xiaolin.core", "cn.xiaolin.utils"})
 @MapperScan("cn.xiaolin.core.domain.mapper")
 @EnableCaching
 public class CoreApplication {

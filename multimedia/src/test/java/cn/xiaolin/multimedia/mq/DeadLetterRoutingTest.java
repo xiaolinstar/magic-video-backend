@@ -1,15 +1,11 @@
-package cn.xiaolin.message;
+package cn.xiaolin.multimedia.mq;
 
-import cn.xiaolin.message.constant.MessageQueueConsts;
-import cn.xiaolin.message.entity.TranscodeMessage;
-import cn.xiaolin.message.service.producer.MessageProducer;
 import com.rabbitmq.client.Channel;
 import org.junit.jupiter.api.Test;
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.QueueInformation;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -25,18 +21,28 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
- * 死信队列路由测试。
- *
- * <p>此前 {@code @RabbitListener} 使用默认 auto-ack，且队列没有配置死信交换机：
- * 消费失败的消息要么被丢弃、要么在原队列中无限重投（毒消息循环），失败任务无处可查。
- *
- * <p>本测试用真实 RabbitMQ 验证：消费端 {@code basicNack(requeue=false)} 之后，
- * 消息会被投递到死信交换机并最终落到死信队列，而不是留在原队列里空转。
+ * 死信队列路由测试。消费端 {@code basicNack(requeue=false)} 后，消息应落到死信队列。
  */
-@SpringBootTest
+@SpringBootTest(
+        classes = {
+                RabbitMQConfig.class,
+                MessageProducerImpl.class,
+                DeadLetterRoutingTest.DlqConfig.class
+        },
+        webEnvironment = SpringBootTest.WebEnvironment.NONE,
+        properties = {
+                "spring.rabbitmq.host=localhost",
+                "spring.rabbitmq.port=5672",
+                "spring.rabbitmq.username=${RABBITMQ_DEFAULT_USER:xiaolin}",
+                "spring.rabbitmq.password=${RABBITMQ_DEFAULT_PASS:123456rabbit}",
+                "spring.rabbitmq.virtual-host=${RABBITMQ_DEFAULT_VHOST:/dev-media}",
+                "spring.rabbitmq.connection-timeout=15000"
+        }
+)
 class DeadLetterRoutingTest {
 
     /** 测试专用队列（带死信交换机参数） */
@@ -101,7 +107,6 @@ class DeadLetterRoutingTest {
 
     @Test
     void failedMessageShouldLandInDeadLetterQueue() throws Exception {
-        // 清空死信队列，避免上一轮残留干扰
         rabbitAdmin.purgeQueue(MessageQueueConsts.QUEUE_MEDIA_RESOURCE_DLQ);
 
         TranscodeMessage sent = TranscodeMessage.builder()
@@ -112,11 +117,9 @@ class DeadLetterRoutingTest {
 
         messageProducer.sendTranscodeMessage(sent);
 
-        // 死信队列里应能收到这条消息
         Message dead = DEAD.poll(30, TimeUnit.SECONDS);
         assertNotNull(dead, "消费失败的消息应进入死信队列，而不是在原队列中无限重投");
 
-        // 原队列不应残留消息（否则就是毒消息循环）
         QueueInformation info = rabbitAdmin.getQueueInfo(TEST_QUEUE);
         assertEquals(0, info.getMessageCount(), "原队列不应残留消息");
 

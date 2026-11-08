@@ -3,8 +3,12 @@ info:
   title: transcode
   version: 1.0.0
   description: |
-    转码管线 RabbitMQ 契约。交换机/队列名与 `MessageQueueConsts` 一致；
-    JSON 载荷与 `ResourceMessage`、`TranscodeMessage` 对齐（Jackson 可信包：`cn.xiaolin.message.entity`）。
+    转码管线 RabbitMQ 契约。交换机/队列名与 multimedia、has 的 `MessageQueueConsts` 一致。
+    JSON 字段是契约：`TranscodeMessage` 为 sourceUrl、videoId、resourceKey；
+    `ResourceMessage` 为 id、md5、mp4、m3u8、mpd。
+    生产端 DTO 在 `cn.xiaolin.multimedia.mq`，消费端 DTO 在 `cn.xiaolin.has.mq`。
+    监听方法使用具体参数类型反序列化，因此两端类名可以不同。
+    仍接受历史 `__TypeId__`：`cn.xiaolin.message.entity.TranscodeMessage` / `ResourceMessage`。
 
 defaultContentType: application/json
 

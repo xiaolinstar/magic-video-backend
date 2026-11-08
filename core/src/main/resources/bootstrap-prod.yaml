@@ -9,15 +9,6 @@ spring:
     password: ${MYSQL_PASSWORD:123456}
     url: jdbc:mysql://magic-mysql:3306/magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 
-  # 消息队列
-  rabbitmq:
-    host: magic-rabbitmq
-    port: 5672
-    username: ${RABBITMQ_DEFAULT_USER:xiaolin}
-    password: ${RABBITMQ_DEFAULT_PASS:123456rabbit}
-    virtual-host: ${RABBITMQ_DEFAULT_VHOST:/prod-media}
-    connection-timeout: 15000
-
   data:
     # 业务缓存
     redis:
