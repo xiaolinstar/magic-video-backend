@@ -5,21 +5,6 @@ networks:
     external: false
 
 services:
-  magic-nacos:
-    image: nacos/nacos-server:v2.5.1
-    container_name: magic-nacos
-    hostname: magic-nacos
-    ports:
-      - "8848:8848"
-      - "9848:9848" # 服务需要通过localhost访问到9848 9849
-      - "9849:9849"
-    networks:
-      - magic-network
-    restart: no
-    environment:
-      MODE: standalone
-      TZ: Asia/Shanghai
-
   magic-mysql:
     # 业务数据库
     image: mysql:8.4.4

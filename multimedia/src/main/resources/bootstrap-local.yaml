@@ -2,23 +2,6 @@ spring:
   application:
     name: multimedia
 
-  # Nacos配置
-  cloud:
-    nacos:
-      server-addr: magic-nacos:8848
-      # 服务发现
-      discovery:
-        cluster-name: NANJING
-        # 设置为临时实例
-        ephemeral: true
-        group: DEFAULT_GROUP
-
-      # 服务配置
-      config:
-        file-extension: yaml # 文件后缀名
-        group: DEFAULT_GROUP
-        enabled: false
-
   rabbitmq:
     host: magic-rabbitmq
     username: ${RABBITMQ_DEFAULT_USER:xiaolin}

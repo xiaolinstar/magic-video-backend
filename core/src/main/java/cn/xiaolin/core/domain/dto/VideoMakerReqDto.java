@@ -1,12 +1,9 @@
 package cn.xiaolin.core.domain.dto;
 
 import cn.xiaolin.utils.enums.Gender;
-import com.baomidou.mybatisplus.annotation.*;
 import lombok.*;
 
-import java.io.Serial;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -21,7 +18,6 @@ public class VideoMakerReqDto {
     /**
      * 主键
      */
-    @TableId
     private Long id;
 
     /**

@@ -53,6 +53,17 @@
 			<artifactId>spring-boot-starter-cache</artifactId>
 		</dependency>
 
+		<!--
+			Servlet 容器栈（Tomcat + spring-webmvc）。
+			之前是 spring-cloud-config-server 传递带进来的（common/pom.xml），
+			移除配置中心后必须在此显式声明，否则 core 启动会报
+			NoClassDefFoundError: jakarta/servlet/Filter（CorsConfig 依赖 CorsFilter）。
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+		</dependency>
+
 <!--		该配置不需要，10-16日关闭，1个月后不影响业务删除-->
 <!--		<dependency>-->
 <!--			<groupId>jakarta.servlet</groupId>-->

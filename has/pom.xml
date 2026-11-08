@@ -39,11 +39,20 @@
 			<version>0.8.0</version>
 		</dependency>
 
-		<!-- 文件存储minio-->
+		<!-- 文件存储minio（版本由父项目 dependencyManagement 统一管理） -->
 		<dependency>
 			<groupId>io.minio</groupId>
 			<artifactId>minio</artifactId>
-			<version>8.6.1</version>
+		</dependency>
+
+		<!--
+			Servlet 容器栈（Tomcat）。原先靠 spring-cloud-config-server 传递带入，
+			移除配置中心后必须显式声明，否则启动会报
+			NoClassDefFoundError: jakarta/servlet/Filter（CorsConfig 依赖 CorsFilter）。
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 	</dependencies>

@@ -20,9 +20,13 @@
 
 ## 环境依赖
 
-- 注册中心Nacos
+- RabbitMQ：转码消息队列（`xiaolin.media` 交换机 / `video.resource` 队列）
 - MinIO：配置文件中设置MinIO access-key和secret-key
 - FFmpeg：在Dockerfile中下载
+
+> **没有 Nacos**：本项目已彻底移除注册中心与配置中心。
+> 网关通过 **HTTP 直连** multimedia（`http://<host>:9002`），地址写在
+> `bootstrap-{profile}.yaml` 里。详见 [ADR-0008](../docs/adr/0008-remove-nacos.md)。
 
 ## 服务功能
 

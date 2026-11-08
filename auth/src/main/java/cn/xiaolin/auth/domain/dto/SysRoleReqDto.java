@@ -1,6 +1,5 @@
 package cn.xiaolin.auth.domain.dto;
 
-import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,6 +18,5 @@ public class SysRoleReqDto {
     /**
      * 角色名
      */
-    @TableField(value = "name")
     private String name;
 }

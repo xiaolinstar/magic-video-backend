@@ -2,21 +2,31 @@ spring:
   application:
     name: multimedia
 
-  # Nacos配置
-  cloud:
-    nacos:
-      server-addr: 111.229.38.208:8848
-      # 服务发现
-      discovery:
-        cluster-name: BEIJING
-        # 设置为非临时实例
-        ephemeral: true
-        group: DEFAULT_GROUP
+  rabbitmq:
+    host: magic-rabbitmq
+    username: ${RABBITMQ_DEFAULT_USER:xiaolin}
+    password: ${RABBITMQ_DEFAULT_PASS:123456rabbit}
+    virtual-host: ${RABBITMQ_DEFAULT_VHOST:/prod-media}
+    connection-timeout: 15000
 
-      # 服务配置
-      config:
-        file-extension: yaml # 文件后缀名
-        group: DEFAULT_GROUP
+minio:
+  endpoint: http://magic-multimedia-minio:9000/
+  access-key: ${MINIO_ACCESS_KEY:RzQywv1gIcgXeSSMMeNz}
+  secret-key: ${MINIO_SECRET_KEY:3bD0LUxmD4JhqUCcPMs9QkpCSfTCaG8whZWcSv69}
 
+  image:
+    bucket-name: magic-image
+  video:
+    bucket-name: magic-video
+  hls:
+    bucket-name: magic-hls
+  dash:
+    bucket-name: magic-dash
 
+app:
+  core-size: 3
+  max-pool-size: 4
+  queue-capacity: 8
+  thread-prefix: MediaThread-
 
+  video-file-dir: magic-video

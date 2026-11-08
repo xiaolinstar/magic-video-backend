@@ -27,7 +27,7 @@ public class Season implements Serializable {
     /**
      * 主键id
      */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     private Long collectionId;

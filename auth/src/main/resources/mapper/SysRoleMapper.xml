@@ -21,14 +21,26 @@
         created_by_user_id,updated_by_user_id
     </sql>
 
+    <!--
+      自定义 SQL 一律使用裸表名（不写库名前缀），
+      且显式补 deleted = 0（@TableLogic 对自定义 SQL 不生效）。
+    -->
+
     <select id="listRolesByUserId" resultType="cn.xiaolin.auth.domain.entity.SysRole">
         select r.id, r.name
-        from dev_auth.sys_role r
-        join dev_auth.sys_user_role ur on r.id = ur.sys_role_id
-        where sys_user_id = #{user_id}
+        from sys_role r
+        join sys_user_role ur on r.id = ur.sys_role_id
+        where r.deleted = 0
+          and ur.deleted = 0
+          and ur.sys_user_id = #{user_id}
     </select>
 
     <select id="listRolesByPermId" resultType="cn.xiaolin.auth.domain.entity.SysRole">
-
+        select r.id, r.name
+        from sys_role r
+        join sys_role_permission rp on r.id = rp.sys_role_id
+        where r.deleted = 0
+          and rp.deleted = 0
+          and rp.sys_permission_id = #{perm_id}
     </select>
 </mapper>

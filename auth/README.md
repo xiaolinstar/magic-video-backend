@@ -29,12 +29,16 @@
 - [X]  password加密后数据插入MySQL中数据不一致：重复调用加密算法，已解决
 - [ ]  SysPermission，view modify delete 评估弃用，权限包含在name中
 - [ ]  理清楚方法与类之间的关系
-- [ ]  Dubbo服务端口号设置，替代-1端口号
+- [X]  Dubbo服务端口号设置，替代-1端口号（固定 20880，无注册中心直连寻址）
 
 
 ## 环境依赖
 
-启动该应用前需先启动nacos、mysql和鉴权redis
+启动该应用前需先启动 mysql 和鉴权 redis
+
+> **没有 Nacos**：本项目已彻底移除注册中心与配置中心。
+> 网关与 `has` 通过 Dubbo **直连** auth（`dubbo://<host>:20880`），地址写在
+> `bootstrap-{profile}.yaml` 里。详见 [ADR-0008](../docs/adr/0008-remove-nacos.md)。
 
 ## 概念设计
 

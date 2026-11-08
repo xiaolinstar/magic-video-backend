@@ -75,6 +75,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser>
     }
 
     @Override
+    public Optional<SysUser> resetPasswordWithoutStrengthCheck(Long id, String rawPassword) {
+        if (Objects.isNull(id) || rawPassword == null) {
+            throw new IllegalArgumentException("Id 与 password 不能为空");
+        }
+        LambdaUpdateWrapper<SysUser> updateWrapper = new LambdaUpdateWrapper<SysUser>()
+                .set(SysUser::getPassword, passwordEncoder.encode(rawPassword))
+                .eq(SysUser::getId, id);
+        boolean updated = update(updateWrapper);
+        return updated ? findItemById(id) : Optional.empty();
+    }
+
+    @Override
     public Optional<SysUser> saveAndReturn(SysUserReqDto dto) {
         validateUsername(dto.getUsername());
         validatePasswordStrength(dto.getPassword());

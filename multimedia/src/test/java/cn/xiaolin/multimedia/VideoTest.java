@@ -30,6 +30,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @EnableConfigurationProperties(AppConfigProperties.class)
 public class VideoTest {
 
+    /** 测试用影视 id，对应 video_source.video_id */
+    private static final Long TEST_VIDEO_ID = 10011L;
+
     @Autowired
     private VideoService videoService;
 
@@ -83,7 +86,7 @@ public class VideoTest {
     public void videoMergeTest() throws IOException {
         String videoFileDir = Path.of(System.getProperty("user.home"), appConfigProperties.getVideoFileDir()).toString();
         String md5 = "Md5-Otis-Ruby";
-        videoService.videoChunksMerge(md5, VideoTypeEnum.MP4, md5);
+        videoService.videoChunksMerge(md5, VideoTypeEnum.MP4, md5, TEST_VIDEO_ID);
         Path targetPath = Path.of(videoFileDir, md5+".mp4");
         byte[] bytes = Files.readAllBytes(targetPath);
         assertNotNull(bytes);
@@ -119,7 +122,7 @@ public class VideoTest {
         assert names != null;
         assertEquals(names.length, chunkNum);
 
-        videoService.videoChunksMerge(md5, VideoTypeEnum.MP4, md5);
+        videoService.videoChunksMerge(md5, VideoTypeEnum.MP4, md5, TEST_VIDEO_ID);
         Path targetPath = Path.of(videoFileDir, md5+".mp4");
         byte[] bytes = Files.readAllBytes(targetPath);
         assertNotNull(bytes);

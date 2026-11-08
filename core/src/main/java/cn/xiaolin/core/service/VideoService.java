@@ -1,12 +1,12 @@
 package cn.xiaolin.core.service;
 
 import cn.xiaolin.core.domain.entity.Video;
-import cn.xiaolin.core.domain.vo.SlideVO;
 import cn.xiaolin.core.domain.vo.VideoVO;
+import cn.xiaolin.utils.resp.PageQuery;
+import cn.xiaolin.utils.resp.PageResult;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -15,8 +15,20 @@ import java.util.Optional;
  */
 public interface VideoService extends IService<Video> {
 
+    /**
+     * @deprecated 无分页的全表查询，请改用 {@link #listVideoPage(PageQuery)}
+     */
+    @Deprecated
     List<VideoVO> getVideoList();
 
-    Optional<VideoVO> getVideoById(Long id);
+    /**
+     * 根据 id 查询视频，结果带缓存；视频不存在时返回 null
+     */
+    VideoVO getVideoById(Long id);
 
+    /**
+     * 分页查询视频。{@link PageQuery#getSortBy()} 支持 rating、duration、release、latest，
+     * 为空时默认按创建时间倒序
+     */
+    PageResult<VideoVO> listVideoPage(PageQuery pageQuery);
 }

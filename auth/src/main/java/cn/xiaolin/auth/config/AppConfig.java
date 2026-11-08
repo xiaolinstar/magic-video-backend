@@ -1,6 +1,5 @@
 package cn.xiaolin.auth.config;
 
-import cn.xiaolin.auth.domain.dto.SysUserReqDto;
 import cn.xiaolin.auth.domain.entity.SysUser;
 import cn.xiaolin.auth.service.SysUserService;
 import lombok.RequiredArgsConstructor;
@@ -29,16 +28,22 @@ public class AppConfig implements CommandLineRunner {
         List<SysUser> sysUserList = sysUserService.list();
 
         for (SysUser user : sysUserList) {
+            if (user.getPassword() == null) {
+                log.warn("用户名{}：密码为空，跳过", user.getUsername());
+                continue;
+            }
             if (user.getPassword().startsWith("$2a$")) {
                 log.info("用户名{}：密码已加密", user.getUsername());
-            } else {
-                Optional<SysUser> sysUser = sysUserService.updateAndReturn(
-                        SysUserReqDto.builder()
-                                .id(user.getId())
-                                .password(user.getPassword())
-                                .build()
-                );
+                continue;
+            }
+            // 走专用入口：历史明文密码可能不满足当前强度规则，
+            // 若复用 updateAndReturn 会被强度校验拦下，导致服务启动失败。
+            Optional<SysUser> sysUser = sysUserService.resetPasswordWithoutStrengthCheck(
+                    user.getId(), user.getPassword());
+            if (sysUser.isPresent()) {
                 log.info("用户名{}：密码加密成功", sysUser.get().getUsername());
+            } else {
+                log.warn("用户名{}：密码加密失败", user.getUsername());
             }
         }
     }

@@ -39,6 +39,16 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
 
+        <!--
+            Servlet 容器栈（Tomcat + spring-webmvc）。
+            原先靠 spring-cloud-config-server 传递带入，移除配置中心后必须显式声明，
+            否则 auth 启动会报 NoClassDefFoundError: jakarta/servlet/Filter。
+        -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
         <!--Apache连接池，配合redis使用-->
         <dependency>
             <groupId>org.apache.commons</groupId>
@@ -57,6 +67,12 @@
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-redis-jackson</artifactId>
             <version>1.38.0</version>
+        </dependency>
+
+        <!-- Spring Security（Sa-Token 仍为主，仅借用 BCryptPasswordEncoder + SecurityFilterChain） -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
     </dependencies>

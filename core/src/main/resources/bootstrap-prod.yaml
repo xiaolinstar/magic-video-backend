@@ -2,16 +2,38 @@ spring:
   application:
     name: core
 
-  cloud:
-    nacos:
-      # Nacos服务地址
-      server-addr: www.xingxiaolin.cn:8848
-      config:
-        file-extension: yaml # 文件后缀名
-        group: DEFAULT_GROUP
+  # 生产业务数据库magic_video
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${MYSQL_USERNAME:root}
+    password: ${MYSQL_PASSWORD:123456}
+    url: jdbc:mysql://magic-mysql:3306/magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 
-      # Nacos服务发现
-      discovery:
-        cluster-name: BEIJING
-        # 设置为非临时实例
-        ephemeral: true
+  # 消息队列
+  rabbitmq:
+    host: magic-rabbitmq
+    port: 5672
+    username: ${RABBITMQ_DEFAULT_USER:xiaolin}
+    password: ${RABBITMQ_DEFAULT_PASS:123456rabbit}
+    virtual-host: ${RABBITMQ_DEFAULT_VHOST:/prod-media}
+    connection-timeout: 15000
+
+  data:
+    # 业务缓存
+    redis:
+      client-type: lettuce
+      database: 0
+      host: magic-redis
+      port: 6379
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 8
+          max-idle: 8
+
+dubbo:
+  application:
+    name: dubbo-core-provider
+  protocol:
+    name: dubbo
+    port: 20881

@@ -23,6 +23,20 @@ public interface SysUserService extends IService<SysUser> {
     Optional<SysUser> saveAndReturn(SysUserReqDto dto);
 
     /**
+     * 直接重设密码，**不做强度校验**。
+     *
+     * <p>仅供「历史明文密码迁移」等内部场景使用：数据库中已存在的历史密码
+     * （如 {@code 123456xxl}）可能不满足当前的密码强度规则，而强度规则是为了
+     * 约束用户的新输入。若迁移路径复用 {@link #updateAndReturn(SysUserReqDto)}，
+     * 弱口令历史数据会让 auth 服务在启动时直接失败。
+     *
+     * @param id         用户 id
+     * @param rawPassword 原始（未加密）密码
+     * @return 更新后的用户
+     */
+    Optional<SysUser> resetPasswordWithoutStrengthCheck(Long id, String rawPassword);
+
+    /**
      * 用户注册
      * @param username 用户名
      * @param password 密码

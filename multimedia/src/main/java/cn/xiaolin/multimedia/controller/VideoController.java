@@ -34,8 +34,9 @@ public class VideoController {
     @PostMapping("/video/merge")
     public Result<Map<String, Long>> sliceMerge(@RequestParam String md5,
                                                 @RequestParam VideoTypeEnum videoType,
+                                                @RequestParam Long videoId,
                                                 @RequestParam(required = false) String filename) {
-        videoService.videoChunksMerge(md5, videoType, filename);
+        videoService.videoChunksMerge(md5, videoType, filename == null ? md5 : filename, videoId);
         return Result.ok();
     }
 
@@ -46,8 +47,10 @@ public class VideoController {
 
 
     @PostMapping("/video")
-    public Result<Map<String, String>> one(MultipartFile video, VideoTypeEnum videoType) {
-        String videoUrl = videoService.uploadVideoMinio(video, videoType);
+    public Result<Map<String, String>> one(MultipartFile video,
+                                           @RequestParam VideoTypeEnum videoType,
+                                           @RequestParam Long videoId) {
+        String videoUrl = videoService.uploadVideoMinio(video, videoType, videoId);
         return Result.ok(Map.of("url", videoUrl));
     }
 }

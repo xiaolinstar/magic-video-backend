@@ -1,3 +1,8 @@
+# ⚠️ 已废弃：本文件是早期 K8s 编排草稿，端口与 selector 均与当前代码不一致
+#    （例如 core 写 9000、实际 9001；selector.app 与 template.labels.app 不匹配，
+#    Deployment 永远起不来；且缺少 has 服务、ConfigMap、Secret、Ingress）。
+#    当前部署形态为单机 docker-compose，请勿直接使用。
+#    详见 docs/02-architecture.md 的「不做什么」清单。
 # 开发环境命名空间
 apiVersion: v1
 kind: Namespace

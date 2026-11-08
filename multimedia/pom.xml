@@ -24,18 +24,19 @@
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
 
-		<!-- 文件存储minio-->
+		<!-- 文件存储minio（版本由父项目 dependencyManagement 统一管理） -->
 		<dependency>
 			<groupId>io.minio</groupId>
 			<artifactId>minio</artifactId>
-			<version>8.6.1</version>
 		</dependency>
 
+		<!--
+			Servlet 容器栈（Tomcat + spring-webmvc）。
+			原先靠 spring-cloud-config-server 传递带入，移除配置中心后必须显式声明。
+		-->
 		<dependency>
-			<groupId>jakarta.servlet</groupId>
-			<artifactId>jakarta.servlet-api</artifactId>
-			<version>6.0.0</version>
-			<scope>compile</scope>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
 
 

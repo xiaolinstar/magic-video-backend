@@ -8,8 +8,12 @@
 
 ## 环境依赖
 
-- Nacos注册中心
-- MySQL数据库，数据库名：magic-video 
+- MySQL数据库，数据库名：magic-video
+- Redis（业务缓存）
+
+> **没有 Nacos**：本项目已彻底移除注册中心与配置中心。
+> `has` 通过 Dubbo **直连** core（`dubbo://<host>:20881`），地址写在
+> `bootstrap-{profile}.yaml` 里。详见 [ADR-0008](../docs/adr/0008-remove-nacos.md)。
 
 ## 概念设计
 

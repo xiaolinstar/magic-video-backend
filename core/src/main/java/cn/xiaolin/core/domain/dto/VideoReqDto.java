@@ -1,6 +1,5 @@
 package cn.xiaolin.core.domain.dto;
 
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.*;
 
 import java.math.BigDecimal;
@@ -19,7 +18,6 @@ public class VideoReqDto {
     /**
      * 主键id
      */
-    @TableId
     private Long id;
 
     /**

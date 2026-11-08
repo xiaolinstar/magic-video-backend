@@ -27,29 +27,6 @@ services:
       start_period: 40s
 
 
-  magic-nacos:
-    image: nacos/nacos-server:v2.4.0
-    container_name: magic-nacos
-    hostname: magic-nacos
-#    ports:
-#      - "8848:8848"
-#      - "9848:9848" # 必须添加，否则无法正常使用
-#      - "9849:9849"
-    networks:
-      - magic-backend-network
-
-    restart: no
-    environment:
-      MODE: standalone
-      TZ: Asia/Shanghai
-    healthcheck:
-      # 此命令在容器内执行，而不是宿主机
-      test: [ "CMD", "curl", "-f", "http://localhost:8848/nacos/v2/console/health/readiness" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-
   magic-mysql:
     # 业务数据库
     image: mysql:8.4
@@ -157,8 +134,6 @@ services:
     environment:
       TZ: Asia/Shanghai
     depends_on:
-      magic-nacos:
-        condition: service_healthy
       magic-mysql:
         condition: service_healthy
       magic-rabbitmq:

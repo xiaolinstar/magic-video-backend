@@ -1,14 +1,12 @@
 package cn.xiaolin.has.mq.consumer;
 
 import cn.xiaolin.message.entity.ResourceMessage;
+import cn.xiaolin.message.entity.TranscodeMessage;
 import cn.xiaolin.message.service.producer.MessageProducer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
-
-import java.net.MalformedURLException;
-import java.net.URL;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -37,10 +35,14 @@ class ResourceProducerTest {
 
 
     @Test
-    public void publishUrlTest() throws MalformedURLException {
-        URL url = new URL("http://localhost:9010/magic-video/magic-video-test.mp4?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=RzQywv1gIcgXeSSMMeNz%2F20250227%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250227T093410Z&X-Amz-Expires=604800&X-Amz-SignedHeaders=host&X-Amz-Signature=6336ba1d3e00a96d76fb0f4de05f4219382e2cc20011cd428a552bfd41d4566f");
+    public void publishUrlTest() {
+        TranscodeMessage message = TranscodeMessage.builder()
+                .sourceUrl("http://localhost:9010/magic-video/magic-video-test.mp4")
+                .videoId(10011L)
+                .resourceKey("0a1b2c3d4e5f60718293a4b5c6d7e8f9")
+                .build();
 
-        resourceProducer.sendVideoMessage(url);
+        resourceProducer.sendTranscodeMessage(message);
     }
 
 }

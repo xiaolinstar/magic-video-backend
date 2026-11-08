@@ -24,7 +24,7 @@ public class SysRolePermission implements Serializable {
     /**
      * 主键g
      */
-    @TableId(value = "id")
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private Long id;
 
     /**

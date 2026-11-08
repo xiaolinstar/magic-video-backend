@@ -1,0 +1,8 @@
+spring:
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${RABBITMQ_DEFAULT_USER:xiaolin}
+    password: ${RABBITMQ_DEFAULT_PASS:123456rabbit}
+    virtual-host: ${RABBITMQ_DEFAULT_VHOST:/dev-media}
+    connection-timeout: 15000

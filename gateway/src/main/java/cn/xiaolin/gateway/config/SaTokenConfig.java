@@ -12,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 /**
  * Sa-Token gateway filter configuration.
  * Applies login check to all protected routes; public endpoints are excluded.
@@ -26,14 +24,15 @@ import java.util.List;
 public class SaTokenConfig {
 
     /**
-     * Paths that bypass authentication (public endpoints).
-     * Includes auth flow, swagger/openapi, and actuator health probes used by K8s.
+     * 免登录的公开路径白名单。
+     *
+     * <p>仅包含登录/注册等认证引导接口、swagger/openapi 文档以及 K8s 使用的 actuator 健康检查。
+     * 注意：/auth/logout 与 /auth/kick-out 已刻意移出白名单——它们需要有效会话才能执行，
+     * 也需要校验调用方是否有权强制其他用户下线。
      */
     private static final String[] PUBLIC_PATHS = {
             "/auth/login",
             "/auth/register",
-            "/auth/logout",
-            "/auth/kick-out",
             "/swagger-ui/**",
             "/swagger-resources/**",
             "/v3/api-docs/**",
@@ -49,7 +48,7 @@ public class SaTokenConfig {
         return new SaReactorFilter()
                 // Apply auth check to all paths except the public whitelist
                 .addInclude("/**")
-                .addExclude(List.of(PUBLIC_PATHS))
+                .addExclude(PUBLIC_PATHS)
                 .setAuth(obj -> {
                     // Login check for every protected route
                     SaRouter.match("/**", StpUtil::checkLogin);

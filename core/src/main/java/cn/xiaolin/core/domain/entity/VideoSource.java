@@ -25,7 +25,7 @@ public class VideoSource implements Serializable {
     /**
      * 主键;雪花算法生成，Jackson序列化时转string
      */
-    @TableId
+    @TableId(type = IdType.ASSIGN_ID)
     private Long id;
 
     private Long videoId;
