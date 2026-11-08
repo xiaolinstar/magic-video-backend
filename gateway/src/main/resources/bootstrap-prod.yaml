@@ -45,14 +45,5 @@ sa-token:
   is-concurrent: true
   is-log: true
 
-dubbo:
-  application:
-    qos-enable: false # 生产环境关闭
-    name: dubbo-gateway
-  protocol:
-    name: dubbo
-    port: 20882
-  # 直连 auth 的权限服务（不使用注册中心）
-  auth:
-    host: magic-auth
-    port: 20880
+auth:
+  base-url: http://magic-auth:8999

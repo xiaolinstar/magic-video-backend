@@ -4,13 +4,17 @@ import cn.dev33.satoken.exception.DisableServiceException;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.exception.NotRoleException;
+import cn.dev33.satoken.reactor.context.SaReactorSyncHolder;
 import cn.dev33.satoken.reactor.filter.SaReactorFilter;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.util.SaResult;
+import cn.xiaolin.gateway.client.AuthUnavailableException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ServerWebExchange;
 
 /**
  * Sa-Token gateway filter configuration.
@@ -67,6 +71,12 @@ public class SaTokenConfig {
                         return SaResult.error("用户无访问权限").setCode(403);
                     } else if (e instanceof DisableServiceException) {
                         return SaResult.error("会话已封禁").setCode(403);
+                    } else if (e instanceof AuthUnavailableException) {
+                        ServerWebExchange exchange = SaReactorSyncHolder.getContext();
+                        if (exchange != null) {
+                            exchange.getResponse().setStatusCode(HttpStatus.SERVICE_UNAVAILABLE);
+                        }
+                        return SaResult.error("认证服务不可用").setCode(503);
                     }
                     // Avoid leaking raw exception messages for unknown errors
                     log.warn("Sa-Token filter unexpected error", e);

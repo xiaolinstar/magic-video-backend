@@ -1,7 +1,7 @@
 package cn.xiaolin.gateway.service;
 
 import cn.dev33.satoken.stp.StpInterface;
-import cn.xiaolin.gateway.dubbo.consumer.DubboUserPermClient;
+import cn.xiaolin.gateway.client.AuthPermClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,15 +16,15 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class StpServiceImpl implements StpInterface {
-    private final DubboUserPermClient dubboUserPermClient;
+    private final AuthPermClient authPermClient;
 
     @Override
     public List<String> getPermissionList(Object id, String loginType) {
-        return dubboUserPermClient.getPermissions(Long.valueOf((String) id));
+        return authPermClient.getPermissions(Long.valueOf((String) id));
     }
 
     @Override
     public List<String> getRoleList(Object id, String loginType) {
-        return dubboUserPermClient.getRoles(Long.valueOf((String) id));
+        return authPermClient.getRoles(Long.valueOf((String) id));
     }
 }

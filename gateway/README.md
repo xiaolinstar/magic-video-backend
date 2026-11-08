@@ -15,7 +15,7 @@ SpringCloudGateway实现微服务统一入口，提供统一鉴权和流量转�
 ## 环境依赖
 
 - SaToken分布式数据库：Redis
-- 权限Dubbo-Provider：auth-rpc（直连 `dubbo://<host>:20880`）
+- 权限来源：auth 内部 HTTP（`auth.base-url`，本地 compose 为 `http://magic-auth:8999`）
 
 权限控制资源路由配置
 
