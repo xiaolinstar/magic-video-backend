@@ -33,7 +33,7 @@
 | 框架 | Spring Boot | 3.3.13 |
 | 微服务 | Spring Cloud | 2023.0.5（仅用 Gateway，不含服务发现） |
 | 网关 | Spring Cloud Gateway | 4.1.5 |
-| RPC | Dubbo | 3.3.4（无注册中心，URL 直连） |
+| 服务间同步 | HTTP + OpenAPI | internal `/api/v1/internal/**`，无 Dubbo / Nacos |
 | ORM | MyBatis-Plus | 3.5.7（`mybatis-plus-spring-boot3-starter`） |
 | 数据库 | MySQL | 8.4（驱动 8.4.0 / 镜像 8.4.4） |
 | 缓存 | Redis（Lettuce 连接池） | 由 Boot BOM 管理 |
@@ -44,9 +44,9 @@
 | 文档 | springdoc-openapi (Swagger UI) | 2.x |
 | 可观测性 | Prometheus + Grafana + Loki + Alloy | 见 `volume/` |
 
-> ℹ️ **没有注册中心与配置中心**：本项目为单机单实例部署，Nacos 的收益为零，已彻底移除
-> （详见 [ADR-0008](docs/adr/0008-remove-nacos.md)）。网关路由与 Dubbo 调用均使用**显式地址直连**，
-> 配置随 jar 走（各服务 `bootstrap-{profile}.yaml`）。
+> ℹ️ **没有注册中心、配置中心，也没有 Dubbo**：单机单实例下 Nacos 收益为零，已移除
+> （[ADR-0008](docs/adr/0008-remove-nacos.md)）。服务间同步改为 HTTP
+> （[ADR-0009](docs/adr/0009-remove-dubbo-http-openapi.md)）。地址写在各服务 `bootstrap-{profile}.yaml`。
 
 > ⚠️ Boot 目前停在 **3.3.13**：该分支已停止 OSS 漏洞修复，且 `spring-boot-starter-actuator`
 > 存在未修复的 CVE-2026-22733。迁移路径见 [`docs/10-architecture-review.md`](docs/10-architecture-review.md) 的「附录 A · 依赖版本升级路线」。
@@ -81,11 +81,11 @@ flowchart TB
     GW -->|http 直连 :8999| Auth
     GW -->|http 直连 :9001| Core
     GW -->|http 直连 :9002| MM
+    GW -->|HTTP internal 权限| Auth
 
-    GW -.->|Dubbo 直连 :20880| Auth
     MM -->|Producer| MQ
     MQ -->|Consumer| Has
-    Has -.->|Dubbo 直连 :20881| Core
+    Has -->|HTTP internal 落库| Core
 
     Core --> MySQL
     Core --> Redis
@@ -97,12 +97,11 @@ flowchart TB
 
 **关键设计点**
 
-- **网关是唯一对外入口**：认证在网关统一拦截，后端服务不各自鉴权。
-- **服务间调用全部直连**：没有注册中心。网关用 `http://<host>:<port>`，Dubbo 用 `dubbo://<host>:<port>`，
-  地址在各服务 `bootstrap-{profile}.yaml` 中显式给出（见 [ADR-0008](docs/adr/0008-remove-nacos.md)）。
-- **同步调用走 Dubbo**：网关每次请求都通过 Dubbo 查用户权限/角色（当前无缓存，见技术债 P2-2）。
-- **异步链路走 RabbitMQ**：上传成功后投递转码消息，由 `has` 消费，ffmpeg 编码后经 Dubbo 回调 `core` 落库。
-- **`has` 无对外 HTTP 接口**：纯消息消费者 + Dubbo Provider，只在容器内网可达。
+- **网关是唯一对外入口**：登录态在网关用 Sa-Token 拦截。角色和权限经 HTTP 问 auth（`auth.base-url`），目前没有短缓存（技术债 P2-2）。
+- **没有注册中心，也没有 RPC 框架**：路由和 internal 调用都是显式 HTTP URL（[ADR-0008](docs/adr/0008-remove-nacos.md)、[ADR-0009](docs/adr/0009-remove-dubbo-http-openapi.md)）。
+- **异步链路走 RabbitMQ**：上传成功后由 `has` 转码，再 `POST /api/v1/internal/resources` 写入 `video_source`。
+- **`has` 不对公网提供业务接口**：它消费 MQ，并调用 core 的 internal API。HTTP 端口只给健康检查。
+- **共享代码**：`platform/platform-web` 放 `Result` 与分页；`contracts/` 放 OpenAPI / AsyncAPI。没有 `common/`。
 
 更详细的调用矩阵与部署拓扑见 [`docs/02-architecture.md`](docs/02-architecture.md)。
 
@@ -112,16 +111,14 @@ flowchart TB
 
 ```
 magic-video-backend/
-├── gateway/          # 网关：路由转发 + Sa-Token 鉴权（WebFlux）
-├── auth/             # 鉴权：用户 / 角色 / 权限，提供 Dubbo 权限查询
-├── core/             # 核心：影视信息 CRUD，提供 Dubbo 资源读写
-├── multimedia/       # 多媒体：图片/视频上传 → MinIO，发送转码消息
-├── has/              # 转码：消费 MQ 消息，ffmpeg 编码 HLS / DASH
-├── common/           # 公共模块
-│   ├── common-api/       # Dubbo 接口契约 + 传输 DTO
-│   ├── common-db/        # MyBatis-Plus 配置、审计字段自动填充
-│   ├── common-message/   # RabbitMQ 交换机/队列/生产者/消费者
-│   └── common-utils/     # Result 包装、异常处理、分页、常量、工具类
+├── gateway/          # 网关：路由转发 + Sa-Token（WebFlux），HTTP 向 auth 要权限
+├── auth/             # 用户 / 角色 / 权限，以及 internal 权限查询
+├── core/             # 影视信息 CRUD，以及 internal 播放源读写
+├── multimedia/       # 图片/视频上传 → MinIO，发送转码消息
+├── has/              # 消费 MQ，ffmpeg 编码 HLS / DASH，HTTP 回写 core
+├── platform/
+│   └── platform-web/ # Result、异常、分页、Jackson（无业务语义）
+├── contracts/        # OpenAPI / AsyncAPI 契约源（不进 Maven 反应堆）
 ├── static/
 │   └── mysql/        # 各环境 DDL（dev / local / prod）
 ├── volume/           # 中间件与可观测性组件的持久化数据/配置
@@ -151,7 +148,7 @@ magic-video-backend/
 - JDK 17+
 - Maven 3.8+
 - Docker + Docker Compose
-- **端口占用检查**：`9000/8999/9001/9002/9003/3306/6379/6389/5672/15672/9010/9011`
+- **端口占用检查**：`9000/8999/9001/9002/9003/3306/6379/5672/15672/9010/9011`
 
 ---
 
@@ -224,10 +221,9 @@ docker compose -f docker-compose-dev.yaml --env-file .dev.env up -d
 auth  →  gateway  →  core  →  multimedia  →  has
 ```
 
-- `auth` 必须最先起：网关启动时通过 Dubbo 直连 auth 查权限（`dubbo://localhost:20880`），
-  auth 未就绪会导致网关鉴权失败
-- `core` 要在 `has` 之前：`has` 转码完成后要通过 Dubbo 直连 core 落库（`dubbo://localhost:20881`）
-- `has` 最后起：它只消费 MQ 消息，早起会抢到还没准备好的任务
+- `auth` 先于需要登录的流量：网关用 `auth.base-url` 查权限。dev 是 `http://localhost:8999`，local/prod 是 `http://magic-auth:8999`
+- `core` 先于转码落库：has 使用 `core.base-url`。local/prod 为 `http://magic-core:9001`。**dev 的 has 配置目前也是 `http://magic-core:9001`**，在宿主机上跑之前要让这个主机名指向本机，或改成 `http://localhost:9001`
+- `has` 可以晚于 multimedia：它只消费队列，转码完成后再调 core
 
 **4. 停止**
 
@@ -259,11 +255,7 @@ docker compose -p observability -f mini-observability.yaml down
 docker compose -p prod -f mini-local.yaml down
 ```
 
-> ⚠️ **生产编排目前只覆盖 `auth` / `gateway` / `core`**。
-> `mini-local.yaml` 里**还没有** `multimedia` / `has` / MinIO（`magic-minio`），
-> 因此 prod 下上传与转码链路不可用（网关的 `magic-multimedia` 路由会 DNS 解析失败）。
-> 完整形态见 [`docker-compose-local.yaml`](docker-compose-local.yaml)（含全部 5 个服务 + 1 个 MinIO）。
-> 见[技术债 P1-13](docs/09-tech-debt.md)。
+`mini-local.yaml` 包含五个业务服务、一个 Redis（`magic-redis`）和一个业务 MinIO（`magic-minio`）。对外端口是 Nginx `8081` 与 MinIO `9010/9011`。见 [ADR-0011](docs/adr/0011-single-minio-redis.md)。
 
 ---
 
@@ -271,30 +263,30 @@ docker compose -p prod -f mini-local.yaml down
 
 ### 微服务端口（容器内）
 
-| 服务 | HTTP 端口 | Dubbo 端口 | local 对外暴露 | dev 对外暴露 |
-|---|---|---|---|---|
-| gateway | 9000 | 20882 | ✅ 9000 | ✅ 9000 |
-| auth | 8999 | 20880 | ❌ 仅容器内网 | ✅ 8999 |
-| core | 9001 | 20881 | ❌ 仅容器内网 | ✅ 9001 |
-| multimedia | 9002 | — | ❌ 仅容器内网 | ✅ 9002 |
-| has | 9003 | 20883 | ❌ 仅容器内网 | ✅ 9003 |
+| 服务 | HTTP 端口 | local 对外暴露 | dev 对外暴露 |
+|---|---|---|---|
+| gateway | 9000 | ✅ 9000 | ✅ 9000（IDE） |
+| auth | 8999 | ❌ 仅容器内网 | ✅ 8999（IDE） |
+| core | 9001 | ❌ 仅容器内网 | ✅ 9001（IDE） |
+| multimedia | 9002 | ❌ 仅容器内网 | ✅ 9002（IDE） |
+| has | 9003 | ❌ 仅容器内网 | ✅ 9003（IDE） |
 
-> Dubbo **协议端口必须固定**（不能用 `-1` 随机端口）：无注册中心直连模式下，
-> 消费方需要一个可寻址的固定地址。端口在 `bootstrap-{profile}.yaml` 的 `dubbo.protocol.port` 中声明。
+没有 Dubbo 端口。服务间同步走上面的 HTTP 端口，internal 路径不进网关路由。
 
 ### 中间件端口
 
 | 组件 | 容器端口 | dev 宿主机端口 | local 宿主机端口 | 用途 |
 |---|---|---|---|---|
-| mysql | 3306 | 3306 | ❌ | `dev_auth` + `dev_magic_video` |
-| magic-auth-redis | 6379 | 6379 | ❌ | Sa-Token 分布式会话 |
-| magic-redis | 6379 | 6389 | ❌ | 业务缓存 |
+| mysql | 3306 | 3306 | ❌ | auth 库 + 视频库 |
+| magic-redis | 6379 | 6379 | ❌ | Sa-Token（前缀 `sa-token:`）与 core 缓存（前缀 `core:`），database 0 |
 | rabbitmq | 5672 / 15672 | 5672 / 15672 | ❌ | 转码消息队列 |
-| magic-minio | 9000 / 9001 | 9010 / 9011 | ✅ 9010 / 9011 | bucket `raw`（图片/原片）、`transcoded`（HLS/DASH） |
-| minio (loki) | 9000 / 9001 | 9030 / 9031 | ✅ | Loki 日志存储 |
+| magic-minio | 9000 / 9001 | 9010 / 9011 | ✅ 9010 / 9011 | bucket `raw`、`transcoded` |
+| minio (loki，仅 dev compose) | 9000 / 9001 | 9030 / 9031 | — | 日志存储，不存放媒资 |
 | grafana | 3000 | 19000 | ✅ 19000 | 监控大盘 |
 | prometheus | 9090 | 9090 | ❌ | 指标采集 |
-| nginx | 8081 | — | — | 生产统一入口（`mini-local.yaml`） |
+| nginx | 8081 | — | — | 生产入口（`mini-local.yaml`） |
+
+业务侧只有一个 Redis、一个 MinIO。没有 `magic-auth-redis`，也没有宿主机端口 6389。见 [ADR-0011](docs/adr/0011-single-minio-redis.md)。
 
 > **dev** 模式把中间件端口全部暴露到宿主机，方便 IDEA 直连调试；
 > **local** 模式只暴露网关与 MinIO，其余服务只走容器内网；
@@ -340,7 +332,7 @@ POST /multimedia/video  → gateway → http://magic-multimedia:9002/api/v1/mult
 }
 ```
 
-> `msg` 的默认文案是 `操作成功`（见 `common/common-utils/.../enums/ResponseCode.java`），
+> `msg` 的默认文案是 `操作成功`（见 `platform/platform-web/.../enums/ResponseCode.java`），
 > **不是** `success`。分页接口的 `data` 为 `PageResult<T>`：
 
 ```json
@@ -392,8 +384,6 @@ POST /multimedia/video  → gateway → http://magic-multimedia:9002/api/v1/mult
 | POST | `/api/v1/auth/logout` | 登出 |
 | POST | `/api/v1/auth/kick-out` | 踢人下线（管理员） |
 | GET/POST/PUT/DELETE | `/api/v1/auth/user[/{id}]` | 用户管理 |
-| GET | `/api/v1/auth/user/perm/{id}` | 用户权限 |
-| GET | `/api/v1/auth/user/role/{id}` | 用户角色 |
 | GET | `/api/v1/auth/user/having-perm/{id}` | 拥有某权限的用户 |
 | GET | `/api/v1/auth/user/having-role/{id}` | 拥有某角色的用户 |
 | GET/POST/PUT/DELETE | `/api/v1/auth/perm[/{id}]` | 权限管理 |
@@ -413,7 +403,6 @@ POST /multimedia/video  → gateway → http://magic-multimedia:9002/api/v1/mult
 | GET | `/api/v1/core/video/{id}` | 视频详情（走 Redis 缓存，TTL 10 分钟） |
 | GET | `/api/v1/core/video/all` | 全量视频（**已废弃**，见 ADR-0002） |
 | GET | `/api/v1/core/video/slide` | 首页轮播 |
-| GET | `/api/v1/core/resource/{id}` | 资源详情 |
 | GET | `/api/v1/core/resource/all` | 资源分页列表 |
 | GET | `/api/v1/core/resource/recommend` `/banner` `/latest` `/classic` `/featured` | 资源推荐位（**当前 5 个端点逻辑完全相同**，见 P1-7） |
 | GET/POST/PUT/DELETE | `/api/v1/core/{category,tag,district,award}[/{id}]` | 各维度 CRUD |
@@ -428,20 +417,25 @@ POST /multimedia/video  → gateway → http://magic-multimedia:9002/api/v1/mult
 
 | 方法 | 路径 | 说明 |
 |---|---|---|
-| POST | `/api/v1/multimedia/image` | 图片上传（base64 或 MultipartFile） |
+| POST | `/api/v1/multimedia/image` | 图片上传（MultipartFile） |
 | POST | `/api/v1/multimedia/video` | 整文件视频上传 |
 | POST | `/api/v1/multimedia/video/chunk` | 分片上传 |
 | POST | `/api/v1/multimedia/video/merge` | 分片合并 |
-| GET | `/api/v1/multimedia/video/check` | 校验分片是否存在 |
 
 </details>
 
-### 内部 RPC（Dubbo）
+### 内部 HTTP（不对网关暴露）
 
-| 接口 | 提供方 | 消费者 | 方法 |
+契约在 `contracts/openapi/`。响应仍是 `Result`。
+
+| 方法 | 路径 | 提供方 | 调用方 |
 |---|---|---|---|
-| `UserPermService` | auth | gateway | `getPermByUserId` / `getRoleByUserId` / `getPermWithRolesByUserId` |
-| `ResourceService` | core | has | `getResourceById` / `saveResource` |
+| GET | `/api/v1/internal/users/{id}/permissions` | auth | gateway |
+| GET | `/api/v1/internal/users/{id}/roles` | auth | gateway |
+| POST | `/api/v1/internal/resources` | core | has |
+| GET | `/api/v1/internal/resources/{id}` | core | has（需要读回时） |
+
+`GET` 播放源的 `md5` 为 null：`video_source` 不存这个字段。
 
 ---
 
@@ -481,17 +475,13 @@ DDL 脚本按环境分目录存放：
 
 ```
 static/mysql/
-├── dev/   DDL_auth.sql (6 张)  DDL_video.sql (16 张)
-├── local/ DDL_auth.sql (6 张)  DDL_video.sql (4 张)
-└── prod/  DDL_auth.sql (6 张)  DDL_video.sql (4 张)
+├── dev/     DDL_auth.sql (6 张)  DDL_video.sql (15 张)
+├── local/   DDL_auth.sql (6 张)  DDL_video.sql (15 张)
+├── prod/    DDL_auth.sql (6 张)  DDL_video.sql (15 张)
+└── archive/ 旧草稿（含已废弃的 videoResource，不要挂到 MYSQL_INIT）
 ```
 
-> `local` / `prod` 的业务表**缺 12 张**：`category` `video_category` `district` `video_district`
-> `tag` `video_tag` `video_actor` `video_director` `video_scripter` `video_maker` `award` `videoResource`。
-> 在这些环境上访问相关接口会报表不存在。补齐见[技术债清单](docs/09-tech-debt.md) P1-12。
->
-> `prod` 的 `DDL_auth.sql` 是 2026-11-08 随 Nacos 移除一并补建的
-> （此前 prod 环境**没有** auth 库脚本）。
+三套环境的表集合一致。库名和种子数据仍按环境区分。Flyway 还没有引入。
 
 ### 主键策略
 
@@ -537,23 +527,19 @@ spring:
             - Path=/auth/**
 ```
 
-**2. Dubbo 调用 → URL 直连**
+**2. 服务间 HTTP → base URL**
 
 ```yaml
+# gateway/.../bootstrap-local.yaml
+auth:
+  base-url: http://magic-auth:8999    # dev 为 http://localhost:8999
+
 # has/.../bootstrap-local.yaml
-dubbo:
-  core:
-    host: magic-core        # dev 下为 localhost
-    port: 20881
+core:
+  base-url: http://magic-core:9001
 ```
 
-```java
-@DubboReference(url = "dubbo://${dubbo.core.host}:${dubbo.core.port}")
-private DubboResourceClient dubboResourceClient;
-```
-
-> Dubbo 3.3.4 支持完全不配置注册中心。**协议端口必须固定**（不能用 `-1` 随机端口），
-> 否则消费方无法寻址。
+internal 路径不写进网关路由。契约源是 `contracts/openapi/`，不是 jar。
 
 ### 密钥处理
 
@@ -578,8 +564,7 @@ rabbitmq:
 |---|---|---|
 | Prometheus | 指标采集（Actuator 暴露） | `volume/prometheus/` |
 | Grafana | 监控大盘 | `volume/grafana/` |
-| Loki + Promtail | 日志聚合 | `volume/loki/`、`volume/promtail/` |
-| Alloy | 采集与转发 | `volume/alloy/` |
+| Loki + Alloy | 日志聚合与采集 | `volume/loki/`、`volume/alloy/` |
 
 各服务的 Actuator 端点已收敛为 `health,info`，并排除了 `cloudfoundry` 与 `gateway`：
 
@@ -608,7 +593,7 @@ mvn -pl core -am clean package
 
 ### 分页接口规范
 
-列表接口统一使用 `PageQuery` / `PageResult`（`common-utils`，**刻意不依赖 MyBatis-Plus**）：
+列表接口统一使用 `PageQuery` / `PageResult`（`platform-web`，不依赖 MyBatis-Plus）：
 
 ```java
 @GetMapping("/video/list")
@@ -629,7 +614,7 @@ public Result<PageResult<VideoVO>> list(PageQuery pageQuery) { ... }
 
 `core` 模块启用 Spring Cache（Redis 实现）：
 
-- Key 前缀 `magic-video::`，TTL 10 分钟
+- Key 前缀 `core:`，TTL 10 分钟
 - **不缓存 null**（`disableCachingNullValues`）
 - **不要用 `Optional` 作为缓存值** —— 序列化器会拆包，读回类型不匹配
 - 只缓存按 id 的单条查询；**不要缓存 List**（无界集合 = OOM 风险）
@@ -660,11 +645,14 @@ MinIO 为单实例 `magic-minio`，两个 bucket：`raw`（multimedia 写入图�
 | [`docs/adr/0005-minio-object-key.md`](docs/adr/0005-minio-object-key.md) | MinIO 对象 key UUID 化 ✅ |
 | [`docs/adr/0006-async-transcoding.md`](docs/adr/0006-async-transcoding.md) | HAS 转码异步化（MQ 队列有界并发 + ffmpeg 超时）✅ |
 | [`docs/adr/0007-rabbitmq-consumer-ack.md`](docs/adr/0007-rabbitmq-consumer-ack.md) | RabbitMQ 手动 ack + 死信队列 ✅ |
-| [`docs/adr/0008-remove-nacos.md`](docs/adr/0008-remove-nacos.md) | 移除 Nacos：服务发现与配置管理改用直连 + 本地配置 ✅ |
+| [`docs/adr/0008-remove-nacos.md`](docs/adr/0008-remove-nacos.md) | 移除 Nacos：直连 + 本地配置 ✅ |
+| [`docs/adr/0009-remove-dubbo-http-openapi.md`](docs/adr/0009-remove-dubbo-http-openapi.md) | 移除 Dubbo，内部改为 HTTP + OpenAPI ✅ |
+| [`docs/adr/0010-platform-and-contracts.md`](docs/adr/0010-platform-and-contracts.md) | `common` 收敛为 `platform-web` + `contracts` ✅ |
+| [`docs/adr/0011-single-minio-redis.md`](docs/adr/0011-single-minio-redis.md) | 业务 Redis / MinIO 各一个实例 ✅ |
 
 各模块还有独立 README：[gateway](gateway/README.md) · [auth](auth/README.md) ·
 [core](core/README.md) · [multimedia](multimedia/README.md) · [has](has/README.md) ·
-[common](common/README.md)
+[platform-web](platform/platform-web/README.md) · [contracts](contracts/README.md)
 
 ---
 
@@ -672,31 +660,31 @@ MinIO 为单实例 `magic-minio`，两个 bucket：`raw`（multimedia 写入图�
 
 完整清单见 [`docs/09-tech-debt.md`](docs/09-tech-debt.md)，按「今天不修明天会不会出问题」分级。
 
-### 已关闭（2026-11-08，Phase 0 + 路线 B）
+### 已关闭（2026-11-08）
 
 | 级别 | 问题 | 落地方式 |
 |---|---|---|
 | P0 | MQ 消息类型与可信包白名单冲突 → 转码链路从未跑通 | 改用 `TranscodeMessage` DTO |
 | P0 | auth 自定义 SQL 硬编码 `dev_auth.` → local/prod 登录必挂 | 去前缀 + 补 `deleted = 0` |
-| P0 | `DubboResourceService` 未实现 + 消费方未接线 → 产物无法落库 | 实现 + Dubbo 接线 |
+| P0 | 播放源无法落库 | HTTP `POST /api/v1/internal/resources`（原 Dubbo 通道已删除） |
 | P0 | 合并/上传/发消息被一个 `if` 包住 → 消息永不补发 | 拆三步，只保护合并 |
 | P0 | ffmpeg 同步阻塞且占用唯一 MQ 消费线程 | 有界并发 + 超时 + 手动 ack + DLQ |
 | P0 | MyBatis-Plus starter 用错变体 → **全项目无法启动** | 换 `mybatis-plus-spring-boot3-starter` |
 | P0 | 历史弱口令迁移触发强度校验 → auth 启动失败 | 新增绕开强度校验的迁移入口 |
 | P1 | Nacos 配置中心名不副实 + 配置数据有误 | **彻底移除 Nacos**，改直连 + 本地配置 |
+| — | Dubbo 与 `common/` | HTTP + OpenAPI；`platform-web` + `contracts`（ADR-0009、0010） |
+| P1 | 双业务 Redis / MinIO，生产编排缺媒体服务 | 各保留一个实例；`mini-local` 含 multimedia、has、MinIO（ADR-0011） |
+| P1 | DDL 三套表集合不一致 | dev/local/prod 对齐；Flyway 仍未做 |
 
 ### 仍需关注
 
 | 级别 | 问题 | 位置 |
 |---|---|---|
-| P0 | 多个 Controller 的增删改仍是 `NotImplementedException` | `core`、`auth`、`multimedia` |
-| P1 | 全模块 **0 事务** + 17 处吞异常 → 服务端 500 被伪装成客户端 400 | `*/service/impl/*ServiceImpl.java` |
-| P1 | 乐观锁因调用形态错误而**完全失效**（`update(null, wrapper)`） | `core`、`auth` 各 ServiceImpl |
+| P1 | 全模块事务与吞异常仍未整理 → 服务端故障可能被映射成客户端 400 | `*/service/impl/*ServiceImpl.java` |
+| P1 | 乐观锁因调用形态错误而失效（`update(null, wrapper)`） | `core`、`auth` 各 ServiceImpl |
 | P1 | 缓存无失效策略 → 更新后最长 10 分钟返回旧数据 | `core/.../VideoServiceImpl.java` |
-| P1 | Service 层直接返回 Entity（77 个端点），暴露 `deleted`/`revision` | `core`、`auth` 各 Controller |
-| P1 | Gateway 每次请求都通过 Dubbo 查权限 → 每请求 2 次 DB 查询 | `gateway/.../DubboUserPermClient.java` |
-| P1 | DDL 三套不一致（local/prod 缺 12 张业务表） | `static/mysql/` |
-| P1 | 生产编排缺 `multimedia` / `has` / MinIO → prod 网关的 multimedia 路由必 503 | `mini-local.yaml` |
+| P1 | Service 层直接返回 Entity，可能暴露 `deleted`/`revision` | `core`、`auth` 各 Controller |
+| P1 | 网关每次请求都 HTTP 调 auth 查权限，没有短缓存 | `gateway/.../client/AuthPermClient.java` |
 | P1 | 转码进度不可查询、无自动重试（无任务表/状态机） | `has`（见 [ADR-0006](docs/adr/0006-async-transcoding.md)） |
 | P2 | MinIO bucket 公共可读，拿到 URL 即可下载原片 | `multimedia/config/AppConfig.java` |
 | P2 | 登录接口无失败限速 | `auth/.../SysUserServiceImpl.java` |
@@ -705,9 +693,9 @@ MinIO 为单实例 `magic-minio`，两个 bucket：`raw`（multimedia 写入图�
 
 ## 项目现状说明
 
-这是一个**个人练习项目**。服务拆分、鉴权模型、媒体转码链路均已打通；
-2026-11-08 完成了 Phase 0 断点修复与 Nacos 移除，主链路首次端到端跑通
-（网关登录、网关→core 列表、Dubbo 服务导出均已实证）。
+这是一个**个人练习项目**。服务拆分、鉴权模型、媒体转码链路在代码和编排上已经按 HTTP internal、单 Redis、单业务 MinIO 对齐。
+2026-11-08 的 compose 主链路烟测因宿主机没有 JDK、镜像又依赖预先打好的 jar 而没有在本环境重跑。
+手工步骤见 [`docs/superpowers/plans/smoke-checklist-cloud-native.md`](docs/superpowers/plans/smoke-checklist-cloud-native.md)。
 
 仍未完成的部分见「已知问题」。它不是开箱即用的生产级产品，也不打算追求生产级完备性 ——
 目标是完整走通技术栈并沉淀设计决策。

@@ -6,7 +6,7 @@
 
 [在WebFlux中注册过滤器](https://sa-token.cc/doc.html#/up/global-filter)
 
-在 Gateway 微服务增加认证授权限制，通过 rpc 调用 auth 微服务
+在 Gateway 微服务增加认证授权限制。网关通过 HTTP 调用 auth 的 internal API（不是 Dubbo，也不是 gRPC）。
 
 ## TODO
 
@@ -16,12 +16,8 @@
 
 
 - [X]  踢人下线 kickOut
-- [X]  根据用户id，查询用户的所有角色名DubboUserPermService:getRoleByUserId
-- [X]  根据用户id，查询用户的所有权限 DubboUserPermService:getPermByUserId
-- [X]  根据用户id，查询用户的所有权限（包括角色间接用户的权限）DubboUserPermService:getPermWithRolesByUserId
-- [ ]  根据用户名，查询用户的所有角色名
-- [ ]  根据用户名，查询用户的所有权限
-- [ ]  根据用户名，查询用户的所有权限（包括角色间接用户的权限）
+- [X]  按用户 id 查询角色：`GET /api/v1/internal/users/{id}/roles`
+- [X]  按用户 id 查询权限：`GET /api/v1/internal/users/{id}/permissions`
 - [X]  查询具有某角色的所有用户 SysUserService:listUsersByRoleId
 - [X]  查询具有某权限的所有用户 SysUserService:listUsersByPermId
 - [X]  查询具有某权限的所有用户，包括基于角色间接拥有权限的用户 SysUserService:listUsersWithRoleByPermId
@@ -29,16 +25,15 @@
 - [X]  password加密后数据插入MySQL中数据不一致：重复调用加密算法，已解决
 - [ ]  SysPermission，view modify delete 评估弃用，权限包含在name中
 - [ ]  理清楚方法与类之间的关系
-- [X]  Dubbo服务端口号设置，替代-1端口号（固定 20880，无注册中心直连寻址）
 
 
 ## 环境依赖
 
 启动该应用前需先启动 mysql 和鉴权 redis
 
-> **没有 Nacos**：本项目已彻底移除注册中心与配置中心。
-> 网关与 `has` 通过 Dubbo **直连** auth（`dubbo://<host>:20880`），地址写在
-> `bootstrap-{profile}.yaml` 里。详见 [ADR-0008](../docs/adr/0008-remove-nacos.md)。
+> **没有 Nacos，也没有 Dubbo**。网关用 HTTP 调用本服务的 internal API。
+> local/prod 的 `auth.base-url` 为 `http://magic-auth:8999`，dev 为 `http://localhost:8999`。
+> 见 [ADR-0008](../docs/adr/0008-remove-nacos.md)、[ADR-0009](../docs/adr/0009-remove-dubbo-http-openapi.md)。
 
 ## 概念设计
 
@@ -61,19 +56,16 @@
 | SysUserPermController | 用户权限关联 | ✅ | ✅ | ✅ | ✅ |
 | SysUserRoleController | 用户角色关联 | ✅ | ✅ | ✅ | ✅ |
 
-## 服务提供者 Provider
+## 对内 HTTP
 
-在auth微服务中，用户显式进行权限相关操作，如登录、注册、资源查询等，当用户登录完成后，客户端将获取cookie或session id，之后的后端请求会进行隐式认证和授权。
+登录完成后，网关持有 Sa-Token 会话，每个请求同步调用下面两个接口（不经过网关路由）：
 
-整个后端微服务的入口是Gateway，因此需要在Gateway微服务进行，该过程是同步的，因此使用rpc方式实现。
+| 方法 | 路径 | 功能 |
+|---|---|---|
+| GET | `/api/v1/internal/users/{id}/permissions` | 用户直接权限 |
+| GET | `/api/v1/internal/users/{id}/roles` | 用户角色 |
 
-auth 提供以下 3 个函数服务：
-
-| 函数名 | 功能描述 |
-|-----|------|
-| getPermByUserId | 根据用户ID获取用户的权限列表 |
-| getRoleByUserId | 根据用户ID获取用户的权限列表 |
-| getPermWithRolesByUserId | 根据用户ID获取用户的权限列表，包括角色关联的权限 |
+契约：`contracts/openapi/auth-internal.v1.yaml`。含角色间接权限的合并查询本轮不单独暴露。
 
 
 ## 参考

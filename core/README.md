@@ -11,9 +11,9 @@
 - MySQL数据库，数据库名：magic-video
 - Redis（业务缓存）
 
-> **没有 Nacos**：本项目已彻底移除注册中心与配置中心。
-> `has` 通过 Dubbo **直连** core（`dubbo://<host>:20881`），地址写在
-> `bootstrap-{profile}.yaml` 里。详见 [ADR-0008](../docs/adr/0008-remove-nacos.md)。
+> **没有 Nacos，也没有 Dubbo**。`has` 通过 HTTP 调用 core 的 internal 资源接口
+> （`core.base-url`，local/prod 为 `http://magic-core:9001`）。
+> 见 [ADR-0008](../docs/adr/0008-remove-nacos.md)、[ADR-0009](../docs/adr/0009-remove-dubbo-http-openapi.md)。
 
 ## 概念设计
 
@@ -21,11 +21,14 @@
 
 ![核心框架](/assets/magic-video-core-arch[核心框架]-20241028112030.png)
 
-## 远程过程调用
+## 对内 HTTP
 
-提供resource查询和保存服务: `DubboResourceService`
+播放源不走公网 CRUD。`has` 调用：
 
-## 参考
+| 方法 | 路径 | 功能 |
+|---|---|---|
+| POST | `/api/v1/internal/resources` | 按 videoId 写入 mp4 / hls / dash |
+| GET | `/api/v1/internal/resources/{id}` | 读回。`md5` 不落库，响应为 null |
 
-1. Dubbo官方文档
+契约：`contracts/openapi/core-internal.v1.yaml`。
 

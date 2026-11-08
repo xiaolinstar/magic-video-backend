@@ -1,24 +1,25 @@
 # 02 · 架构
 
-> 本文档描述"当前架构"——即代码实际反映的结构，不是"理想形态"。
-> 理想形态与现状的差距见 `09-tech-debt.md`。
+> 本文档描述当前代码与编排，不是下一阶段的理想形态。
+> 差距见 [`09-tech-debt.md`](09-tech-debt.md)。本轮决策见 ADR-0009、0010、0011。
 
 ## 服务清单
 
-| 服务 | 端口 | 角色 | 状态 | 入口 |
+| 服务 | HTTP 端口 | 角色 | 状态 | 入口 |
 |---|---|---|---|---|
-| `auth` | 8999 | 用户鉴权、权限、角色 | 无状态 | [auth/](../auth) |
-| `gateway` | 9000 | 入口网关 (Spring Cloud Gateway, WebFlux) | 无状态 | [gateway/](../gateway) |
-| `core` | 9001 | 视频/合集/季/演员/导演 等 CRUD | 无状态 | [core/](../core) |
-| `multimedia` | 9002 | 视频/图片上传到对象存储、发 MQ 消息 | 无状态 | [multimedia/](../multimedia) |
-| `has` | 9003 | 视频转码 (ffmpeg HLS/DASH) | **有状态**（本地落 HLS 文件） | [has/](../has) |
-| `mysql` | 3306 | 业务库 | 有状态 | — |
-| `redis` | 6379 / 6389 | 缓存 + Sa-Token session | 有状态 | — |
-| `rabbitmq` | 5672 | 异步消息（转码任务） | 有状态 | — |
-| `minio` | 9000 / 9001 | 对象存储 | 有状态 | — |
+| `auth` | 8999 | 用户、角色、权限；对内提供权限查询 | 无状态 | [auth/](../auth) |
+| `gateway` | 9000 | Spring Cloud Gateway + Sa-Token | 无状态 | [gateway/](../gateway) |
+| `core` | 9001 | 影视信息 CRUD；对内读写 `video_source` | 无状态 | [core/](../core) |
+| `multimedia` | 9002 | 上传到 MinIO，投递转码消息 | 无状态 | [multimedia/](../multimedia) |
+| `has` | 9003 | ffmpeg 转 HLS/DASH，HTTP 回写 core | 有状态（本地转码临时文件） | [has/](../has) |
+| `mysql` | 3306 | `auth` 库 + 视频库（同一实例） | 有状态 | — |
+| `redis` | 6379 | Sa-Token 与 core 缓存，一个实例 | 有状态 | — |
+| `rabbitmq` | 5672 | multimedia → has | 有状态 | — |
+| `minio` | 9000 / 9001 | bucket `raw`、`transcoded` | 有状态 | — |
 
-> **没有注册中心。** 服务间地址直接写在各服务的 `bootstrap-{profile}.yaml` 里，
-> 依据见 [ADR-0008](adr/0008-remove-nacos.md)。
+没有注册中心，也没有 Dubbo。地址写在各服务 `bootstrap-{profile}.yaml`。见 [ADR-0008](adr/0008-remove-nacos.md) 与 [ADR-0009](adr/0009-remove-dubbo-http-openapi.md)。
+
+共享库是 [`platform/platform-web`](../platform/platform-web)（`Result`、异常、分页、Jackson）。服务间契约在 [`contracts/`](../contracts)（OpenAPI + AsyncAPI），不是 Maven 模块。`common/` 已删除。
 
 ## 调用关系
 
@@ -27,62 +28,60 @@ flowchart TB
     Client[客户端 Web/Mobile]
     GW[Gateway :9000]
 
-    subgraph SpringCloud
+    subgraph Services
       Auth[auth :8999]
       Core[core :9001]
       MM[multimedia :9002]
       Has[has :9003]
     end
 
-    MySQL[(MySQL)]
-    Redis[(Redis)]
+    MySQL[(MySQL 双库)]
+    Redis[(Redis :6379)]
     MQ[(RabbitMQ)]
-    MinIO[(MinIO)]
+    MinIO[(MinIO raw / transcoded)]
 
-    Client -->|HTTPS| GW
-    GW -->|HTTP 直连| Auth
-    GW -->|HTTP 直连| Core
-    GW -->|HTTP 直连| MM
+    Client -->|HTTP| GW
+    GW -->|HTTP 路由| Auth
+    GW -->|HTTP 路由| Core
+    GW -->|HTTP 路由| MM
+    GW -->|HTTP internal 权限| Auth
 
-    GW -.->|Dubbo 直连 :20880| Auth
-    Has -.->|Dubbo 直连 :20881| Core
     MM -->|Producer| MQ
     MQ -->|Consumer| Has
+    Has -->|HTTP internal 落库| Core
 
-    Core --> MySQL
-    Core --> Redis
     Auth --> MySQL
     Auth --> Redis
+    Core --> MySQL
+    Core --> Redis
+    GW --> Redis
     MM --> MinIO
     Has --> MinIO
 ```
 
-> **图例**：实线 = 同步调用，虚线 = Dubbo RPC 或异步。
-> 所有地址均为**显式配置**（各服务 `bootstrap-{profile}.yaml`），无服务发现组件。
+实线是同步 HTTP 或基础设施访问。异步只有 RabbitMQ 一条。
 
 ## 调用矩阵
 
-| 调用方 | 被调方 | 协议 | 触发场景 | 备注 |
+| 调用方 | 被调方 | 协议 | 触发场景 | 地址 |
 |---|---|---|---|---|
-| 客户端 → gateway | gateway | HTTPS/HTTP | 所有外部流量 | gateway 是唯一对外入口；**请求路径不带版本前缀**，网关转发时补 `/api/v1` |
-| gateway → auth | auth | HTTP 直连 | 登录、登出、查询用户 | `http://<auth-host>:8999` |
-| gateway → core | core | HTTP 直连 | 视频/合集 CRUD | `http://<core-host>:9001` |
-| gateway → multimedia | multimedia | HTTP 直连 | 图片/视频上传 | `http://<multimedia-host>:9002` |
-| gateway → auth (Dubbo) | auth | Dubbo RPC 直连 | **每次请求鉴权查权限/角色** | `dubbo://<auth-host>:20880`，无注册中心 |
-| has → core (Dubbo) | core | Dubbo RPC 直连 | 转码完成后落资源 | `dubbo://<core-host>:20881` |
-| multimedia → has (异步) | has | RabbitMQ | 上传成功后投递转码消息 | fanout 广播；失败进死信队列 |
-| has → MinIO | MinIO | SDK | 转码产物上传 | |
+| 客户端 | gateway | HTTP | 全部对外流量 | 宿主机 `:9000`（prod 经 Nginx `:8081`） |
+| gateway | auth / core / multimedia | HTTP | 登录与业务路由 | `http://<host>:<port>`，转发时补 `/api/v1` |
+| gateway | auth | HTTP internal | 每个已登录请求查角色/权限 | `GET /api/v1/internal/users/{id}/permissions` 与 `/roles` |
+| multimedia | has | RabbitMQ | 上传成功后转码 | 交换机 / 队列见 `contracts/asyncapi/transcode.v1.yaml` |
+| has | core | HTTP internal | 转码成功后写 `video_source` | `POST /api/v1/internal/resources` |
+| multimedia / has | MinIO | S3 SDK | 原片与 HLS/DASH | `http://magic-minio:9000`，bucket `raw`、`transcoded` |
 
-### Dubbo 端口分配
+internal 路径不在网关路由表里。local 与 prod 不把 8999/9001 映射到宿主机，靠容器网络隔离。
 
-| 服务 | Dubbo 端口 | 角色 |
-|---|---|---|
-| `auth` | 20880 | `UserPermService` 提供方 |
-| `core` | 20881 | `ResourceService` 提供方 |
-| `gateway` | 20882 | 消费方 |
-| `has` | 20883 | 消费方 |
+### 内部 base URL
 
-> 协议端口**固定**，不使用 `-1`（随机端口）：直连消费方无法寻址随机端口。
+| 配置 | local | dev | prod |
+|---|---|---|---|
+| `auth.base-url` | `http://magic-auth:8999` | `http://localhost:8999` | `http://magic-auth:8999` |
+| `core.base-url` | `http://magic-core:9001` | `http://magic-core:9001` | `http://magic-core:9001` |
+
+dev 的 has 仍指向容器主机名 `magic-core`。在 IDE 里跑 has 时，这个名字必须解析到本机，或改成 `http://localhost:9001`。
 
 ## 部署形态（docker-compose 单机）
 
@@ -90,42 +89,43 @@ flowchart TB
 flowchart LR
   subgraph Bridge[magic-backend-network]
     mysql[magic-mysql]
-    redis1[magic-redis]
-    redis2[magic-auth-redis]
+    redis[magic-redis]
     mq[magic-rabbitmq]
-    minio1[magic-multimedia-minio]
-    minio2[magic-has-minio]
+    minio[magic-minio]
     auth[magic-auth]
     gw[magic-gateway]
     core[magic-core]
     mm[magic-multimedia]
     has[magic-has]
   end
-  Client -.->|exposed :9000| gw
-  Client -.->|exposed :9010 :9011| minio1
-  Client -.->|exposed :9020 :9021| minio2
+  Client -.->|local :9000| gw
+  Client -.->|:9010 :9011| minio
 ```
 
-**关键约束**：
-- 仅 `gateway:9000`、`minio:9010/9011`、`minio:9020/9021` 暴露到宿主机，其他服务**只走容器内网**
-- 启动顺序：`mysql/redis/rabbitmq/minio` → `auth` → `gateway` → `core` → `multimedia` / `has`（通过 `depends_on.condition: service_healthy` 表达）
-- **没有 Nacos**，因此不存在「等待注册中心就绪」这一步
+- local：对外是 gateway `9000` 与 MinIO `9010/9011`。其余只在容器网络内。
+- dev：中间件映射到宿主机（MySQL `3306`、Redis `6379`、RabbitMQ `5672/15672`、MinIO `9010/9011`）。微服务在 IDE 里听 8999–9003。dev compose 另有 `magic-loki-minio`（`9030/9031`），只存日志，不存媒资。
+- prod（`mini-local.yaml`）：Nginx `8081`，以及同一个 MinIO `9010/9011`。五个业务服务都在编排里。
+- 启动顺序由 `depends_on` 表达：MySQL / Redis / RabbitMQ → auth → gateway → core → multimedia / has。没有注册中心等待。
 
-## 关键技术约束
+Redis 只有 `magic-redis`。Sa-Token 用前缀 `sa-token:`，core 缓存用前缀 `core:`，都在 database 0。见 [ADR-0011](adr/0011-single-minio-redis.md)。
 
-1. **HAS 模块含 worker DSL**：ffmpeg 进程从 `/home/magic/...` 路径读写，依赖 `user.home` 系统属性（详见 `09-tech-debt.md` P1-2）
-2. **HAS 在 docker 中需挂载持久卷**：HLS 文件需要保留，否则 Pod 重建 → 媒体丢失
-3. **Sa-Token session 在 Redis**：Redis 挂掉 = 所有用户被踢出
-4. **单实例部署**：服务发现被移除的前提是每个服务只有 1 个实例；一旦需要多副本，
-   必须重新引入服务发现（届时建议用 K8s 原生能力，**不要再把 Nacos 请回来**）
+## 关键约束
 
-## 不做什么（明确边界）
+1. **Sa-Token 与 core 缓存共用一个 Redis**。Redis 不可用时，登录态和缓存一起失效。
+2. **单实例**。多副本时用 K8s Service DNS 注入 base URL，不恢复 Nacos 或 Dubbo。
+3. **HAS 转码占用本地磁盘**。临时目录在转码过程中存在；对象存进 MinIO 后的清理仍见技术债 P1-5。
+4. **网关是唯一业务入口**。internal API 不经过网关。
 
-- ❌ **不做 K8s 集群部署**（单机 docker-compose 足够）
-- ❌ **不做服务网格**（Istio/Linkerd 没必要）
-- ❌ **不做集群限流 / 熔断**（单机 Redis + Sentinel 足够）
-- ❌ **不做分布式追踪**（单机日志足够排障）
-- ❌ **不做 Service Mesh mTLS**（网关 TLS termination 即可）
-- ❌ **不引入注册中心 / 配置中心中间件**（见 [ADR-0008](adr/0008-remove-nacos.md)）
+## 本轮非目标
 
-> 这些"不做"是当前阶段的决策。当业务复杂度上升（QPS > 1000、单点扛不住、跨机房容灾）时需要重新评估。
+下列事项只记录在设计规格第 8 节，本轮不实现：
+
+- 可运行的 K8s 清单（现有草稿在 [`docs/archive/k8s/`](archive/k8s/README.md)，不能 `kubectl apply`）
+- 服务网格、mTLS、用网格替换 internal 的网络隔离
+- 用 Ingress / Gateway API 替换 Spring Cloud Gateway
+- gRPC
+- 合并五个业务服务，或合并 MySQL 两个库
+- Flyway / Testcontainers 全套
+- 把 Nacos 或 Dubbo 加回来
+
+当需要多副本或跨机容灾时，再按设计规格第 8 节单独立项，而不是在本轮编排上叠注册中心。

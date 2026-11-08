@@ -18,7 +18,7 @@
 | `02-architecture.md` | 服务清单、调用矩阵、部署形态 | 架构演进时 |
 | `03-domain-model.md` | 领域模型、ER 图 | 新增业务实体时 |
 | `04-use-cases.md` | 核心用例（用户故事级） | 业务流程变化时 |
-| `05-api-contracts.md` | REST + Dubbo 接口契约 | API 变更时 |
+| `05-api-contracts.md` | 对外 REST 说明（内部契约以 `contracts/` 为准） | API 变更时 |
 | `06-data-flow.md` | 关键数据流（含时序图） | 链路变化时 |
 | `07-config-and-deploy.md` | 配置管理与部署方式 | 部署形态变化时 |
 | `08-roadmap.md` | 演进路线 | 路线变化时 |
@@ -40,8 +40,8 @@
 
 | 文档 | 状态 |
 |---|---|
-| 02-architecture.md | ✅ 初稿（基于代码反推） |
-| 09-tech-debt.md | ✅ 2026-11-08 复核：Phase 0 / Phase 1 已闭环，P0/P1-4/P1-10/P1-11 已关闭 |
+| 02-architecture.md | ✅ 2026-11-08 已改为 HTTP internal、单 Redis、单业务 MinIO |
+| 09-tech-debt.md | ✅ 2026-11-08：本分支已关闭项已勾选；P2-2 缓存与 Flyway 仍开放 |
 | 10-architecture-review.md | ✅ 2026-10-01 全面审查：含 3 处运行时实证验证 |
 | `adr/0001-snowflake-id.md` | ✅ 已落地 |
 | `adr/0002-pagination.md` | ✅ 已落地 |
@@ -51,16 +51,20 @@
 | `adr/0006-async-transcoding.md` | ✅ 已落地（方案调整为 MQ 队列有界并发，任务表未实现） |
 | `adr/0007-rabbitmq-consumer-ack.md` | ✅ 已落地 |
 | `adr/0008-remove-nacos.md` | ✅ 已落地（彻底移除 Nacos，改直连 + 本地配置） |
+| `adr/0009-remove-dubbo-http-openapi.md` | ✅ 已落地（移除 Dubbo，内部 HTTP + OpenAPI） |
+| `adr/0010-platform-and-contracts.md` | ✅ 已落地（`platform-web` + `contracts`，删除 `common/`） |
+| `adr/0011-single-minio-redis.md` | ✅ 已落地（业务 Redis / MinIO 各一个实例） |
 
 ---
 
 ## 最近一次变更
 
-**2026-11-08** —— Phase 0 断点修复 + 路线 B（移除 Nacos）落地：
+**2026-11-08** —— 云原生分支落地（在 Phase 0 与移除 Nacos 之后）：
 
-- Phase 0 的 9 个 P0 全部修复并通过实证（见 [`09-tech-debt.md` 修复进度跟踪](09-tech-debt.md#修复进度跟踪)）；
-- **Nacos 被彻底移除**：网关路由与 Dubbo 改为直连地址，配置回归各服务 `bootstrap-{profile}.yaml`；
-- 新增 3 个真实中间件集成测试：`TranscodeMessageContractTest`、`DeadLetterRoutingTest`、`DubboResourceServiceTest`；
-- ADR-0006 改写为实际实现（MQ 有界并发 + ffmpeg 超时，**无任务表/状态机**）；
-- ADR-0007 改写为实际实现（手动 ack + DLQ + 历史队列兼容）；
-- 新增 ADR-0008 记录移除 Nacos 的决策与备选方案。
+- 服务间同步改为 HTTP + OpenAPI，Dubbo 删除（ADR-0009）；
+- `common/` 删除，共享库为 `platform-web`，契约在 `contracts/`（ADR-0010）；
+- 业务 Redis、业务 MinIO 各一个实例；`mini-local` 含媒体链路（ADR-0011）；
+- K8s 与服务网格仍是文档中的非目标，不交付可运行清单；
+- compose 主链路烟测因环境没有 JDK 未重跑，步骤见 `superpowers/plans/smoke-checklist-cloud-native.md`。
+
+更早同一天还完成了 Phase 0 断点修复、移除 Nacos（ADR-0008），以及 ADR-0006 / ADR-0007 按实际 MQ 实现改写。

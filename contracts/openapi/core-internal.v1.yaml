@@ -34,6 +34,8 @@ paths:
   /api/v1/internal/resources/{id}:
     get:
       operationId: getResourceById
+      description: |
+        按 videoId 读回播放源。video_source 不存 md5，实现不回填该字段，响应中为 null。
       parameters:
         - in: path
           name: id
@@ -51,7 +53,7 @@ paths:
                 msg: 操作成功
                 data:
                   id: 10001
-                  md5: "0a1b2c3d4e5f60718293a4b5c6d7e8f9"
+                  md5: null
                   mp4: "raw/10001.mp4"
                   m3u8: "transcoded/10001/index.m3u8"
                   mpd: "transcoded/10001/manifest.mpd"

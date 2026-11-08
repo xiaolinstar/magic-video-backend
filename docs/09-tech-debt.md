@@ -9,6 +9,8 @@
 - 2026-10-01 复核：修正 5 处失效的 ADR 链接（原写作 `99-adr/`，实际目录为 `adr/`），并移除了已修复条目。
 - 2026-11-08 复核：Phase 0 的 9 个 P0 与 P1-4 / P1-10 / P1-11 全部关闭并实证；
   新增 **P1-13**（生产编排缺 `multimedia` / `has` / MinIO）。
+- 2026-11-08 云原生分支：关闭 P0-7、P1-12（表集合）、P1-13、P3-4，以及双 Redis / 双业务 MinIO。
+  Dubbo 改为 HTTP（ADR-0009）。P2-2 仍开放，只是客户端不再是 Dubbo。
 
 ---
 
@@ -66,7 +68,9 @@
 
 **修复方向**：
 1. `core` 实现 `saveResource` → 写 `video_source`，`getResourceById` → 读 `video_source`
-2. `has` 在转码成功后调用 `DubboResourceClient.saveResource(...)`
+2. `has` 在转码成功后调用落库客户端
+
+2026-11-08 云原生分支把这条通道从 Dubbo 换成 `POST /api/v1/internal/resources`（[ADR-0009](adr/0009-remove-dubbo-http-openapi.md)）。`md5` 不写入 `video_source`，GET 不回填。
 
 详见 [`10-architecture-review.md` P0-4](10-architecture-review.md)
 
@@ -102,24 +106,18 @@ if (!targetFile.exists()) {   // 合并、上传、发消息 全在这个 if 内
 
 ---
 
-### P0-7 · Controller 增删改大面积 NotImplemented 🟢
+### P0-7 · Controller 增删改大面积 NotImplemented ✅ 已修
 
-**位置**（11 处）：
+**原位置**（空壳端点，现已不在对外 Controller 中）：
 
-| 位置 | 端点 |
+| 原端点 | 处理 |
 |---|---|
-| `auth/.../SysUserController.java:70` | `GET /user/perm/{id}` |
-| `auth/.../SysUserController.java:76` | `GET /user/role/{id}` |
-| `core/.../ResourceController.java:100,107,114,121` | `/resource/{id}` 的 GET/POST/PUT/DELETE |
-| `multimedia/.../VideoController.java:44` | `GET /video/check` |
-| `multimedia/.../ImageServiceImpl.java:95` | `imageUpload(String base64)` |
-| `common/message/.../MessageProducerImpl.java:32,37` | `publish` 的两个重载 |
+| `GET /user/perm/{id}`、`GET /user/role/{id}` | 删除。网关改调 internal HTTP |
+| 对外 `/resource/{id}` 的 GET/POST/PUT/DELETE | 删除。播放源读写只留 internal API |
+| `GET /video/check`、base64 `imageUpload` | 删除未承诺入口 |
+| `MessageProducer.publish` 两个重载 | Phase 0 已实现 |
 
-**修复方向**：分批实现，优先级：
-1. `ResourceController` CRUD（业务核心，且是 P0-4 落库链路的入口）
-2. `SysUserController` perm/role 查询（auth 网关依赖）
-3. `MessageProducer` exchange/routingKey 重载
-4. `ImageService` base64 上传
+对外推荐位（`/resource/recommend` 等）仍在，业务区分见 P1-7。
 
 ---
 
@@ -318,41 +316,25 @@ Invalid value type for attribute 'factoryBeanObjectType': java.lang.String
 
 ---
 
-### P1-12 · DDL 三套不一致 🟢
+### P1-12 · DDL 三套不一致 ✅ 已修（表集合）
 
-| 环境 | auth 表 | video 业务表 |
-|---|---|---|
-| `static/mysql/dev/` | 6 张 ✅ | 15 张 ✅ |
-| `static/mysql/local/` | 6 张 ✅ | **仅 5 张** ❌ |
-| `static/mysql/prod/` | **缺失** ❌ | **仅 5 张** ❌ |
+三套环境的表集合已对齐。auth 均为 6 张；video 均为 15 张（`collection`、`season`、`video`、`video_source`、`category`、`video_category`、`district`、`video_district`、`tag`、`video_tag`、`video_director`、`video_scripter`、`video_actor`、`video_maker`、`award`）。废弃的 `videoResource` 在 [`static/mysql/archive/`](../static/mysql/archive/README.md)，不要挂到 `MYSQL_INIT`。
 
-**影响**：local 模式访问 `/api/v1/core/category/all` 会报表不存在。
+库名、种子数据和 `sys_user.admission` 默认值仍按环境区分。
 
-**修复方向**：单一事实来源（以 dev 版为基线）+ 引入 Flyway/Liquibase 管理迁移。
+**未做**：Flyway / Liquibase。列入 Phase 2，本轮不引入。
 
 ---
 
-### P1-13 · 生产编排缺 3 个服务 —— prod 网关的 multimedia 路由必然 503 🟢
+### P1-13 · 生产编排缺媒体链路 ✅ 已修
 
-**位置**：`mini-local.yaml`（生产编排）
+**位置**：`mini-local.yaml`
 
-**事实**：生产编排只包含 `nginx` / `mysql` / `magic-auth-redis` / `magic-redis` /
-`magic-rabbitmq` / `magic-auth` / `magic-gateway` / `magic-core` —— **缺 `magic-multimedia`、
-`magic-has`、以及两个 MinIO**（`docker-compose-local.yaml` 里全都有）。
+**原问题**：生产编排只有 auth / gateway / core，没有 multimedia、has 和 MinIO，上传路由无法解析。
 
-**影响**：
+**落地**（2026-11-08）：`mini-local.yaml` 已包含 `magic-multimedia`、`magic-has` 和单个 `magic-minio`（bucket `raw` / `transcoded`）。CI 推送五个服务镜像。业务 Redis 也收成一个 `magic-redis`。见 [ADR-0011](adr/0011-single-minio-redis.md)。
 
-1. `gateway/.../bootstrap-prod.yaml` 里的 multimedia 路由 `http://magic-multimedia:9002`
-   在 prod 下 **DNS 解析失败** → 上传相关接口必 503；
-2. `has`（转码）在 prod 下**根本没有实例** → 转码链路不可用；
-3. `multimedia` / `has` 的 prod profile 里的 `magic-multimedia-minio` / `magic-has-minio`
-   同样解析不到 → 即使把服务拉起来也连不上对象存储。
-
-**已做**：2026-11-08 补齐了 `has/src/main/resources/bootstrap-prod.yaml`
-（此前 5 个服务里只有它缺 prod profile，且它从未有过 Nacos 配置）。
-
-**修复方向**：把 `magic-multimedia` / `magic-has` / 两个 MinIO 从 `docker-compose-local.yaml`
-迁到 `mini-local.yaml`，并核对 prod 侧的 MinIO 密钥与 bucket 初始化。
+prod 端到端烟测仍未在本环境跑通（宿主机无 JDK，见烟测清单）。
 
 ---
 
@@ -368,13 +350,13 @@ Invalid value type for attribute 'factoryBeanObjectType': java.lang.String
 
 ---
 
-### P2-2 · `DubboUserPermClient` 每次请求都查 DB 🟢
+### P2-2 · 网关每次请求都向 auth 查权限 🟢
 
-**位置**：`gateway/.../dubbo/consumer/DubboUserPermClient.java`
+**位置**：`gateway/.../client/AuthPermClient.java`（`StpServiceImpl` 每个请求调用）
 
-**问题**：Sa-Token 每次 HTTP 请求都调 `getPermissionList` / `getRoleList`，每次都走 Dubbo → MySQL。
+**问题**：Sa-Token 每次请求都 `GET` auth 的 internal 权限/角色接口，auth 再查 MySQL。传输已从 Dubbo 改为 HTTP（ADR-0009），**短缓存还没有**。
 
-**修复方向**：角色/权限加 Redis 或 Caffeine 缓存（TTL 5 分钟）。
+**修复方向**：进程内短缓存（例如 Caffeine，TTL 数十秒）或 Redis。超时与 5xx 仍不能当成空权限放行。
 
 ---
 
@@ -428,19 +410,15 @@ List<Video> videos = videoList.subList(0, Math.min(videoList.size(), 5));
 |---|---|
 | 同名 `VideoServiceImpl` 跨模块（一个管 CRUD、一个管文件上传） | `core` / `multimedia` |
 | 同一张表两个 Controller（`ResourceController` 与 `VideoSourceController` 都操作 `video_source`） | `core` |
-| 同一概念三套叫法（`ResourceService` / `VideoSourceService` / `video_source` 表） | `core` + `common-api` |
+| 同一概念多套叫法（internal `ResourceDto` / `VideoSourceService` / `video_source` 表） | `core` + `contracts/openapi` |
 
 **修复方向**：统一叫 "resource"，合并 Controller/Service，`multimedia` 那个改叫 `MediaUploadService`。
 
 ---
 
-### P3-4 · Dubbo 契约无版本化 + 超时重试未配置 🟢
+### P3-4 · Dubbo 契约无版本化 + 超时重试未配置 ✅ 已修
 
-**事实**：`bootstrap-{dev,local}.yaml` 的 `dubbo` 段只有 `application`/`protocol`/`registry`，
-**没有 `consumer.timeout` / `retries`** → 用 Dubbo 3.3.4 默认（timeout 1000ms、retries 2）。
-`saveResource` 语义非幂等，默认重试 2 次会产生重复写入。
-
-**修复方向**：显式配置超时与重试；`@DubboService(version = "1.0.0")`。
+Dubbo 已删除。内部 HTTP 契约在 `contracts/openapi/*.v1.yaml`。gateway 权限客户端超时 3s；has 写 core 连接 3s、读取 30s，POST 不自动重试。见 [ADR-0009](adr/0009-remove-dubbo-http-openapi.md)。
 
 ---
 
@@ -483,6 +461,12 @@ List<Video> videos = videoList.subList(0, Math.min(videoList.size(), 5));
 | entity 主键未指定策略 | [ADR-0001](adr/0001-snowflake-id.md) |
 | `RabbitMQConfig` 编译错误（`setTrustedPackages` 已移除） | 改用 `Jackson2JsonMessageConverter` 构造器 |
 | `auth` 模块缺 `spring-boot-starter-security` | 补依赖 |
+| 移除 Dubbo，内部同步改 HTTP + OpenAPI | [ADR-0009](adr/0009-remove-dubbo-http-openapi.md) |
+| 删除 `common/`，改为 `platform-web` + `contracts` | [ADR-0010](adr/0010-platform-and-contracts.md) |
+| 业务 Redis / MinIO 双实例 | [ADR-0011](adr/0011-single-minio-redis.md) |
+| 未承诺的 NotImplemented 对外端点 | P0-7 |
+| dev/local/prod 视频表集合不一致 | P1-12（Flyway 仍未引入） |
+| `mini-local.yaml` 缺媒体链路；CI 只构建部分镜像 | P1-13；workflow 构建五个镜像 |
 
 ---
 
@@ -490,8 +474,7 @@ List<Video> videos = videoList.subList(0, Math.min(videoList.size(), 5));
 
 | 决策 | 不做的理由 |
 |---|---|
-| K8s 集群部署 | 单机 docker-compose 够用 |
-| 服务网格 (Istio) | 单机不需要 |
+| 可运行的 K8s / 服务网格 | 本轮只写文档（设计规格第 8 节、ADR-0009）。现有清单在 `docs/archive/k8s/`，不能当部署入口 |
 | 分布式追踪 (Jaeger/Tempo) | 单机日志排障够用 |
 | 集群限流 / 熔断 | 单点 + Nginx 限速足够 |
 | **统一的** Spring Boot Admin 聚合监控 | Prometheus + Grafana 替代 |
@@ -506,10 +489,10 @@ List<Video> videos = videoList.subList(0, Math.min(videoList.size(), 5));
 - [x] P0-1：MQ 消息类型改用受信包内 DTO（`TranscodeMessage`）
 - [x] P0-2：去掉 auth XML 的 `dev_auth.` 前缀
 - [x] P0-3：auth XML 补 `deleted = 0`
-- [x] P0-4：实现 `DubboResourceService` + has 侧接线
+- [x] P0-4：播放源落库打通；云原生分支改为 HTTP internal（ADR-0009）
 - [x] P0-5：拆分 merge / upload / send
 - [x] P0-6：ffmpeg 超时 + 手动 ack + 死信队列 + 幂等
-- [x] P0-7：`MessageProducer` 的两个 `publish` 重载（其余 Controller 端点仍待修）
+- [x] P0-7：`MessageProducer` 重载已实现；其余空壳对外端点已删除
 - [x] P0-8：MyBatis-Plus 换 Boot 3 专用 starter（**全项目恢复可启动**）
 - [x] P0-9：历史弱口令迁移绕开强度校验
 - [x] P1-4：RabbitMQ 手动 ack + 死信队列 + 并发度
@@ -521,7 +504,7 @@ List<Video> videos = videoList.subList(0, Math.min(videoList.size(), 5));
 |---|---|
 | `TranscodeMessageContractTest` | 消息经真实 RabbitMQ 往返，可信包校验不再失败 |
 | `DeadLetterRoutingTest` | 消费失败的消息进入死信队列，原队列不残留 |
-| `DubboResourceServiceTest` | 播放源落库 3 行、重复回写幂等、读回还原 |
+| `ResourceAppServiceTest` / internal Controller 测试 | 播放源落三行、重复回写幂等、按 type 读回（不再经 Dubbo） |
 
 ### Phase 1 · 配置外置 —— ✅ 已完成 2026-11-08（随 Nacos 移除一并落地）
 
@@ -537,7 +520,8 @@ List<Video> videos = videoList.subList(0, Math.min(videoList.size(), 5));
 - [ ] P1-2：修乐观锁
 - [ ] P1-3：加 `@CacheEvict`
 - [ ] P1-5：修磁盘清理 + 让 `@Scheduled` 生效
-- [ ] P1-12：统一 DDL + 引入 Flyway
+- [x] P1-12：dev/local/prod 表集合已对齐
+- [ ] Flyway：仍属后续，本轮不引入
 
 ### Phase 3 · 接口与结构整理 —— 🟢 待做
 
@@ -553,8 +537,16 @@ List<Video> videos = videoList.subList(0, Math.min(videoList.size(), 5));
 - [ ] P2-3：登录限速
 - [ ] P2-4：生产配置去默认值
 
-### Phase 5 · 生产部署补全 —— 🟢 待做
+### Phase 5 · 生产部署补全 —— 部分完成
 
-- [ ] P1-13：`mini-local.yaml` 补 `magic-multimedia` / `magic-has` / 两个 MinIO
-- [ ] prod 侧 MinIO 密钥与 bucket 初始化核对
-- [ ] prod profile 端到端验证（目前 prod 只有 auth/core/gateway 被实际跑通）
+- [x] P1-13：`mini-local.yaml` 补 `magic-multimedia` / `magic-has` / 单个 `magic-minio`
+- [x] 业务 Redis、业务 MinIO 各保留一个实例（ADR-0011）
+- [ ] prod 侧端到端烟测（本环境无 JDK，未能 `docker compose up --build`）
+
+### 云原生分支 · 协议与模块 —— ✅ 文档与代码已对齐 2026-11-08
+
+- [x] 移除 Dubbo，内部 HTTP + OpenAPI（ADR-0009）
+- [x] `platform-web` + `contracts`，删除 `common/`（ADR-0010）
+- [x] 单 Redis / 单业务 MinIO（ADR-0011）
+- [ ] 网关权限短缓存（P2-2）
+- [ ] Phase 2：可运行 K8s、Mesh、mTLS、gRPC、Flyway（只写在设计规格第 8 节，本轮不做）
