@@ -54,6 +54,20 @@ class AuthPermClientTest {
     }
 
     @Test
+    void getRoles_whenHttp404_returnsEmptyList() {
+        mockWebServer.enqueue(new MockResponse().setResponseCode(404));
+
+        assertEquals(List.of(), client().getRoles(9L));
+    }
+
+    @Test
+    void getPermissions_whenHttp400_returnsEmptyList() {
+        mockWebServer.enqueue(new MockResponse().setResponseCode(400));
+
+        assertEquals(List.of(), client().getPermissions(9L));
+    }
+
+    @Test
     void getRoles_whenHttp5xx_throwsInsteadOfEmptyList() {
         mockWebServer.enqueue(new MockResponse().setResponseCode(500));
 

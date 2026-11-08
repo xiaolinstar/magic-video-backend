@@ -20,8 +20,8 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * Loads user roles and permissions from auth over HTTP.
- * Transport failures and unusable payloads throw {@link AuthUnavailableException}
- * instead of an empty list.
+ * Auth 4xx is treated as no roles/permissions (empty list).
+ * Timeouts, 5xx, and unusable success payloads throw {@link AuthUnavailableException}.
  */
 @Component
 public class AuthPermClient {
@@ -68,6 +68,9 @@ public class AuthPermClient {
         } catch (AuthUnavailableException ex) {
             throw ex;
         } catch (WebClientResponseException ex) {
+            if (ex.getStatusCode().is4xxClientError()) {
+                return List.of();
+            }
             throw new AuthUnavailableException("auth service HTTP " + ex.getStatusCode().value(), ex);
         } catch (RuntimeException ex) {
             throw new AuthUnavailableException("auth service unavailable", ex);
