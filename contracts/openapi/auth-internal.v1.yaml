@@ -1,0 +1,56 @@
+openapi: 3.0.3
+info:
+  title: auth-internal
+  version: 1.0.0
+  description: |
+    认证服务对内 HTTP 契约。成功响应与 platform-web 的 Result / ResponseCode.SUCCESS 一致（code=200，msg=操作成功）。
+paths:
+  /api/v1/internal/users/{id}/permissions:
+    get:
+      operationId: getUserPermissions
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResultListString"
+              example:
+                code: 200
+                msg: 操作成功
+                data: ["video:upload", "video:play"]
+  /api/v1/internal/users/{id}/roles:
+    get:
+      operationId: getUserRoles
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResultListString"
+              example:
+                code: 200
+                msg: 操作成功
+                data: ["ADMIN", "USER"]
+components:
+  schemas:
+    ResultListString:
+      type: object
+      required: [code, msg]
+      properties:
+        code: { type: integer, example: 200 }
+        msg: { type: string, example: 操作成功 }
+        data:
+          type: array
+          items: { type: string }

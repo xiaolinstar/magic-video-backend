@@ -1,0 +1,79 @@
+openapi: 3.0.3
+info:
+  title: core-internal
+  version: 1.0.0
+  description: |
+    Core 服务对内资源 API。成功响应 code=200、msg=操作成功（ResponseCode.SUCCESS）。
+paths:
+  /api/v1/internal/resources:
+    post:
+      operationId: upsertResource
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ResourceDto"
+            example:
+              id: 10001
+              md5: "0a1b2c3d4e5f60718293a4b5c6d7e8f9"
+              mp4: "raw/10001.mp4"
+              m3u8: "transcoded/10001/index.m3u8"
+              mpd: "transcoded/10001/manifest.mpd"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResultVoid"
+              example:
+                code: 200
+                msg: 操作成功
+                data: null
+  /api/v1/internal/resources/{id}:
+    get:
+      operationId: getResourceById
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ResultResource"
+              example:
+                code: 200
+                msg: 操作成功
+                data:
+                  id: 10001
+                  md5: "0a1b2c3d4e5f60718293a4b5c6d7e8f9"
+                  mp4: "raw/10001.mp4"
+                  m3u8: "transcoded/10001/index.m3u8"
+                  mpd: "transcoded/10001/manifest.mpd"
+components:
+  schemas:
+    ResourceDto:
+      type: object
+      properties:
+        id: { type: integer, format: int64 }
+        md5: { type: string }
+        mp4: { type: string }
+        m3u8: { type: string }
+        mpd: { type: string }
+    ResultVoid:
+      type: object
+      properties:
+        code: { type: integer, example: 200 }
+        msg: { type: string, example: 操作成功 }
+        data: { nullable: true }
+    ResultResource:
+      type: object
+      properties:
+        code: { type: integer, example: 200 }
+        msg: { type: string, example: 操作成功 }
+        data: { $ref: "#/components/schemas/ResourceDto" }
