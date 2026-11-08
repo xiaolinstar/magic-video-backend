@@ -1,9 +1,8 @@
 package cn.xiaolin.auth.dubbo.provider;
 
 import cn.xiaolin.auth.domain.entity.SysPermission;
-import cn.xiaolin.auth.domain.entity.SysRole;
 import cn.xiaolin.auth.service.SysPermissionService;
-import cn.xiaolin.auth.service.SysRoleService;
+import cn.xiaolin.auth.service.UserPermQueryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.dubbo.config.annotation.DubboService;
@@ -21,8 +20,8 @@ import java.util.Set;
 @RequiredArgsConstructor
 @Slf4j
 public class DubboUserPermService implements cn.xiaolin.api.dubbo.service.UserPermService {
+    private final UserPermQueryService userPermQueryService;
     private final SysPermissionService sysPermissionService;
-    private final SysRoleService sysRoleService;
 
     /**
      * 根据用户ID获取用户的权限列表
@@ -32,10 +31,7 @@ public class DubboUserPermService implements cn.xiaolin.api.dubbo.service.UserPe
      */
     @Override
     public List<String> getPermByUserId(Long userId) {
-        List<SysPermission> permissions = sysPermissionService.listPermsByUserId(userId);
-        return permissions.stream()
-                .map(SysPermission::getName)
-                .toList();
+        return userPermQueryService.listPermissionNames(userId);
     }
 
     /**
@@ -46,11 +42,9 @@ public class DubboUserPermService implements cn.xiaolin.api.dubbo.service.UserPe
      */
     @Override
     public List<String> getRoleByUserId(Long userId) {
-        List<SysRole> roles = sysRoleService.listRolesByUserId(userId);
-        log.info("user id: {} , roles: {}",userId, roles.stream().map(SysRole::getName).toList());
-        return roles.stream()
-                .map(SysRole::getName)
-                .toList();
+        List<String> roles = userPermQueryService.listRoleNames(userId);
+        log.info("user id: {} , roles: {}", userId, roles);
+        return roles;
     }
 
     /**
