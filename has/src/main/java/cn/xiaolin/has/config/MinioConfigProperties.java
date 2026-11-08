@@ -19,6 +19,9 @@ public class MinioConfigProperties {
     private String accessKey;
     private String secretKey;
 
+    /** 原片 bucket。has 通过消息中的 sourceUrl 读取，启动时确保该 bucket 存在。 */
+    private String rawBucketName;
+
     private HlsProperties hls = new HlsProperties();
     private DashProperties dash = new DashProperties();
 

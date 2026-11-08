@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -53,10 +54,14 @@ public class AppConfig implements CommandLineRunner {
                 .endpoint(minioConfigProperties.getEndpoint())
                 .credentials(minioConfigProperties.getAccessKey(), minioConfigProperties.getSecretKey())
                 .build();
-        List<String> bucketNameList = List.of(
+        // raw：原片（multimedia 写入，has 经 sourceUrl 读取）；transcoded：HLS 与 DASH 共用
+        List<String> bucketNameList = Stream.of(
+                minioConfigProperties.getRawBucketName(),
                 minioConfigProperties.getHls().getBucketName(),
                 minioConfigProperties.getDash().getBucketName()
-        );
+        ).filter(name -> name != null && !name.isBlank())
+                .distinct()
+                .toList();
         bucketNameList.forEach(bucketName -> {
             try {
                 if (!minioClient.bucketExists(BucketExistsArgs.builder().bucket(bucketName).build())) {

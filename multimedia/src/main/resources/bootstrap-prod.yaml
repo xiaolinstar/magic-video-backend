@@ -10,18 +10,14 @@ spring:
     connection-timeout: 15000
 
 minio:
-  endpoint: http://magic-multimedia-minio:9000/
-  access-key: ${MINIO_ACCESS_KEY:RzQywv1gIcgXeSSMMeNz}
-  secret-key: ${MINIO_SECRET_KEY:3bD0LUxmD4JhqUCcPMs9QkpCSfTCaG8whZWcSv69}
+  endpoint: http://magic-minio:9000
+  access-key: ${MINIO_ACCESS_KEY:minio}
+  secret-key: ${MINIO_SECRET_KEY:xiaolin123minio}
 
   image:
-    bucket-name: magic-image
+    bucket-name: raw
   video:
-    bucket-name: magic-video
-  hls:
-    bucket-name: magic-hls
-  dash:
-    bucket-name: magic-dash
+    bucket-name: raw
 
 app:
   core-size: 3

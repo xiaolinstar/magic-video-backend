@@ -17,6 +17,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.stream.Stream;
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -47,12 +48,11 @@ public class AppConfig implements CommandLineRunner {
                 .endpoint(minioConfigProperties.getEndpoint())
                 .credentials(minioConfigProperties.getAccessKey(), minioConfigProperties.getSecretKey())
                 .build();
-        List<String> bucketNameList = List.of(
+        // 图片与视频共用 raw；去重后只创建并设置一次策略
+        List<String> bucketNameList = Stream.of(
                 minioConfigProperties.getImage().getBucketName(),
-                minioConfigProperties.getVideo().getBucketName(),
-                minioConfigProperties.getHls().getBucketName(),
-                minioConfigProperties.getDash().getBucketName()
-        );
+                minioConfigProperties.getVideo().getBucketName()
+        ).distinct().toList();
 
         bucketNameList.forEach(bucketName -> {
             try {

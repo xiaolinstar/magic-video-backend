@@ -110,7 +110,7 @@ class DeadLetterRoutingTest {
         rabbitAdmin.purgeQueue(MessageQueueConsts.QUEUE_MEDIA_RESOURCE_DLQ);
 
         TranscodeMessage sent = TranscodeMessage.builder()
-                .sourceUrl("http://magic-multimedia-minio:9000/magic-video/fail.mp4")
+                .sourceUrl("http://magic-minio:9000/raw/videos/fail.mp4")
                 .videoId(10011L)
                 .resourceKey("0a1b2c3d4e5f60718293a4b5c6d7e8f9")
                 .build();

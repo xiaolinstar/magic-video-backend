@@ -19,8 +19,6 @@ public class MinioConfigProperties {
     private String secretKey;
     private ImageProperties image = new ImageProperties();
     private VideoProperties video = new VideoProperties();
-    private HlsProperties hls = new HlsProperties();
-    private DashProperties dash = new DashProperties();
 
     @Data
     @NoArgsConstructor
@@ -33,21 +31,6 @@ public class MinioConfigProperties {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class VideoProperties {
-        private String bucketName;
-    }
-
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class HlsProperties {
-        private String bucketName;
-    }
-
-    @Data
-    @NoArgsConstructor
-    @AllArgsConstructor
-    public static class DashProperties {
         private String bucketName;
     }
 }

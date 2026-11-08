@@ -56,6 +56,10 @@ public class MediaKitServiceImpl implements MediaKitService {
     /** ffmpeg 结束后保留的 stderr 行数（仅用于失败时定位问题） */
     private static final int STDERR_TAIL_LINES = 20;
 
+    /** HLS 与 DASH 共用 bucket transcoded，用对象前缀分开，避免同名分片互相覆盖。 */
+    private static final String HLS_KEY_PREFIX = "hls/";
+    private static final String DASH_KEY_PREFIX = "dash/";
+
     private final String hlsFileDir;
     private final String hlsBucketName;
     private final String dashFileDir;
@@ -87,7 +91,7 @@ public class MediaKitServiceImpl implements MediaKitService {
         validateFilename(resourceKey);
 
         String playlistName = resourceKey + ".m3u8";
-        String objectKey = resourceKey + "/" + playlistName;
+        String objectKey = HLS_KEY_PREFIX + resourceKey + "/" + playlistName;
 
         // 幂等：产物已存在则直接复用，不再重复转码（避免重复投递造成重复计算与覆盖）
         if (objectExists(hlsBucketName, objectKey)) {
@@ -114,7 +118,7 @@ public class MediaKitServiceImpl implements MediaKitService {
         }
 
         try {
-            uploadFolder2Minio(targetDirPath, hlsBucketName);
+            uploadFolder(targetDirPath, hlsBucketName, HLS_KEY_PREFIX);
         } finally {
             // 临时目录转码后即清理，避免磁盘被转码产物撑满
             cleanupWorkDir(targetDirPath);
@@ -132,7 +136,7 @@ public class MediaKitServiceImpl implements MediaKitService {
         validateFilename(resourceKey);
 
         String playlistName = resourceKey + ".mpd";
-        String objectKey = resourceKey + "/" + playlistName;
+        String objectKey = DASH_KEY_PREFIX + resourceKey + "/" + playlistName;
 
         if (objectExists(dashBucketName, objectKey)) {
             log.info("DASH 产物已存在，跳过转码：{}", objectKey);
@@ -164,7 +168,7 @@ public class MediaKitServiceImpl implements MediaKitService {
         }
 
         try {
-            uploadFolder2Minio(targetDirPath, dashBucketName);
+            uploadFolder(targetDirPath, dashBucketName, DASH_KEY_PREFIX);
         } finally {
             cleanupWorkDir(targetDirPath);
         }
@@ -182,19 +186,27 @@ public class MediaKitServiceImpl implements MediaKitService {
      */
     @Override
     public void uploadFolder2Minio(Path dirPath, String bucketName) {
+        uploadFolder(dirPath, bucketName, "");
+    }
+
+    /**
+     * 上传文件夹。{@code keyPrefix} 拼在对象 key 前面，用于在同一 bucket 内区分 HLS / DASH。
+     */
+    private void uploadFolder(Path dirPath, String bucketName, String keyPrefix) {
         File dirFile = dirPath.toFile();
         String folderName = dirFile.getName();
         File[] files = dirFile.listFiles();
         if (Objects.isNull(files) || files.length == 0) {
             throw new GlobalException("文件夹为空");
         }
+        String prefix = keyPrefix == null ? "" : keyPrefix;
         Arrays.stream(files).sorted(Comparator.comparing(File::getName)).forEach(file -> {
             String contentType = "application/octet-stream";
             String fileName = file.getName();
             try (BufferedInputStream inputStream = new BufferedInputStream(new FileInputStream(file))) {
                 PutObjectArgs putObjectArgs = PutObjectArgs.builder()
                         .bucket(bucketName)
-                        .object(folderName + '/' + fileName)
+                        .object(prefix + folderName + '/' + fileName)
                         .stream(inputStream, file.length(), -1)
                         .contentType(contentType)
                         .build();

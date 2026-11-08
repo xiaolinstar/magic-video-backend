@@ -44,7 +44,7 @@ class MinioClientTest {
                 .stream()
                 .map(Bucket::name)
                 .toList();
-        List<String> bucketNameList = List.of("magic-image", "magic-video");
+        List<String> bucketNameList = List.of("raw");
         bucketNameList.forEach(bucketName -> {
             assertTrue(buckets.contains(bucketName));
         });

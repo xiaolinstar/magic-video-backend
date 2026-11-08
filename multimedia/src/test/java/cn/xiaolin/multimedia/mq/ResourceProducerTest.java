@@ -29,7 +29,7 @@ class ResourceProducerTest {
     @Test
     public void publishUrlTest() {
         TranscodeMessage message = TranscodeMessage.builder()
-                .sourceUrl("http://localhost:9010/magic-video/magic-video-test.mp4")
+                .sourceUrl("http://localhost:9010/raw/videos/magic-video-test.mp4")
                 .videoId(10011L)
                 .resourceKey("0a1b2c3d4e5f60718293a4b5c6d7e8f9")
                 .build();

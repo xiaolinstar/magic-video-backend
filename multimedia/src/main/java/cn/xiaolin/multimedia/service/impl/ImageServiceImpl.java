@@ -121,6 +121,7 @@ public class ImageServiceImpl implements ImageService {
                 }
             }
         }
-        return UUID.randomUUID().toString().replace("-", "") + suffix;
+        // 与视频共用 bucket raw，用固定前缀区分；后缀仍遵守 ADR-0005
+        return "images/" + UUID.randomUUID().toString().replace("-", "") + suffix;
     }
 }

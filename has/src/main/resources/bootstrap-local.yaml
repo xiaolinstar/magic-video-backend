@@ -14,14 +14,15 @@ core:
   base-url: http://magic-core:9001
 
 minio:
-  endpoint: http://magic-has-minio:9000
-  access-key: ${MINIO_ACCESS_KEY:bnY5rNCWoZUXNSk7CcR0}
-  secret-key: ${MINIO_SECRET_KEY:xehoJrBBQrsYWv0aZC7yoH3jlPFQ4HusBhubmaRF}
+  endpoint: http://magic-minio:9000
+  access-key: ${MINIO_ACCESS_KEY:minio}
+  secret-key: ${MINIO_SECRET_KEY:xiaolin123minio}
 
+  raw-bucket-name: raw
   hls:
-    bucket-name: magic-hls
+    bucket-name: transcoded
   dash:
-    bucket-name: magic-dash
+    bucket-name: transcoded
 
 app:
   hls-file-dir: hls-video

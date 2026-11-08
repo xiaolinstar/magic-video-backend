@@ -166,8 +166,7 @@ magic-video-backend/
 
 ```bash
 MYSQL_INIT=/绝对路径/magic-video-backend/static/mysql/local
-MULTIMEDIA_MINIO_DATA=/绝对路径/magic-video-backend/volume/minio/multimedia/data
-HAS_MINIO_DATA=/绝对路径/magic-video-backend/volume/minio/has/data
+MINIO_DATA=/绝对路径/magic-video-backend/volume/minio/data
 ```
 
 **2. 启动**
@@ -261,9 +260,9 @@ docker compose -p prod -f mini-local.yaml down
 ```
 
 > ⚠️ **生产编排目前只覆盖 `auth` / `gateway` / `core`**。
-> `mini-local.yaml` 里**还没有** `multimedia` / `has` / 两个 MinIO，
+> `mini-local.yaml` 里**还没有** `multimedia` / `has` / MinIO（`magic-minio`），
 > 因此 prod 下上传与转码链路不可用（网关的 `magic-multimedia` 路由会 DNS 解析失败）。
-> 完整形态见 [`docker-compose-local.yaml`](docker-compose-local.yaml)（含全部 5 个服务 + 2 个 MinIO）。
+> 完整形态见 [`docker-compose-local.yaml`](docker-compose-local.yaml)（含全部 5 个服务 + 1 个 MinIO）。
 > 见[技术债 P1-13](docs/09-tech-debt.md)。
 
 ---
@@ -291,8 +290,7 @@ docker compose -p prod -f mini-local.yaml down
 | magic-auth-redis | 6379 | 6379 | ❌ | Sa-Token 分布式会话 |
 | magic-redis | 6379 | 6389 | ❌ | 业务缓存 |
 | rabbitmq | 5672 / 15672 | 5672 / 15672 | ❌ | 转码消息队列 |
-| minio (multimedia) | 9000 / 9001 | 9010 / 9011 | ✅ 9010 / 9011 | 图片/视频对象存储 |
-| minio (has) | 9000 / 9001 | 9020 / 9021 | ✅ 9020 / 9021 | 转码产物对象存储 |
+| magic-minio | 9000 / 9001 | 9010 / 9011 | ✅ 9010 / 9011 | bucket `raw`（图片/原片）、`transcoded`（HLS/DASH） |
 | minio (loki) | 9000 / 9001 | 9030 / 9031 | ✅ | Loki 日志存储 |
 | grafana | 3000 | 19000 | ✅ 19000 | 监控大盘 |
 | prometheus | 9090 | 9090 | ❌ | 指标采集 |
@@ -638,13 +636,11 @@ public Result<PageResult<VideoVO>> list(PageQuery pageQuery) { ... }
 
 ### 对象存储规范
 
-MinIO 对象 key **绝不使用用户上传的原始文件名**，统一用 `<UUID>.<安全后缀>`，
-后缀从白名单取，取不到时回退到业务类型自带的固定后缀。详见 [ADR-0005](docs/adr/0005-minio-object-key.md)。
+MinIO 为单实例 `magic-minio`，两个 bucket：`raw`（multimedia 写入图片与原片）和 `transcoded`（has 写入 HLS/DASH）。has 通过转码消息里的预签名 `sourceUrl` 从 `raw` 拉取原片。
 
-转码产物走另一套 key 规则（`has` 模块）：`<resourceKey>/<resourceKey>.m3u8` 与
-`<resourceKey>/<resourceKey>.mpd`，其中 `resourceKey` 是 32 位 hex，
-由 `multimedia` 生成并**随 MQ 消息一起传递**（`TranscodeMessage.resourceKey`），
-两侧不各写一套 URL 解析规则。
+对象 key **绝不使用用户上传的原始文件名**。图片为 `images/<UUID>.<安全后缀>`，视频为 `videos/<UUID>.<安全后缀>`；后缀从白名单取，取不到时回退到业务类型自带的固定后缀。详见 [ADR-0005](docs/adr/0005-minio-object-key.md)。
+
+转码产物在 bucket `transcoded` 内按前缀分开：`hls/<resourceKey>/<resourceKey>.m3u8` 与 `dash/<resourceKey>/<resourceKey>.mpd`。`resourceKey` 是 32 位 hex，由 `multimedia` 生成并**随 MQ 消息一起传递**（`TranscodeMessage.resourceKey`），两侧不各写一套 URL 解析规则。
 
 ---
 

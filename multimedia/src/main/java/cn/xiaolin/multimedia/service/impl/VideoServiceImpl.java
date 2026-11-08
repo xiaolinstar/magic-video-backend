@@ -52,7 +52,7 @@ public class VideoServiceImpl implements VideoService {
 
     /**
      * 对象 key 的后缀部分：最多 8 位字母数字，且不含路径分隔符。
-     * 完整 key 固定为 {@code <uuid>.<后缀>}，绝不使用用户传入的原始文件名，
+     * 完整 key 固定为 {@code videos/<uuid>.<后缀>}，绝不使用用户传入的原始文件名，
      * 以避免路径穿越与对象覆盖攻击。
      */
     private static final Pattern SAFE_SUFFIX = Pattern.compile("^[a-zA-Z0-9]{1,8}$");
@@ -352,10 +352,13 @@ public class VideoServiceImpl implements VideoService {
     }
 
     /**
-     * 组装对象 key：{@code <resourceKey><suffix>}。
+     * 组装对象 key：{@code videos/<resourceKey><suffix>}。
+     *
+     * <p>图片与视频共用 bucket {@code raw}，固定前缀避免对象混放。
+     * {@code resourceKey} 本身仍是 32 位 hex，转码幂等键不含此前缀。
      */
     private String buildObjectKey(String resourceKey, String suffix) {
-        return resourceKey + suffix;
+        return "videos/" + resourceKey + suffix;
     }
 
     /**
