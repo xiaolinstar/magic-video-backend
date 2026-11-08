@@ -423,34 +423,3 @@ CREATE TABLE award
     INDEX `idx_year` (year)
 ) ENGINE = InnoDB
   DEFAULT CHARSET = utf8mb4 COMMENT = '奖项';
-
-
-# 资源
-# DROP TABLE IF EXISTS videoResource;
-# CREATE TABLE videoResource
-# (
-#     `id`                 BIGINT     NOT NULL COMMENT '主键;雪花算法生成，Jackson序列化时转string',
-#     `name`               VARCHAR(255) COMMENT '资源名称',
-#     `md5`                VARCHAR(255) COMMENT '摘要算法md5值;判断数据库中是否已经存在，避免重复上传',
-#     `mp4`                VARCHAR(2048) COMMENT 'MP4资源地址',
-#     `m3u8`               VARCHAR(2048) COMMENT 'HLS资源',
-#     `mpd`                VARCHAR(2048) COMMENT 'DASH资源',
-#     `avatar`             VARCHAR(2048) COMMENT '封面图',
-#     `title`              VARCHAR(255) COMMENT '标题',
-#     `description`        VARCHAR(2048) COMMENT '标题',
-#     `revision`           INT        NOT NULL DEFAULT 0 COMMENT '乐观锁',
-#     `deleted`            TINYINT(1) NOT NULL DEFAULT false COMMENT '逻辑删除',
-#     `create_time`        DATETIME   NOT NULL COMMENT '创建时间',
-#     `update_time`        DATETIME   NOT NULL COMMENT '更新时间',
-#     `created_by_user_id` BIGINT     NOT NULL COMMENT '创建人',
-#     `updated_by_user_id` BIGINT     NOT NULL COMMENT '更新人',
-#     PRIMARY KEY (id)
-# ) ENGINE = InnoDB
-#   DEFAULT CHARSET = utf8mb4 COMMENT = '视频资源';
-#
-# INSERT INTO `videoResource` VALUES (0,' 疯狂麦克斯-狂暴女神','Md5-Crazy-Max',NULL,NULL,'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Md5-Crazy-Max/Md5-Crazy-Max.mpd','https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/crazy-max.jpg','疯狂麦克斯之狂暴女神','影片讲述了复仇女神弗瑞奥萨（安雅·泰勒-乔伊 Anya Taylor-Joy 饰）惊心动魄的成长史。年轻的弗瑞奥萨从原本的家园被掠走，落入军阀狄门特斯（克里斯·海姆斯沃斯 Chris Hemsworth 饰）领导的帮派手中，在穿过荒原时，他们来到不死老乔（拉黑·休姆 Lachy H ulme 饰）所掌管的堡垒。在两位暴君争夺统治地位的同时，弗瑞奥萨必须在重重考验中活下来，并想方设法寻找回家的路；她也逐渐成长为利落酷飒的狂暴女神。',0,0,'2023-08-20 22:34:45','2023-08-20 22:34:45',0,0),
-#                               (1,'性爱自修室 Otis & Ruby','Md5-Otis-Ruby',NULL,NULL,'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Md5-Otis-Ruby/Md5-Otis-Ruby.mpd','https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/Otis%26Ruby.jpg','Sex Education: Otis & Ruby','超级好看！虽然各种性贯穿全片，但又是特别的纯情走心，甚至很多地方堪称浪漫。校霸欺负gay，围观的直男说：算了吧，恐同是2008年的流行了。有趣流畅不说教，真实冷静不偏激，内容完全对得起“性教育”的这个片名。',0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
-#                               (2,'关于我和鬼变成家人的那件事','Md5-Marry-My-Dead-Body',NULL,NULL,'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/MarryMyDeadBody/main.mpd','https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/MarryMyDeadBody.jpg','关于我和鬼结婚的那件事，许光汉色诱浴池抓毒','吴明翰（许光汉 饰）是一名脾气耿直的警察，一次在出警中，他偶然捡到了地上的红包，哪知道被牵扯到了一桩冥婚之中，而他要结婚的对象，竟然是名叫毛邦羽（林柏宏 饰）的男人。吴明翰虽然内心一百个不情愿，但很快他就发现，如果不完婚，那么坏运气会一直跟随着他，无奈之下，吴明翰只得在灵堂中和毛邦宇举行了仪式。',0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
-#                               (3,' 疯狂麦克斯-狂暴女神','Md5-Crazy-Max',NULL,NULL,'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Md5-Crazy-Max/Md5-Crazy-Max.mpd','https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/crazy-max.jpg','疯狂麦克斯之狂暴女神','影片讲述了复仇女神弗瑞奥萨（安雅·泰勒-乔伊 Anya Taylor-Joy 饰）惊心动魄的成长史。年轻的弗瑞奥萨从原本的家园被掠走，落入军阀狄门特斯（克里斯·海姆斯沃斯 Chris Hemsworth 饰）领导的帮派手中，在穿过荒原时，他们来到不死老乔（拉黑·休姆 Lachy H ulme 饰）所掌管的堡垒。在两位暴君争夺统治地位的同时，弗瑞奥萨必须在重重考验中活下来，并想方设法寻找回家的路；她也逐渐成长为利落酷飒的狂暴女神。',0,0,'2023-08-20 22:34:45','2023-08-20 22:34:45',0,0),
-#                               (4,'性爱自修室 Otis & Ruby','Md5-Otis-Ruby',NULL,NULL,'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/Md5-Otis-Ruby/Md5-Otis-Ruby.mpd','https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/Otis%26Ruby.jpg','Sex Education: Otis & Ruby','超级好看！虽然各种性贯穿全片，但又是特别的纯情走心，甚至很多地方堪称浪漫。校霸欺负gay，围观的直男说：算了吧，恐同是2008年的流行了。有趣流畅不说教，真实冷静不偏激，内容完全对得起“性教育”的这个片名。',0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0),
-#                               (5,'关于我和鬼变成家人的那件事','Md5-Marry-My-Dead-Body',NULL,NULL,'https://magic-video-bucket.oss-cn-nanjing.aliyuncs.com/MarryMyDeadBody/main.mpd','https://vod-images-xiaolin.oss-cn-beijing.aliyuncs.com/MarryMyDeadBody.jpg','关于我和鬼结婚的那件事，许光汉色诱浴池抓毒','吴明翰（许光汉 饰）是一名脾气耿直的警察，一次在出警中，他偶然捡到了地上的红包，哪知道被牵扯到了一桩冥婚之中，而他要结婚的对象，竟然是名叫毛邦羽（林柏宏 饰）的男人。吴明翰虽然内心一百个不情愿，但很快他就发现，如果不完婚，那么坏运气会一直跟随着他，无奈之下，吴明翰只得在灵堂中和毛邦宇举行了仪式。',0,0,'2023-08-21 01:39:54','2023-08-21 01:39:54',0,0)

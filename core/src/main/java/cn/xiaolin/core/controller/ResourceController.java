@@ -1,6 +1,5 @@
 package cn.xiaolin.core.controller;
 
-import cn.xiaolin.core.domain.entity.VideoSource;
 import cn.xiaolin.core.domain.vo.PlaybackSourceVO;
 import cn.xiaolin.core.service.VideoSourceService;
 import cn.xiaolin.utils.constant.ApiRouterConsts;
@@ -11,12 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -91,34 +85,6 @@ public class ResourceController {
         log.info("获取精选视频 /resource/featured");
         // 精选标记缺少支撑字段，暂未实现，当前按 videoId 倒序返回
         return Result.ok(videoSourceService.listSourcePage(pageQuery(current, size, null)));
-    }
-
-    @Operation(summary = "查询单个资源")
-    @GetMapping("/resource/{id}")
-    public Result<VideoSource> one(@PathVariable Long id) {
-        // 业务实现尚未提供，保留 501 语义以明确暴露缺口
-        throw new NotImplementedException();
-    }
-
-    @Operation(summary = "新增资源")
-    @PostMapping("/resource")
-    public Result<VideoSource> insertOne() {
-        // 业务实现尚未提供，保留 501 语义以明确暴露缺口
-        throw new NotImplementedException();
-    }
-
-    @Operation(summary = "更新资源")
-    @PutMapping("/resource")
-    public Result<VideoSource> updateOne() {
-        // 业务实现尚未提供，保留 501 语义以明确暴露缺口
-        throw new NotImplementedException();
-    }
-
-    @Operation(summary = "删除资源")
-    @DeleteMapping("/resource/{id}")
-    public Result<VideoSource> deleteOne(@PathVariable Long id) {
-        // 业务实现尚未提供，保留 501 语义以明确暴露缺口
-        throw new NotImplementedException();
     }
 
     private PageQuery pageQuery(long current, long size, String sortBy) {

@@ -60,7 +60,6 @@ public class SaTokenConfig {
                     SaRouter.match("/auth/user/**", r -> StpUtil.checkRole("common"));
                     SaRouter.match("/multimedia/**", r -> StpUtil.checkRole("common"));
                     SaRouter.match("/core/**", r -> StpUtil.checkRole("common"));
-                    SaRouter.match("/has/**", r -> StpUtil.checkRole("common"));
                 })
                 .setError(e -> {
                     if (e instanceof NotLoginException) {

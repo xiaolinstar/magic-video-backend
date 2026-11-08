@@ -9,7 +9,6 @@ import cn.xiaolin.utils.resp.Result;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,18 +61,6 @@ public class SysUserController {
     public Result<List<SysUser>> listAll() {
         List<SysUser> sysUserList = sysUserService.list();
         return Result.ok(sysUserList);
-    }
-
-    @Operation(summary = "根据用户id，查询所有权限")
-    @GetMapping("/user/perm/{id}")
-    public Result<List<String>> listPermissionsByUserId(@PathVariable Long id) {
-        throw new NotImplementedException();
-    }
-
-    @Operation(summary = "根据用户id，查询所有角色")
-    @GetMapping("/user/role/{id}")
-    public Result<List<String>> listRolesByUserId(@PathVariable Long id) {
-        throw new NotImplementedException();
     }
 
     @Operation(summary = "查询具有权限permId的所有用户，参数withRole表示通过role间接拥有权限")

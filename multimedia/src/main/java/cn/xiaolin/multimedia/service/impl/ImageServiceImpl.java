@@ -10,7 +10,6 @@ import io.minio.errors.*;
 import io.minio.http.Method;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -82,17 +81,6 @@ public class ImageServiceImpl implements ImageService {
                  XmlParserException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    /**
-     * 字符串加密上传文件
-     *
-     * @param imageBase64 图像的64位加密
-     * @return 图像资源ID
-     */
-    @Override
-    public String imageUpload(String imageBase64) {
-        throw new NotImplementedException();
     }
 
     /**

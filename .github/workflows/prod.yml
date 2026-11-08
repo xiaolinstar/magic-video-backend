@@ -51,11 +51,12 @@ jobs:
           password: ${{secrets.DOCKERHUB_TOKEN}}
 
       # 5. 构建并推送各微服务镜像
+      # 镜像名与 docker-compose / mini-local 一致：xiaolinstar/magic-<module>:v0.1
       - name: Build Images and Push to DockerHub
         run: |
           TAG=v0.1
-          DOCKER_USER=${{ vars.DOCKERHUB_USERNAME }}
-
-          docker build -t $DOCKER_USER/magic-core:$TAG core/. --push
-          docker build -t $DOCKER_USER/magic-gateway:$TAG gateway/. --push
+          IMAGE_PREFIX=xiaolinstar
+          for module in gateway auth core multimedia has; do
+            docker build -t "${IMAGE_PREFIX}/magic-${module}:${TAG}" "${module}/." --push
+          done
         timeout-minutes: 30

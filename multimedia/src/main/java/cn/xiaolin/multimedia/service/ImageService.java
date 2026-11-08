@@ -1,10 +1,6 @@
 package cn.xiaolin.multimedia.service;
 
-import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
-
 
 /**
  * @author xingxiaolin xing.xiaolin@foxmail.com
@@ -19,13 +15,5 @@ public interface ImageService {
      * @return 图像资源ID
      */
     String imageUpload(MultipartFile file);
-
-
-    /**
-     * 字符串加密上传文件
-     * @param imageBase64 图像的64位加密
-     * @return 图像资源ID
-     */
-    String imageUpload(String imageBase64);
 
 }

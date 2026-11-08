@@ -5,7 +5,6 @@ import cn.xiaolin.utils.constant.ApiRouterConsts;
 import cn.xiaolin.utils.resp.Result;
 import cn.xiaolin.multimedia.service.VideoService;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -39,12 +38,6 @@ public class VideoController {
         videoService.videoChunksMerge(md5, videoType, filename == null ? md5 : filename, videoId);
         return Result.ok();
     }
-
-    @GetMapping("/video/check")
-    public Result<Long> checkOne(@RequestParam String md5) {
-        throw new NotImplementedException();
-    }
-
 
     @PostMapping("/video")
     public Result<Map<String, String>> one(MultipartFile video,
