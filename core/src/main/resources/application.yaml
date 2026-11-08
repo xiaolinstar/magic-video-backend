@@ -6,6 +6,10 @@ spring:
         name: core
     cache:
         type: redis
+        redis:
+            # 与 Sa-Token（token-name 前缀 sa-token:）隔离。自定义 CacheManager 读取该值。
+            key-prefix: "core:"
+            use-key-prefix: true
 
 # Spring Boot Actuator 安全配置
 # 缓解 CVE-2026-22733 (CloudFoundry Actuator 端点认证绕过)

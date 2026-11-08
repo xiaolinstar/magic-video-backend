@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -41,8 +42,12 @@ import java.time.Duration;
 @Configuration
 public class CacheConfig {
 
-    /** 全局 key 前缀，便于按服务隔离和批量清理 */
-    private static final String REDIS_CACHE_PREFIX = "magic-video::";
+    /**
+     * 与 Sa-Token Redis key（{@code token-name} 形成 {@code sa-token:}）隔离。
+     * 自定义 {@link CacheManager} 不走 Boot 自动配置，因此显式读取
+     * {@code spring.cache.redis.key-prefix}。
+     */
+    private static final String DEFAULT_REDIS_CACHE_PREFIX = "core:";
 
     /** 默认缓存过期时间：10 分钟 */
     private static final Duration DEFAULT_TTL = Duration.ofMinutes(10);
@@ -54,13 +59,18 @@ public class CacheConfig {
     private static final String TRUSTED_JDK_MATH_PREFIX = "java.math.";
 
     @Bean
-    public CacheManager coreCacheManager(RedisConnectionFactory connectionFactory) {
+    public CacheManager coreCacheManager(
+            RedisConnectionFactory connectionFactory,
+            @Value("${spring.cache.redis.key-prefix:" + DEFAULT_REDIS_CACHE_PREFIX + "}") String redisCachePrefix) {
+        String prefix = (redisCachePrefix == null || redisCachePrefix.isBlank())
+                ? DEFAULT_REDIS_CACHE_PREFIX
+                : redisCachePrefix;
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(connectionFactory);
         RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration
                 .defaultCacheConfig()
                 .disableCachingNullValues()
                 .entryTtl(DEFAULT_TTL)
-                .prefixCacheNameWith(REDIS_CACHE_PREFIX)
+                .prefixCacheNameWith(prefix)
                 .serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(buildRedisValueSerializer()));
         return RedisCacheManager.builder()

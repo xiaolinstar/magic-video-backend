@@ -33,35 +33,12 @@ services:
       retries: 3
       start_period: 40s
 
-  magic-auth-redis:
-    # 鉴权中间件redis
-    image: redis:7.4.1-alpine
-    container_name: magic-auth-redis
-    hostname: magic-auth-redis
-    restart: no
-#    ports:
-#      - "6379:6379"
-    networks:
-      - magic-backend-network
-
-    environment:
-      TZ: Asia/Shanghai
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 40s
-
   magic-redis:
-    # 鉴权中间件redis
+    # Sa-Token 与 core 缓存共用；容器内 6379。key 前缀 sa-token: / core:
     image: redis:7.4.1-alpine
     container_name: magic-redis
     hostname: magic-redis
     restart: no
-#    ports:
-#      # 注意端口号是6389
-#      - "6389:6379"
     networks:
       - magic-backend-network
 
@@ -150,7 +127,7 @@ services:
         condition: service_healthy
       magic-rabbitmq:
         condition: service_healthy
-      magic-auth-redis:
+      magic-redis:
         condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8999/actuator/health"]
@@ -177,6 +154,8 @@ services:
       magic-auth:
         # magic-auth是magic-gateway的provider
         condition: service_healthy
+      magic-redis:
+        condition: service_healthy
 
   magic-core:
     image: xiaolinstar/magic-core:v0.1
@@ -195,6 +174,8 @@ services:
     depends_on:
       magic-gateway:
         condition: service_started
+      magic-redis:
+        condition: service_healthy
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9001/actuator/health"]
       interval: 30s

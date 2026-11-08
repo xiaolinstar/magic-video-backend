@@ -11,7 +11,7 @@ spring:
     url: jdbc:mysql://magic-mysql:3306/local_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 
   data:
-    # 数据库缓存，Redis 端口号6379
+    # 与 Sa-Token 共用 magic-redis:6379；缓存 key 前缀 core:（见 spring.cache.redis.key-prefix）
     redis:
       client-type: lettuce
       database: 0

@@ -32,12 +32,12 @@ spring:
           predicates:
             - Path=/core/**
 
-  # 微服务分布式鉴权专用Redis
+  # 与 core 共用 magic-redis:6379；Sa-Token key 前缀为 token-name（sa-token:）
   data:
     redis:
       client-type: lettuce
       database: 0
-      host: magic-auth-redis
+      host: magic-redis
       port: 6379
       lettuce:
         pool:

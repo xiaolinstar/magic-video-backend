@@ -25,27 +25,14 @@ services:
     # 中文乱码-2
     command: ['--character-set-server=utf8mb4', '--collation-server=utf8mb4_unicode_ci' ]
 
-  magic-auth-redis:
-    # 鉴权中间件redis
-    image: redis:7.4.1-alpine
-    container_name: magic-auth-redis
-    hostname: magic-auth-redis
-    restart: no
-    ports:
-      - "6379:6379"
-    networks:
-      - magic-network
-    environment:
-      TZ: Asia/Shanghai
-
   magic-redis:
-    # 鉴权中间件redis
+    # Sa-Token 与 core 缓存共用；宿主机映射 6379。key 前缀 sa-token: / core:
     image: redis:7.4.1-alpine
     container_name: magic-redis
     hostname: magic-redis
     restart: no
     ports:
-      - "6389:6379"
+      - "6379:6379"
     networks:
       - magic-network
     environment:

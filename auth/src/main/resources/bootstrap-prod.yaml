@@ -9,12 +9,12 @@ spring:
     password: ${MYSQL_PASSWORD:123456}
     url: jdbc:mysql://magic-mysql:3306/magic_auth?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 
-  # Gateway和Auth共享权限管理Redis数据库
+  # 与 core 共用 magic-redis:6379；Sa-Token key 前缀为 token-name（sa-token:）
   data:
     redis:
       client-type: lettuce
       database: 0
-      host: magic-auth-redis
+      host: magic-redis
       port: 6379
       lettuce:
         pool:

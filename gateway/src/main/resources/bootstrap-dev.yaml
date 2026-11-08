@@ -32,7 +32,7 @@ spring:
           predicates:
             - Path=/core/**
 
-  # 微服务分布式鉴权专用Redis
+  # 宿主机连接 compose 发布的唯一 Redis（magic-redis:6379）；key 前缀 sa-token:
   data:
     redis:
       client-type: lettuce

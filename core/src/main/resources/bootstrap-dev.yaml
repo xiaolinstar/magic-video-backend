@@ -11,12 +11,12 @@ spring:
     url: jdbc:mysql://localhost:3306/dev_magic_video?createDatabaseIfNotExist=true&useUnicode=true&characterEncoding=utf8&autoReconnect=true
 
   data:
-    # 数据库缓存，Redis 端口号6389
+    # 宿主机连接 compose 发布的唯一 Redis（magic-redis:6379）；缓存 key 前缀 core:
     redis:
       client-type: lettuce
       database: 0
       host: localhost
-      port: 6389
+      port: 6379
       lettuce:
         pool:
           enabled: true

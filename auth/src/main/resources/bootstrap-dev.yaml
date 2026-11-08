@@ -2,7 +2,7 @@ spring:
   application:
     name: auth
 
-  # Gateway和Auth共享权限管理Redis数据库
+  # 宿主机连接 compose 发布的唯一 Redis（magic-redis:6379）；key 前缀 sa-token:
   data:
     redis:
       client-type: lettuce
