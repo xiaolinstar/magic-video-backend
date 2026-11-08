@@ -11,6 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -37,6 +38,8 @@ class InternalUserControllerTest {
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.msg").value("操作成功"))
                 .andExpect(jsonPath("$.data[0]").value("video:read"));
+
+        verify(userPermQueryService).listPermissionNames(1L);
     }
 
     @Test
@@ -49,5 +52,7 @@ class InternalUserControllerTest {
                 .andExpect(jsonPath("$.code").value(200))
                 .andExpect(jsonPath("$.msg").value("操作成功"))
                 .andExpect(jsonPath("$.data[0]").value("ADMIN"));
+
+        verify(userPermQueryService).listRoleNames(1L);
     }
 }
