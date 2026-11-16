@@ -334,7 +334,7 @@ Invalid value type for attribute 'factoryBeanObjectType': java.lang.String
 
 **落地**（2026-11-08）：`mini-local.yaml` 已包含 `magic-multimedia`、`magic-has` 和单个 `magic-minio`（bucket `raw` / `transcoded`）。CI 推送五个服务镜像。业务 Redis 也收成一个 `magic-redis`。见 [ADR-0011](adr/0011-single-minio-redis.md)。
 
-prod 端到端烟测仍未在本环境跑通（宿主机无 JDK，见烟测清单）。
+local 业务栈端到端烟测已于 2026-11-16 通过（见烟测清单）；`mini-local` / prod 编排的完整一键验收仍可按同一清单复跑。
 
 ---
 
@@ -541,7 +541,7 @@ Dubbo 已删除。内部 HTTP 契约在 `contracts/openapi/*.v1.yaml`。gateway 
 
 - [x] P1-13：`mini-local.yaml` 补 `magic-multimedia` / `magic-has` / 单个 `magic-minio`
 - [x] 业务 Redis、业务 MinIO 各保留一个实例（ADR-0011）
-- [ ] prod 侧端到端烟测（本环境无 JDK，未能 `docker compose up --build`）
+- [x] local 业务栈端到端烟测（2026-11-16；见 smoke-checklist；可观测性栈未起）
 
 ### 云原生分支 · 协议与模块 —— ✅ 文档与代码已对齐 2026-11-08
 

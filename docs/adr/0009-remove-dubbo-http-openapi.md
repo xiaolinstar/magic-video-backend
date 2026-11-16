@@ -105,7 +105,7 @@ ADR-0008 去掉 Nacos 之后，服务间同步仍是 Dubbo URL 直连：
 |---|---|
 | `rg -i dubbo`（`*.java`、`*.xml`、`*.yaml`、`pom.xml`） | 无匹配。README 里出现该词，只用来说明协议已删除 |
 | gateway / has / auth / core 单测 | 既有 `AuthPermClientTest`、`CoreResourceClientTest`、internal Controller 测试 |
-| compose 主链路烟测 | **未跑**。宿主机没有 `java` / `mvn`，镜像 Dockerfile 只拷贝 `target/*.jar`，仓库里没有这些 jar |
+| compose 主链路烟测 | **2026-11-16 已通过**（业务栈；见 `docs/superpowers/plans/smoke-checklist-cloud-native.md`）。注册/登录 → 上传 → has 转码 HTTP 回写 → `video_source` |
 
 ---
 

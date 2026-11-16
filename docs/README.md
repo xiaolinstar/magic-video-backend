@@ -59,12 +59,17 @@
 
 ## 最近一次变更
 
+**2026-11-16** —— 云原生收口与烟测验收：
+
+- 本地业务栈 compose 主链路烟测通过（Gateway → 上传 → MQ → has → core `video_source`）；
+- 服务镜像 Dockerfile 预建可写 `logs/`；`has` 预建转码工作目录 `/home/magic/{hls,dash}-video`；
+- `.local.env` 改为相对路径；烟测记录见 `superpowers/plans/smoke-checklist-cloud-native.md`。
+
 **2026-11-08** —— 云原生分支落地（在 Phase 0 与移除 Nacos 之后）：
 
 - 服务间同步改为 HTTP + OpenAPI，Dubbo 删除（ADR-0009）；
 - `common/` 删除，共享库为 `platform-web`，契约在 `contracts/`（ADR-0010）；
 - 业务 Redis、业务 MinIO 各一个实例；`mini-local` 含媒体链路（ADR-0011）；
-- K8s 与服务网格仍是文档中的非目标，不交付可运行清单；
-- compose 主链路烟测因环境没有 JDK 未重跑，步骤见 `superpowers/plans/smoke-checklist-cloud-native.md`。
+- K8s 与服务网格仍是文档中的非目标，不交付可运行清单。
 
 更早同一天还完成了 Phase 0 断点修复、移除 Nacos（ADR-0008），以及 ADR-0006 / ADR-0007 按实际 MQ 实现改写。

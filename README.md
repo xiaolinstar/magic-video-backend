@@ -158,18 +158,21 @@ magic-video-backend/
 
 **1. 配置环境变量**
 
-仓库根目录已有 `.local.env`。它只需要指定宿主机上的**数据卷路径**与 **DDL 目录**，
+仓库根目录已有 `.local.env`。它只需要指定宿主机上的**数据卷路径**与 **DDL 目录**（可用相对仓库根的路径），
 服务地址已内置在 `bootstrap-local.yaml`（容器网络内的 `magic-*` 主机名）：
 
 ```bash
-MYSQL_INIT=/绝对路径/magic-video-backend/static/mysql/local
-MINIO_DATA=/绝对路径/magic-video-backend/volume/minio/data
+MYSQL_INIT=./static/mysql/local
+MINIO_DATA=./volume/minio/data
 ```
 
-**2. 启动**
+**2. 打包并启动**
+
+Dockerfile 只 `COPY` 各模块 `target/*.jar`，需先打包再 build：
 
 ```bash
-docker compose -f docker-compose-local.yaml --env-file .local.env up -d
+./mvnw -DskipTests clean package
+docker compose -f docker-compose-local.yaml --env-file .local.env up -d --build
 ```
 
 **3. 验证**
@@ -177,6 +180,9 @@ docker compose -f docker-compose-local.yaml --env-file .local.env up -d
 ```bash
 curl http://localhost:9000/actuator/health
 ```
+
+主链路烟测（上传需 `common` 角色；种子用户 `li` / `123456li`；DASH 样片需含音轨）见
+[`docs/superpowers/plans/smoke-checklist-cloud-native.md`](docs/superpowers/plans/smoke-checklist-cloud-native.md)。
 
 **4. 停止**
 
@@ -694,8 +700,8 @@ MinIO 为单实例 `magic-minio`，两个 bucket：`raw`（multimedia 写入图�
 ## 项目现状说明
 
 这是一个**个人练习项目**。服务拆分、鉴权模型、媒体转码链路在代码和编排上已经按 HTTP internal、单 Redis、单业务 MinIO 对齐。
-2026-11-08 的 compose 主链路烟测因宿主机没有 JDK、镜像又依赖预先打好的 jar 而没有在本环境重跑。
-手工步骤见 [`docs/superpowers/plans/smoke-checklist-cloud-native.md`](docs/superpowers/plans/smoke-checklist-cloud-native.md)。
+
+**2026-11-16**：本地业务栈 compose 主链路烟测已通过（注册/登录 → 上传 → has 转码 → `video_source`）。可观测性栈未纳入本次验收。步骤与记录见 [`docs/superpowers/plans/smoke-checklist-cloud-native.md`](docs/superpowers/plans/smoke-checklist-cloud-native.md)。
 
 仍未完成的部分见「已知问题」。它不是开箱即用的生产级产品，也不打算追求生产级完备性 ——
 目标是完整走通技术栈并沉淀设计决策。

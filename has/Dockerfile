@@ -23,6 +23,10 @@ RUN groupadd --system --gid 1001 magic && \
 
 WORKDIR /app
 
+# logback 写 logs/<app>/；转码临时目录在 user.home（magic → /home/magic）
+RUN mkdir -p /app/logs /home/magic/hls-video /home/magic/dash-video && \
+    chown -R magic:magic /app/logs /home/magic
+
 # 拷贝文件到Docker容器目录中
 COPY --chown=magic:magic target/has-${JAR_VERSION}.jar /app/has-${JAR_VERSION}.jar
 

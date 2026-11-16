@@ -38,6 +38,7 @@ static/nacos/
 static/mysql-backup/
 
 volume/mysql/data
+volume/minio/data
 volume/minio/has/data
 volume/minio/multimedia/data
 volume/minio/loki/data

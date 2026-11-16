@@ -13,6 +13,9 @@ RUN groupadd --system --gid 1001 magic && \
 
 WORKDIR /app
 
+# logback 写 logs/<app>/；非 root 用户需要预先可写目录
+RUN mkdir -p /app/logs && chown magic:magic /app/logs
+
 # 拷贝文件到Docker容器目录中
 COPY --chown=magic:magic target/auth-${JAR_VERSION}.jar /app/auth-${JAR_VERSION}.jar
 

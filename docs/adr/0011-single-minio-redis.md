@@ -75,7 +75,7 @@ has 用转码消息里的预签名 URL 读取 `raw` 中的原片，不再连接�
 
 `docker-compose-local.yaml`、`docker-compose-dev.yaml`、`mini-local.yaml` 中业务服务只声明 `magic-redis` 与 `magic-minio`。`rg 'magic-auth-redis|6389'` 在这些编排和 `bootstrap-*.yaml` 中无匹配。
 
-compose 烟测未在本环境执行（见 [ADR-0009](0009-remove-dubbo-http-openapi.md) 验证一节）。
+业务栈 compose 烟测已于 2026-11-16 通过（见 [ADR-0009](0009-remove-dubbo-http-openapi.md) 与 [`smoke-checklist-cloud-native.md`](../superpowers/plans/smoke-checklist-cloud-native.md)）。
 
 ---
 
